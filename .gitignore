@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/EosSharp/EosSharp/obj
+/EosSharp/EosSharp.UnitTests/obj
+/EosSharp/packages
+*.suo
+/EosSharp/EosSharp/bin
+/EosSharp/EosSharp.UnitTests/bin
+/EosSharp/.vs
