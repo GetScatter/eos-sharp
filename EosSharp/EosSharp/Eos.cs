@@ -1,10 +1,10 @@
-﻿using System;
-using System.Net;
-using Newtonsoft.Json;
-
-namespace EosSharp
+﻿namespace EosSharp
 {
     public class Eos
     {
+        public Eos()
+        {
+            
+        }
     }
 }
