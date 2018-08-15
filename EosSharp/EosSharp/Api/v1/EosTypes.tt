@@ -1,0 +1,36 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import   namespace="System.Globalization" #>
+<#@ include  file="EosApiDefinitions.t4" #>  
+<#@ output   extension=".cs" #>
+// Auto Generated, do not edit.
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+
+namespace EosSharp.Api.v1
+{
+<# foreach (var method in apiMethods) { #>
+<#  if (method.Request != null) { #>
+    public class <#= ConvertPascalCase(method.Name) #>Request
+    {
+<#      foreach (var field in method.Request) { #>
+		[JsonProperty("<#= field.Name #>")]   
+		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+<#      } #>
+    }
+<#   } #>
+<#  if (method.Response != null) { #>
+    public class <#= ConvertPascalCase(method.Name) #>Response
+    {
+<#      foreach (var field in method.Response) { #>
+		[JsonProperty("<#= field.Name #>")]   
+		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+<#      } #>
+    }
+<#   } #>
+
+<# } #>
+}
+

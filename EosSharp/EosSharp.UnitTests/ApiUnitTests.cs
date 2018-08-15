@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 namespace EosSharp.UnitTests
 {
     [TestClass]
-    public class UnitTests
+    public class ApiUnitTests
     {
         [TestMethod]
         public async Task GetInfo()

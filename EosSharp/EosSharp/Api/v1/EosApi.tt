@@ -1,39 +1,10 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ import   namespace="System.Globalization" #>
+<#@ include  file="EosApiDefinitions.t4" #>  
 <#@ output   extension=".cs" #>
-<#
-
-var methods = new Method[] {
-	// chain
-	new Method() { Module = "chain", Name = "get_info", IsGet = true },
-	new Method() { Module = "chain", Name = "get_account" },
-	new Method() { Module = "chain", Name = "get_code" },
-	/*new Method() { Module = "chain", Name = "get_abi" },
-	new Method() { Module = "chain", Name = "get_raw_code_and_abi" },
-	new Method() { Module = "chain", Name = "abi_json_to_bin" },
-	new Method() { Module = "chain", Name = "abi_bin_to_json" },
-	new Method() { Module = "chain", Name = "get_required_keys" },
-	new Method() { Module = "chain", Name = "get_block" },
-	new Method() { Module = "chain", Name = "get_block_header_state" },
-	new Method() { Module = "chain", Name = "get_table_rows" },
-	new Method() { Module = "chain", Name = "get_currency_balance" },
-	new Method() { Module = "chain", Name = "get_currency_stats" },
-	new Method() { Module = "chain", Name = "get_producers" },
-	new Method() { Module = "chain", Name = "get_producer_schedule" },
-	new Method() { Module = "chain", Name = "get_scheduled_transactions" },
-	new Method() { Module = "chain", Name = "push_block" },
-	new Method() { Module = "chain", Name = "push_transaction" },
-	new Method() { Module = "chain", Name = "push_transactions" },
-	// chain history
-	new Method() { Module = "history", Name = "get_actions" },
-	new Method() { Module = "history", Name = "get_transaction" },
-	new Method() { Module = "history", Name = "get_key_accounts" },
-	new Method() { Module = "history", Name = "get_controlled_accounts" }*/
-};
-
-#>
-using EosSharp.Api.v1.Types;
+// Auto Generated, do not edit.
 using EosSharp.Helpers;
 using System.Threading.Tasks;
 
@@ -47,8 +18,8 @@ namespace EosSharp.Api.v1
             Config = config;
         }
 
-<# foreach (var method in methods) { #>
-<#   if(method.IsGet) { #>
+<# foreach (var method in apiMethods) { #>
+<#   if(method.Request == null) { #>
 		public async Task<<#= ConvertPascalCase(method.Name) #>Response> <#= ConvertPascalCase(method.Name) #>()
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
@@ -64,20 +35,3 @@ namespace EosSharp.Api.v1
 <# } #>
     }
 }
-
-
-<#+
-	public class Method {
-        public string Module { get; set; }
-		public string Name { get; set; }
-        public bool   IsGet { get; set; }
-	}
-
-    public string ConvertPascalCase(string s)
-    {
-		var result = s.ToLower().Replace("_", " ");
-		TextInfo info = CultureInfo.CurrentCulture.TextInfo;
-		result = info.ToTitleCase(result).Replace(" ", string.Empty);
-		return result;
-    }
-#>
