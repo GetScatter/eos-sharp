@@ -11,6 +11,19 @@ using System.Collections.Generic;
 
 namespace EosSharp.Api.v1
 {
+	#region generate api types
+<# foreach (var type in apiTypes) { #>
+	public class <#= type.Name #>
+    {
+<#      foreach (var field in type.Fields) { #>
+		[JsonProperty("<#= field.Name #>")]   
+		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+<#      } #>
+    }
+<# } #>
+	#endregion
+
+	#region generate api method types
 <# foreach (var method in apiMethods) { #>
 <#  if (method.Request != null) { #>
     public class <#= ConvertPascalCase(method.Name) #>Request
@@ -32,5 +45,6 @@ namespace EosSharp.Api.v1
 <#   } #>
 
 <# } #>
+	#endregion
 }
 

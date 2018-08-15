@@ -1,5 +1,6 @@
 ﻿using EosSharp.Exceptions;
 using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -58,13 +59,20 @@ namespace EosSharp.Helpers
             if (stream == null || stream.CanRead == false)
                 return default(TData);
 
+#if DEBUG
+            using (var sr = new StreamReader(stream))
+            {
+                var s = sr.ReadToEnd();
+                Console.WriteLine("response: " + s);
+                return JsonConvert.DeserializeObject<TData>(s);
+            }
+#else
             using (var sr = new StreamReader(stream))
             using (var jtr = new JsonTextReader(sr))
             {
-                var js = new JsonSerializer();
-                var searchResult = js.Deserialize<TData>(jtr);
-                return searchResult;
+                return new JsonSerializer().Deserialize<TData>(jtr);
             }
+#endif
         }
 
         private static async Task<Stream> BuildSendResponse(HttpResponseMessage response)

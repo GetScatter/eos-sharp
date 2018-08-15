@@ -7,7 +7,14 @@
         public string Default { get; set; }
 	}
 
-	public class ApiMethod {
+	public class ApiType 
+	{
+        public string Name { get; set; }
+		public Field[] Fields { get; set; }
+    }
+
+	public class ApiMethod 
+	{
         public string Module { get; set; }
 		public string Name { get; set; }
         public Field[] Request { get; set; }
@@ -34,6 +41,72 @@
         }
     }
 
+	// generate api types
+	ApiType[] apiTypes = new ApiType[] {
+		new ApiType() 
+		{
+			Name = "Resource",
+			Fields = new Field[]
+            {
+				new Field() { Name = "used", Type = "Int32" },
+				new Field() { Name = "available", Type = "Int32" },
+				new Field() { Name = "max", Type = "Int32" }
+            }
+        },
+		new ApiType() 
+		{
+			Name = "AuthorityKey",
+			Fields = new Field[]
+            {
+				new Field() { Name = "key", Type = "string" },
+				new Field() { Name = "weight", Type = "Int32" }
+            }
+        },
+
+		new ApiType() 
+		{
+			Name = "AuthorityAccount",
+			Fields = new Field[]
+            {
+				new Field() { Name = "account", Type = "string" },
+				new Field() { Name = "weight", Type = "Int32" }
+            }
+        },
+
+		new ApiType() 
+		{
+			Name = "AuthorityWait",
+			Fields = new Field[]
+            {
+				new Field() { Name = "wait_sec", Type = "string" },
+				new Field() { Name = "weight", Type = "Int32" }
+            }
+        },
+
+		new ApiType() 
+		{
+			Name = "Authority",
+			Fields = new Field[]
+            {
+				new Field() { Name = "threshold", Type = "UInt32" },
+				new Field() { Name = "keys", Type = "List<AuthorityKey>" },
+				new Field() { Name = "accounts", Type = "List<AuthorityAccount>" },
+				new Field() { Name = "waits", Type = "List<AuthorityWait>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Permission",
+			Fields = new Field[]
+            {
+				new Field() { Name = "perm_name", Type = "string" },
+				new Field() { Name = "parent", Type = "string" },
+				new Field() { Name = "required_auth", Type = "Authority" }
+            }
+        }
+    };
+	// generate api methods
 	ApiMethod[] apiMethods = new ApiMethod[] {
 		// chain methods
 		new ApiMethod() 
@@ -44,11 +117,11 @@
 			{
 				new Field() { Name = "server_version",              Type = "string" },
 				new Field() { Name = "chain_id",                    Type = "string" },
-				new Field() { Name = "head_block_num",              Type = "string" },
-				new Field() { Name = "last_irreversible_block_num", Type = "string" },
+				new Field() { Name = "head_block_num",              Type = "UInt32?" },
+				new Field() { Name = "last_irreversible_block_num", Type = "UInt32?" },
 				new Field() { Name = "last_irreversible_block_id",  Type = "string" },
 				new Field() { Name = "head_block_id",               Type = "string" },
-				new Field() { Name = "head_block_time",             Type = "string" },
+				new Field() { Name = "head_block_time",             Type = "DateTime?" },
 				new Field() { Name = "head_block_producer",         Type = "string" },
 				new Field() { Name = "virtual_block_cpu_limit",     Type = "string" },
 				new Field() { Name = "virtual_block_net_limit",     Type = "string" },
@@ -65,7 +138,25 @@
 			{
 				new Field() { Name = "account_name", Type = "string" }
 			},
-			Response = new Field[]{}
+			Response = new Field[] {
+				new Field() { Name = "account_name",   Type = "string" },
+				new Field() { Name = "head_block_num", Type = "UInt32?" },
+				new Field() { Name = "head_block_time", Type = "DateTime?" },
+				new Field() { Name = "privileged", Type = "bool?" },
+				new Field() { Name = "last_code_update", Type = "DateTime?" },
+				new Field() { Name = "created", Type = "DateTime?" },
+				new Field() { Name = "ram_quota", Type = "Int32?" },
+				new Field() { Name = "net_weight", Type = "Int32?" },
+				new Field() { Name = "cpu_weight", Type = "Int32?" },
+				new Field() { Name = "net_limit", Type = "Resource" },
+				new Field() { Name = "cpu_limit", Type = "Resource" }, 
+				new Field() { Name = "ram_usage", Type = "UInt32?" },
+				new Field() { Name = "permissions", Type = "List<Permission>" },
+				new Field() { Name = "total_resources", Type = "string" },
+				new Field() { Name = "self_delegated_bandwidth", Type = "string" },
+				new Field() { Name = "refund_request", Type = "object" }, //TODO
+				new Field() { Name = "voter_info", Type = "object" } //TODO
+			}
 		},
 
 		new ApiMethod() 
