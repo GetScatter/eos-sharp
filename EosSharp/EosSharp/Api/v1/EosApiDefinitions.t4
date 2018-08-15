@@ -41,7 +41,8 @@
         }
     }
 
-	// generate api types
+	#region generate api types
+
 	ApiType[] apiTypes = new ApiType[] {
 		new ApiType() 
 		{
@@ -104,9 +105,83 @@
 				new Field() { Name = "parent", Type = "string" },
 				new Field() { Name = "required_auth", Type = "Authority" }
             }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiType",
+			Fields = new Field[]
+            {
+				new Field() { Name = "new_type_name", Type = "string" },
+				new Field() { Name = "type", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiField",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "type", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiStruct",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "base", Type = "string" },
+				new Field() { Name = "fields", Type = "List<AbiField>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiAction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "type", Type = "string" },
+				new Field() { Name = "ricardian_contract", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiTable",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "index_type", Type = "string" },
+				new Field() { Name = "key_names", Type = "List<string>" },
+				new Field() { Name = "key_types", Type = "List<string>" },
+				new Field() { Name = "type", Type = "string" },
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Abi",
+			Fields = new Field[]
+            {
+				new Field() { Name = "version", Type = "string" },
+				new Field() { Name = "types", Type = "List<AbiType>" },
+				new Field() { Name = "structs", Type = "List<AbiStruct>" },
+				new Field() { Name = "actions", Type = "List<AbiAction>" },
+				new Field() { Name = "tables", Type = "List<AbiTable>" },
+				new Field() { Name = "ricardian_clauses", Type = "List<string>" },
+				new Field() { Name = "error_messages", Type = "List<string>" },
+				new Field() { Name = "abi_extensions", Type = "List<string>" }
+            }
         }
     };
-	// generate api methods
+	#endregion
+
+	#region generate api methods
+
 	ApiMethod[] apiMethods = new ApiMethod[] {
 		// chain methods
 		new ApiMethod() 
@@ -166,7 +241,7 @@
 			Request = new Field[] 
 			{
 				new Field() { Name = "account_name", Type = "string" },
-				new Field() { Name = "code_as_wasm", Type = "string" }
+				new Field() { Name = "code_as_wasm", Type = "bool?" }
 			},
 			Response = new Field[] 
 			{
@@ -174,7 +249,7 @@
 				new Field() { Name = "wast",         Type = "string" },
 				new Field() { Name = "wasm",         Type = "string" },
 				new Field() { Name = "code_hash",    Type = "string" },
-				new Field() { Name = "abi",          Type = "string" }
+				new Field() { Name = "abi",          Type = "Abi" }
 			}
 		},
 
@@ -189,7 +264,7 @@
 			Response = new Field[] 
 			{
 				new Field() { Name = "account_name", Type = "string" },
-				new Field() { Name = "abi",          Type = "string" }
+				new Field() { Name = "abi",          Type = "Abi" }
 			}
 		},
 
@@ -261,7 +336,23 @@
 			{
 				new Field() { Name = "block_num_or_id", Type = "string" }
 			},
-			Response = new Field[] {}
+			Response = new Field[] 
+			{
+				new Field() { Name = "timestamp", Type = "DateTime?" },
+				new Field() { Name = "producer", Type = "string" },
+				new Field() { Name = "confirmed", Type = "UInt32" },
+				new Field() { Name = "previous", Type = "string" },
+				new Field() { Name = "transaction_mroot", Type = "string" },
+				new Field() { Name = "action_mroot", Type = "string" },
+				new Field() { Name = "schedule_version", Type = "UInt32" },
+				new Field() { Name = "new_producers", Type = "string" },
+				new Field() { Name = "header_extensions", Type = "List<object>" },
+				new Field() { Name = "producer_signature", Type = "string" },
+				new Field() { Name = "transactions", Type = "List<object>" },
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "block_num", Type = "UInt32" },
+				new Field() { Name = "ref_block_prefix", Type = "UInt32" }
+			}
 		},
 
 		new ApiMethod() 
@@ -491,4 +582,6 @@
 			}
 		}
 	};
+
+	#endregion
 #>

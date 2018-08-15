@@ -57,6 +57,70 @@ namespace EosSharp.Api.v1
 		[JsonProperty("required_auth")]   
 		public Authority RequiredAuth { get; set; }
     }
+	public class AbiType
+    {
+		[JsonProperty("new_type_name")]   
+		public string NewTypeName { get; set; }
+		[JsonProperty("type")]   
+		public string Type { get; set; }
+    }
+	public class AbiField
+    {
+		[JsonProperty("name")]   
+		public string Name { get; set; }
+		[JsonProperty("type")]   
+		public string Type { get; set; }
+    }
+	public class AbiStruct
+    {
+		[JsonProperty("name")]   
+		public string Name { get; set; }
+		[JsonProperty("base")]   
+		public string Base { get; set; }
+		[JsonProperty("fields")]   
+		public List<AbiField> Fields { get; set; }
+    }
+	public class AbiAction
+    {
+		[JsonProperty("name")]   
+		public string Name { get; set; }
+		[JsonProperty("type")]   
+		public string Type { get; set; }
+		[JsonProperty("ricardian_contract")]   
+		public string RicardianContract { get; set; }
+    }
+	public class AbiTable
+    {
+		[JsonProperty("name")]   
+		public string Name { get; set; }
+		[JsonProperty("index_type")]   
+		public string IndexType { get; set; }
+		[JsonProperty("key_names")]   
+		public List<string> KeyNames { get; set; }
+		[JsonProperty("key_types")]   
+		public List<string> KeyTypes { get; set; }
+		[JsonProperty("type")]   
+		public string Type { get; set; }
+    }
+	public class Abi
+    {
+		[JsonProperty("version")]   
+		public string Version { get; set; }
+		[JsonProperty("types")]   
+		public List<AbiType> Types { get; set; }
+		[JsonProperty("structs")]   
+		public List<AbiStruct> Structs { get; set; }
+		[JsonProperty("actions")]   
+		public List<AbiAction> Actions { get; set; }
+		[JsonProperty("tables")]   
+		public List<AbiTable> Tables { get; set; }
+		[JsonProperty("ricardian_clauses")]   
+		public List<string> RicardianClauses { get; set; }
+		[JsonProperty("error_messages")]   
+		public List<string> ErrorMessages { get; set; }
+		[JsonProperty("abi_extensions")]   
+		public List<string> AbiExtensions { get; set; }
+    }
 	#endregion
 
 	#region generate api method types
@@ -136,7 +200,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("account_name")]   
 		public string AccountName { get; set; }
 		[JsonProperty("code_as_wasm")]   
-		public string CodeAsWasm { get; set; }
+		public bool? CodeAsWasm { get; set; }
     }
     public class GetCodeResponse
     {
@@ -149,7 +213,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("code_hash")]   
 		public string CodeHash { get; set; }
 		[JsonProperty("abi")]   
-		public string Abi { get; set; }
+		public Abi Abi { get; set; }
     }
 
     public class GetAbiRequest
@@ -162,7 +226,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("account_name")]   
 		public string AccountName { get; set; }
 		[JsonProperty("abi")]   
-		public string Abi { get; set; }
+		public Abi Abi { get; set; }
     }
 
     public class GetRawCodeAndAbiRequest
@@ -228,6 +292,34 @@ namespace EosSharp.Api.v1
     }
     public class GetBlockResponse
     {
+		[JsonProperty("timestamp")]   
+		public DateTime? Timestamp { get; set; }
+		[JsonProperty("producer")]   
+		public string Producer { get; set; }
+		[JsonProperty("confirmed")]   
+		public UInt32 Confirmed { get; set; }
+		[JsonProperty("previous")]   
+		public string Previous { get; set; }
+		[JsonProperty("transaction_mroot")]   
+		public string TransactionMroot { get; set; }
+		[JsonProperty("action_mroot")]   
+		public string ActionMroot { get; set; }
+		[JsonProperty("schedule_version")]   
+		public UInt32 ScheduleVersion { get; set; }
+		[JsonProperty("new_producers")]   
+		public string NewProducers { get; set; }
+		[JsonProperty("header_extensions")]   
+		public List<object> HeaderExtensions { get; set; }
+		[JsonProperty("producer_signature")]   
+		public string ProducerSignature { get; set; }
+		[JsonProperty("transactions")]   
+		public List<object> Transactions { get; set; }
+		[JsonProperty("id")]   
+		public string Id { get; set; }
+		[JsonProperty("block_num")]   
+		public UInt32 BlockNum { get; set; }
+		[JsonProperty("ref_block_prefix")]   
+		public UInt32 RefBlockPrefix { get; set; }
     }
 
     public class GetBlockHeaderStateRequest
