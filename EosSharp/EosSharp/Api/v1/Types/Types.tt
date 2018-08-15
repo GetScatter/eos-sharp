@@ -1,0 +1,63 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import   namespace="System.Globalization" #>
+<#@ output   extension=".cs" #>
+<#
+
+var types = new Type[] {
+	new Type() {
+		Name = "GetInfoResult",
+		Fields = new string[] {
+			"server_version",
+			"chain_id",
+			"head_block_num",
+			"last_irreversible_block_num",
+			"last_irreversible_block_id",
+			"head_block_id",
+			"head_block_time",
+			"head_block_producer",
+			"virtual_block_cpu_limit",
+			"virtual_block_net_limit",
+			"block_cpu_limit",
+			"block_net_limit"
+		}				
+	},
+	new Type() {
+		Name = "GetAccountRequest",
+		Fields = new string[] {
+			"account_name"
+		}			
+	}
+};
+
+#>
+using Newtonsoft.Json;
+
+namespace EosSharp.Api.v1.Types
+{
+<# foreach (var type in types) { #>
+    public class <#= type.Name #>
+    {
+<# foreach (var field in type.Fields) { #>
+		[JsonProperty("<#= field #>")]   
+		public string <#= ConvertPascalCase(field) #> { get; set; }
+<# } #>
+    }
+
+<# } #>
+}
+
+<#+
+	public class Type {
+		public string Name { get; set; }
+		public string[] Fields { get; set; }
+	}
+
+    public string ConvertPascalCase(string s)
+    {
+		var result = s.ToLower().Replace("_", " ");
+		TextInfo info = CultureInfo.CurrentCulture.TextInfo;
+		result = info.ToTitleCase(result).Replace(" ", string.Empty);
+		return result;
+    }
+#>
