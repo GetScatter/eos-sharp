@@ -1,8 +1,5 @@
 ﻿using EosSharp.Api.v1.Types;
 using EosSharp.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EosSharp.Api.v1
@@ -15,10 +12,22 @@ namespace EosSharp.Api.v1
             Config = config;
         }
 
-        public async Task<GetInfoResult> GetInfo()
+		public async Task<GetInfoResponse> GetInfo()
         {
             var url = string.Format("{0}/v1/chain/get_info", Config.HttpEndpoint);
-            return await HttpHelper.GetJsonAsync<GetInfoResult>(url);
+            return await HttpHelper.GetJsonAsync<GetInfoResponse>(url);
+        }
+		public async Task<GetAccountResponse> GetAccount(GetAccountRequest data)
+        {
+            var url = string.Format("{0}/v1/chain/get_account", Config.HttpEndpoint);
+            return await HttpHelper.PostJsonAsync<GetAccountResponse>(url, data);
+        }
+		public async Task<GetCodeResponse> GetCode(GetCodeRequest data)
+        {
+            var url = string.Format("{0}/v1/chain/get_code", Config.HttpEndpoint);
+            return await HttpHelper.PostJsonAsync<GetCodeResponse>(url, data);
         }
     }
 }
+
+

@@ -5,27 +5,53 @@
 <#
 
 var types = new Type[] {
+	//GetInfo Types
 	new Type() {
-		Name = "GetInfoResult",
-		Fields = new string[] {
-			"server_version",
-			"chain_id",
-			"head_block_num",
-			"last_irreversible_block_num",
-			"last_irreversible_block_id",
-			"head_block_id",
-			"head_block_time",
-			"head_block_producer",
-			"virtual_block_cpu_limit",
-			"virtual_block_net_limit",
-			"block_cpu_limit",
-			"block_net_limit"
+		Name = "GetInfoResponse",
+		Fields = new Field[] {
+			new Field() { Name = "server_version", Type = "string" },
+			new Field() { Name = "chain_id", Type = "string" },
+			new Field() { Name = "head_block_num", Type = "string" },
+			new Field() { Name = "last_irreversible_block_num", Type = "string" },
+			new Field() { Name = "last_irreversible_block_id", Type = "string" },
+			new Field() { Name = "head_block_id", Type = "string" },
+			new Field() { Name = "head_block_time", Type = "string" },
+			new Field() { Name = "head_block_producer", Type = "string" },
+			new Field() { Name = "virtual_block_cpu_limit", Type = "string" },
+			new Field() { Name = "virtual_block_net_limit", Type = "string" },
+			new Field() { Name = "block_cpu_limit", Type = "string" },
+			new Field() { Name = "block_net_limit", Type = "string" }
 		}				
 	},
+	//GetAccount Types
 	new Type() {
 		Name = "GetAccountRequest",
-		Fields = new string[] {
-			"account_name"
+		Fields = new Field[] {
+			new Field() { Name = "account_name", Type = "string" }
+		}			
+	},
+	new Type() {
+		Name = "GetAccountResponse",
+		Fields = new Field[] {
+			
+		}			
+	},
+	//GetCode Types
+	new Type() {
+		Name = "GetCodeRequest",
+		Fields = new Field[] {
+			new Field() { Name = "account_name", Type = "string" },
+			new Field() { Name = "code_as_wasm", Type = "string" }
+		}
+	},
+	new Type() {
+		Name = "GetCodeResponse",
+		Fields = new Field[] {
+			new Field() { Name = "account_name", Type = "string" },
+			new Field() { Name = "wast", Type = "string" },
+			new Field() { Name = "wasm", Type = "string" },
+			new Field() { Name = "code_hash", Type = "string" },
+			new Field() { Name = "abi", Type = "string" }
 		}			
 	}
 };
@@ -39,8 +65,8 @@ namespace EosSharp.Api.v1.Types
     public class <#= type.Name #>
     {
 <# foreach (var field in type.Fields) { #>
-		[JsonProperty("<#= field #>")]   
-		public string <#= ConvertPascalCase(field) #> { get; set; }
+		[JsonProperty("<#= field.Name #>")]   
+		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }
 <# } #>
     }
 
@@ -48,9 +74,14 @@ namespace EosSharp.Api.v1.Types
 }
 
 <#+
+	public class Field {
+        public string Name { get; set; }
+        public string Type { get; set; }
+    }
+
 	public class Type {
 		public string Name { get; set; }
-		public string[] Fields { get; set; }
+		public Field[] Fields { get; set; }
 	}
 
     public string ConvertPascalCase(string s)

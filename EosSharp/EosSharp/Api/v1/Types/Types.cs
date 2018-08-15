@@ -2,7 +2,7 @@
 
 namespace EosSharp.Api.v1.Types
 {
-    public class GetInfoResult
+    public class GetInfoResponse
     {
 		[JsonProperty("server_version")]   
 		public string ServerVersion { get; set; }
@@ -34,6 +34,32 @@ namespace EosSharp.Api.v1.Types
     {
 		[JsonProperty("account_name")]   
 		public string AccountName { get; set; }
+    }
+
+    public class GetAccountResponse
+    {
+    }
+
+    public class GetCodeRequest
+    {
+		[JsonProperty("account_name")]   
+		public string AccountName { get; set; }
+		[JsonProperty("code_as_wasm")]   
+		public string CodeAsWasm { get; set; }
+    }
+
+    public class GetCodeResponse
+    {
+		[JsonProperty("account_name")]   
+		public string AccountName { get; set; }
+		[JsonProperty("wast")]   
+		public string Wast { get; set; }
+		[JsonProperty("wasm")]   
+		public string Wasm { get; set; }
+		[JsonProperty("code_hash")]   
+		public string CodeHash { get; set; }
+		[JsonProperty("abi")]   
+		public string Abi { get; set; }
     }
 
 }
