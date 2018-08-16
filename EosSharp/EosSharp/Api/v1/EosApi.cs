@@ -1,6 +1,7 @@
 ﻿  
 // Auto Generated, do not edit.
 using EosSharp.Helpers;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EosSharp.Api.v1
@@ -71,12 +72,12 @@ namespace EosSharp.Api.v1
 		public async Task<GetCurrencyBalanceResponse> GetCurrencyBalance(GetCurrencyBalanceRequest data)
         {
             var url = string.Format("{0}/v1/chain/get_currency_balance", Config.HttpEndpoint);
-            return await HttpHelper.PostJsonAsync<GetCurrencyBalanceResponse>(url, data);
+			return new GetCurrencyBalanceResponse() { Assets = await HttpHelper.PostJsonAsync<List<string>>(url, data) };
         }
 		public async Task<GetCurrencyStatsResponse> GetCurrencyStats(GetCurrencyStatsRequest data)
         {
             var url = string.Format("{0}/v1/chain/get_currency_stats", Config.HttpEndpoint);
-            return await HttpHelper.PostJsonAsync<GetCurrencyStatsResponse>(url, data);
+			return new GetCurrencyStatsResponse() { Stats = await HttpHelper.PostJsonAsync<Dictionary<string, CurrencyStat>>(url, data) };
         }
 		public async Task<GetProducersResponse> GetProducers(GetProducersRequest data)
         {

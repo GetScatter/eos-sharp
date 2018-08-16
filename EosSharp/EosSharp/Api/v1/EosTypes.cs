@@ -121,6 +121,15 @@ namespace EosSharp.Api.v1
 		[JsonProperty("abi_extensions")]   
 		public List<string> AbiExtensions { get; set; }
     }
+	public class CurrencyStat
+    {
+		[JsonProperty("supply")]   
+		public string Supply { get; set; }
+		[JsonProperty("max_supply")]   
+		public string MaxSupply { get; set; }
+		[JsonProperty("issuer")]   
+		public string Issuer { get; set; }
+    }
 	#endregion
 
 	#region generate api method types
@@ -379,19 +388,15 @@ namespace EosSharp.Api.v1
 
     public class GetCurrencyStatsRequest
     {
-		[JsonProperty("name")]   
-		public string Name { get; set; }
+		[JsonProperty("code")]   
+		public string Code { get; set; }
 		[JsonProperty("symbol")]   
 		public string Symbol { get; set; }
     }
     public class GetCurrencyStatsResponse
     {
-		[JsonProperty("supply")]   
-		public string Supply { get; set; }
-		[JsonProperty("max_supply")]   
-		public string MaxSupply { get; set; }
-		[JsonProperty("issuer")]   
-		public string Issuer { get; set; }
+		[JsonProperty("stats")]   
+		public Dictionary<string, CurrencyStat> Stats { get; set; }
     }
 
     public class GetProducersRequest

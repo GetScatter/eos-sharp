@@ -17,6 +17,7 @@
 	{
         public string Module { get; set; }
 		public string Name { get; set; }
+        public bool IsResponseCollection { get; set; }
         public Field[] Request { get; set; }
 		public Field[] Response { get; set; }
 	}
@@ -175,6 +176,17 @@
 				new Field() { Name = "ricardian_clauses", Type = "List<string>" },
 				new Field() { Name = "error_messages", Type = "List<string>" },
 				new Field() { Name = "abi_extensions", Type = "List<string>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "CurrencyStat",
+			Fields = new Field[]
+            {
+				new Field() { Name = "supply", Type = "string" },
+				new Field() { Name = "max_supply", Type = "string" },
+				new Field() { Name = "issuer", Type = "string" }
             }
         }
     };
@@ -395,6 +407,7 @@
 		{ 
 			Module = "chain", 
 			Name = "get_currency_balance",
+			IsResponseCollection = true,
 			Request = new Field[] 
 			{
 				new Field() { Name = "code", Type = "string" },
@@ -412,17 +425,16 @@
 		{ 
 			Module = "chain", 
 			Name = "get_currency_stats",
-			Request = new Field[] 
+			IsResponseCollection = true,
+			Request = new Field[]
 			{
-				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "code", Type = "string" },
 				new Field() { Name = "symbol", Type = "string" }
 
 			},
 			Response = new Field[] 
 			{
-				new Field() { Name = "supply", Type = "string" },
-				new Field() { Name = "max_supply", Type = "string" },
-				new Field() { Name = "issuer", Type = "string" }
+				new Field() { Name = "stats", Type = "Dictionary<string, CurrencyStat>" }
 			}
 		},
 

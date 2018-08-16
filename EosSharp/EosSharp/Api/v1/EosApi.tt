@@ -6,6 +6,7 @@
 <#@ output   extension=".cs" #>
 // Auto Generated, do not edit.
 using EosSharp.Helpers;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EosSharp.Api.v1
@@ -23,13 +24,21 @@ namespace EosSharp.Api.v1
 		public async Task<<#= ConvertPascalCase(method.Name) #>Response> <#= ConvertPascalCase(method.Name) #>()
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
+<#        if(method.IsResponseCollection) { #>
+			return new <#= ConvertPascalCase(method.Name) #>Response() { <#= ConvertPascalCase(method.Response[0].Name) #> = await HttpHelper.GetJsonAsync<<#= method.Response[0].Type#>>(url) };
+<#        } else { #>
             return await HttpHelper.GetJsonAsync<<#= ConvertPascalCase(method.Name) #>Response>(url);
+<#        } #>
         }
 <#   } else { #>
 		public async Task<<#= ConvertPascalCase(method.Name) #>Response> <#= ConvertPascalCase(method.Name) #>(<#= ConvertPascalCase(method.Name) #>Request data)
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
+<#        if(method.IsResponseCollection) { #>
+			return new <#= ConvertPascalCase(method.Name) #>Response() { <#= ConvertPascalCase(method.Response[0].Name) #> = await HttpHelper.PostJsonAsync<<#= method.Response[0].Type#>>(url, data) };
+<#        } else { #>
             return await HttpHelper.PostJsonAsync<<#= ConvertPascalCase(method.Name) #>Response>(url, data);
+<#        } #>
         }
 <#   } #>
 <# } #>

@@ -59,20 +59,11 @@ namespace EosSharp.Helpers
             if (stream == null || stream.CanRead == false)
                 return default(TData);
 
-#if DEBUG
-            using (var sr = new StreamReader(stream))
-            {
-                var s = sr.ReadToEnd();
-                Console.WriteLine("response: " + s);
-                return JsonConvert.DeserializeObject<TData>(s);
-            }
-#else
             using (var sr = new StreamReader(stream))
             using (var jtr = new JsonTextReader(sr))
             {
                 return new JsonSerializer().Deserialize<TData>(jtr);
             }
-#endif
         }
 
         private static async Task<Stream> BuildSendResponse(HttpResponseMessage response)

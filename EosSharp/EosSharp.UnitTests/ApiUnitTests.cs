@@ -16,6 +16,7 @@ namespace EosSharp.UnitTests
             DefaultApi = new EosApi(new EosConfigurator()
             {
                 HttpEndpoint = "https://nodeos01.btuga.io"
+                //HttpEndpoint = "https://nodes.eos42.io" //Mainnet
             });
         }
 
@@ -153,7 +154,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetBlockHeaderState(new GetBlockHeaderStateRequest()
                 {
-                    BlockNumOrId = "00000001bcf2f448225d099685f14da76803028926af04d2607eafcf609c265c"
+                    BlockNumOrId = "1"
                 });
                 success = true;
             }
@@ -190,7 +191,6 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO wrap response array
         [TestMethod]
         public async Task GetCurrencyBalance()
         {
@@ -200,7 +200,7 @@ namespace EosSharp.UnitTests
                 var result = await DefaultApi.GetCurrencyBalance(new GetCurrencyBalanceRequest()
                 {
                      Code = "eosio.token",
-                     Account = "eosio",
+                     Account = "tester112345",
                      Symbol = "EOS"
                 });
                 success = true;
@@ -214,7 +214,6 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO check errors
         [TestMethod]
         public async Task GetCurrencyStats()
         {
@@ -223,7 +222,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetCurrencyStats(new GetCurrencyStatsRequest()
                 {
-                    Name = "eosio",
+                    Code = "eosio.token",
                     Symbol = "EOS"
                 });
                 success = true;
@@ -240,6 +239,7 @@ namespace EosSharp.UnitTests
         //TODO get_producers
         //TODO get_producer_schedule
         //TODO get_scheduled_transactions
+
         //TODO push_block
         //TODO push_transaction
         //TODO push_transactions
