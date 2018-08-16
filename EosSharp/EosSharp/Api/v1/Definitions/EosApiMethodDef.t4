@@ -1,235 +1,6 @@
 ﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ include file="EosApiUtils.t4" once="true" #>  
 <#+ 
-	public class Field 
-	{
-		public string Name { get; set; }
-		public string Type { get; set; }
-        public string Default { get; set; }
-	}
-
-	public class ApiType 
-	{
-        public string Name { get; set; }
-		public Field[] Fields { get; set; }
-    }
-
-	public class ApiMethod 
-	{
-        public string Module { get; set; }
-		public string Name { get; set; }
-        public bool IsResponseCollection { get; set; }
-        public Field[] Request { get; set; }
-		public Field[] Response { get; set; }
-	}
-
-	public string ConvertPascalCase(string s)
-	{
-		var result = s.ToLower().Replace("_", " ");
-		TextInfo info = CultureInfo.CurrentCulture.TextInfo;
-		result = info.ToTitleCase(result).Replace(" ", string.Empty);
-		return result;
-	}
-
-	public string RenderFieldDefault(Field field) {
-		if(string.IsNullOrWhiteSpace(field.Default))
-			return "";
-
-		if(field.Type.ToLower() == "string") {
-			return " = \"" + field.Default + "\";";
-        }
-		else {
-			return " = " + field.Default + ";";
-        }
-    }
-
-	#region generate api types
-
-	ApiType[] apiTypes = new ApiType[] {
-		new ApiType() 
-		{
-			Name = "Resource",
-			Fields = new Field[]
-            {
-				new Field() { Name = "used", Type = "Int32" },
-				new Field() { Name = "available", Type = "Int32" },
-				new Field() { Name = "max", Type = "Int32" }
-            }
-        },
-		new ApiType() 
-		{
-			Name = "AuthorityKey",
-			Fields = new Field[]
-            {
-				new Field() { Name = "key", Type = "string" },
-				new Field() { Name = "weight", Type = "Int32" }
-            }
-        },
-
-		new ApiType() 
-		{
-			Name = "AuthorityAccount",
-			Fields = new Field[]
-            {
-				new Field() { Name = "account", Type = "string" },
-				new Field() { Name = "weight", Type = "Int32" }
-            }
-        },
-
-		new ApiType() 
-		{
-			Name = "AuthorityWait",
-			Fields = new Field[]
-            {
-				new Field() { Name = "wait_sec", Type = "string" },
-				new Field() { Name = "weight", Type = "Int32" }
-            }
-        },
-
-		new ApiType() 
-		{
-			Name = "Authority",
-			Fields = new Field[]
-            {
-				new Field() { Name = "threshold", Type = "UInt32" },
-				new Field() { Name = "keys", Type = "List<AuthorityKey>" },
-				new Field() { Name = "accounts", Type = "List<AuthorityAccount>" },
-				new Field() { Name = "waits", Type = "List<AuthorityWait>" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "Permission",
-			Fields = new Field[]
-            {
-				new Field() { Name = "perm_name", Type = "string" },
-				new Field() { Name = "parent", Type = "string" },
-				new Field() { Name = "required_auth", Type = "Authority" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "AbiType",
-			Fields = new Field[]
-            {
-				new Field() { Name = "new_type_name", Type = "string" },
-				new Field() { Name = "type", Type = "string" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "AbiField",
-			Fields = new Field[]
-            {
-				new Field() { Name = "name", Type = "string" },
-				new Field() { Name = "type", Type = "string" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "AbiStruct",
-			Fields = new Field[]
-            {
-				new Field() { Name = "name", Type = "string" },
-				new Field() { Name = "base", Type = "string" },
-				new Field() { Name = "fields", Type = "List<AbiField>" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "AbiAction",
-			Fields = new Field[]
-            {
-				new Field() { Name = "name", Type = "string" },
-				new Field() { Name = "type", Type = "string" },
-				new Field() { Name = "ricardian_contract", Type = "string" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "AbiTable",
-			Fields = new Field[]
-            {
-				new Field() { Name = "name", Type = "string" },
-				new Field() { Name = "index_type", Type = "string" },
-				new Field() { Name = "key_names", Type = "List<string>" },
-				new Field() { Name = "key_types", Type = "List<string>" },
-				new Field() { Name = "type", Type = "string" },
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "Abi",
-			Fields = new Field[]
-            {
-				new Field() { Name = "version", Type = "string" },
-				new Field() { Name = "types", Type = "List<AbiType>" },
-				new Field() { Name = "structs", Type = "List<AbiStruct>" },
-				new Field() { Name = "actions", Type = "List<AbiAction>" },
-				new Field() { Name = "tables", Type = "List<AbiTable>" },
-				new Field() { Name = "ricardian_clauses", Type = "List<string>" },
-				new Field() { Name = "error_messages", Type = "List<string>" },
-				new Field() { Name = "abi_extensions", Type = "List<string>" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "CurrencyStat",
-			Fields = new Field[]
-            {
-				new Field() { Name = "supply", Type = "string" },
-				new Field() { Name = "max_supply", Type = "string" },
-				new Field() { Name = "issuer", Type = "string" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "Producer",
-			Fields = new Field[]
-            {
-				new Field() { Name = "owner", Type = "string" },
-				new Field() { Name = "total_votes", Type = "double?" },
-				new Field() { Name = "producer_key", Type = "string" },
-				new Field() { Name = "is_active", Type = "bool?" },
-				new Field() { Name = "url", Type = "string" },
-				new Field() { Name = "unpaid_blocks", Type = "UInt32?" },
-				new Field() { Name = "last_claim_time", Type = "string" }, //TODO convert to dateTime
-				new Field() { Name = "location", Type = "UInt32" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "ScheduleProducers",
-			Fields = new Field[]
-            {
-				new Field() { Name = "producer_name", Type = "string" },
-				new Field() { Name = "block_signing_key", Type = "string" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "Schedule",
-			Fields = new Field[]
-            {
-				new Field() { Name = "version", Type = "UInt32?" },
-				new Field() { Name = "producers", Type = "List<ScheduleProducers>" }
-            }
-        }
-    };
-	#endregion
-
-	#region generate api methods
-
 	ApiMethod[] apiMethods = new ApiMethod[] {
 		// chain methods
 		new ApiMethod() 
@@ -434,7 +205,7 @@
 			},
 			Response = new Field[] 
 			{
-				new Field() { Name = "rows", Type = "List<object>" },
+				new Field() { Name = "rows", Type = "List<object>"},
 				new Field() { Name = "more", Type = "bool?" }
 			}
 		},
@@ -518,8 +289,8 @@
 			},
 			Response = new Field[] 
 			{
-				new Field() { Name = "transactions", Type = "List<object>" },
-				new Field() { Name = "more", Type = "bool?" }
+				new Field() { Name = "transactions", Type = "List<ScheduledTransaction>" },
+				new Field() { Name = "more", Type = "string" }
 			}
 		},
 
@@ -576,7 +347,7 @@
 			},
 			Response = new Field[]
 			{
-				new Field() { Name = "actions", Type = "List<string>" },
+				new Field() { Name = "actions", Type = "List<GlobalAction>" },
 				new Field() { Name = "last_irreversible_block", Type = "UInt32?" },
 				new Field() { Name = "time_limit_exceeded_error", Type = "bool?" },
 			}
@@ -630,6 +401,4 @@
 			}
 		}
 	};
-
-	#endregion
 #>

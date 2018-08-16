@@ -1,0 +1,44 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#+ 
+	public class Field 
+	{
+		public string Name { get; set; }
+		public string Type { get; set; }
+        public string Default { get; set; }
+	}
+
+	public class ApiType 
+	{
+        public string Name { get; set; }
+		public Field[] Fields { get; set; }
+    }
+
+	public class ApiMethod 
+	{
+        public string Module { get; set; }
+		public string Name { get; set; }
+        public bool IsResponseCollection { get; set; }
+        public Field[] Request { get; set; }
+		public Field[] Response { get; set; }
+	}
+
+	public string ConvertPascalCase(string s)
+	{
+		var result = s.ToLower().Replace("_", " ");
+		TextInfo info = CultureInfo.CurrentCulture.TextInfo;
+		result = info.ToTitleCase(result).Replace(" ", string.Empty);
+		return result;
+	}
+
+	public string RenderFieldDefault(Field field) {
+		if(string.IsNullOrWhiteSpace(field.Default))
+			return "";
+
+		if(field.Type.ToLower() == "string") {
+			return " = \"" + field.Default + "\";";
+        }
+		else {
+			return " = " + field.Default + ";";
+        }
+    }
+#>

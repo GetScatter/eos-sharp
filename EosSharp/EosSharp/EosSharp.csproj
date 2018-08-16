@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <None Update="Api\v1\EosApi.tt">
-      <LastGenOutput>EosApi.cs</LastGenOutput>
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EosApi.cs</LastGenOutput>
     </None>
     <None Update="Api\v1\EosTypes.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -25,9 +25,9 @@
 
   <ItemGroup>
     <Compile Update="Api\v1\EosApi.cs">
-      <DependentUpon>EosApi.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DependentUpon>EosApi.tt</DependentUpon>
     </Compile>
     <Compile Update="Api\v1\EosTypes.cs">
       <DesignTime>True</DesignTime>

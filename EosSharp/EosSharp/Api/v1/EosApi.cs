@@ -1,4 +1,7 @@
 ﻿  
+
+  
+
 // Auto Generated, do not edit.
 using EosSharp.Helpers;
 using System.Collections.Generic;

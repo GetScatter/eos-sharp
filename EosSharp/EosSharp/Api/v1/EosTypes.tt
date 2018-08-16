@@ -2,10 +2,12 @@
 <#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ import   namespace="System.Globalization" #>
-<#@ include  file="EosApiDefinitions.t4" #>  
+<#@ include  file=".\Definitions\EosApiTypeDef.t4" #>
+<#@ include  file=".\Definitions\EosApiMethodDef.t4" #>
 <#@ output   extension=".cs" #>
 // Auto Generated, do not edit.
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -16,7 +18,7 @@ namespace EosSharp.Api.v1
 	public class <#= type.Name #>
     {
 <#      foreach (var field in type.Fields) { #>
-		[JsonProperty("<#= field.Name #>")]   
+		[JsonProperty("<#= field.Name #>")]
 		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
 <#      } #>
     }

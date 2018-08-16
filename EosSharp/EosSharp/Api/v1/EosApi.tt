@@ -2,7 +2,8 @@
 <#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ import   namespace="System.Globalization" #>
-<#@ include  file="EosApiDefinitions.t4" #>  
+<#@ include  file=".\Definitions\EosApiTypeDef.t4" #>
+<#@ include  file=".\Definitions\EosApiMethodDef.t4" #>
 <#@ output   extension=".cs" #>
 // Auto Generated, do not edit.
 using EosSharp.Helpers;

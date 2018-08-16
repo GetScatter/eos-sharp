@@ -15,8 +15,8 @@ namespace EosSharp.UnitTests
         {
             DefaultApi = new EosApi(new EosConfigurator()
             {
-                HttpEndpoint = "https://nodeos01.btuga.io"
-                //HttpEndpoint = "https://nodes.eos42.io" //Mainnet
+                //HttpEndpoint = "https://nodeos01.btuga.io"
+                HttpEndpoint = "https://nodes.eos42.io" //Mainnet
             });
         }
 
@@ -302,6 +302,7 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
+        //TODO check implementation for json/binary
         [TestMethod]
         public async Task GetProducers()
         {
@@ -341,13 +342,51 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO get_scheduled_transactions
+        //TODO check implementation for json/binary
+        [TestMethod]
+        public async Task GetScheduledTransactions()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.GetScheduledTransactions(new GetScheduledTransactionsRequest() {
+                    Json = true
+                });
+
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
 
         //TODO push_block
         //TODO push_transaction
         //TODO push_transactions
 
-        //TODO get_actions
+        [TestMethod]
+        public async Task GetActions()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.GetActions(new GetActionsRequest() {
+                    AccountName = "eosio"
+                });
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
 
         //TODO add id
         [TestMethod]

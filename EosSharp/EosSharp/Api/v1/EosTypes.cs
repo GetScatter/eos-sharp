@@ -1,6 +1,10 @@
 ﻿  
+
+  
+
 // Auto Generated, do not edit.
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -9,159 +13,268 @@ namespace EosSharp.Api.v1
 	#region generate api types
 	public class Resource
     {
-		[JsonProperty("used")]   
+		[JsonProperty("used")]
 		public Int32 Used { get; set; }
-		[JsonProperty("available")]   
+		[JsonProperty("available")]
 		public Int32 Available { get; set; }
-		[JsonProperty("max")]   
+		[JsonProperty("max")]
 		public Int32 Max { get; set; }
     }
 	public class AuthorityKey
     {
-		[JsonProperty("key")]   
+		[JsonProperty("key")]
 		public string Key { get; set; }
-		[JsonProperty("weight")]   
+		[JsonProperty("weight")]
 		public Int32 Weight { get; set; }
     }
 	public class AuthorityAccount
     {
-		[JsonProperty("account")]   
+		[JsonProperty("account")]
 		public string Account { get; set; }
-		[JsonProperty("weight")]   
+		[JsonProperty("weight")]
 		public Int32 Weight { get; set; }
     }
 	public class AuthorityWait
     {
-		[JsonProperty("wait_sec")]   
+		[JsonProperty("wait_sec")]
 		public string WaitSec { get; set; }
-		[JsonProperty("weight")]   
+		[JsonProperty("weight")]
 		public Int32 Weight { get; set; }
     }
 	public class Authority
     {
-		[JsonProperty("threshold")]   
+		[JsonProperty("threshold")]
 		public UInt32 Threshold { get; set; }
-		[JsonProperty("keys")]   
+		[JsonProperty("keys")]
 		public List<AuthorityKey> Keys { get; set; }
-		[JsonProperty("accounts")]   
+		[JsonProperty("accounts")]
 		public List<AuthorityAccount> Accounts { get; set; }
-		[JsonProperty("waits")]   
+		[JsonProperty("waits")]
 		public List<AuthorityWait> Waits { get; set; }
     }
 	public class Permission
     {
-		[JsonProperty("perm_name")]   
+		[JsonProperty("perm_name")]
 		public string PermName { get; set; }
-		[JsonProperty("parent")]   
+		[JsonProperty("parent")]
 		public string Parent { get; set; }
-		[JsonProperty("required_auth")]   
+		[JsonProperty("required_auth")]
 		public Authority RequiredAuth { get; set; }
     }
 	public class AbiType
     {
-		[JsonProperty("new_type_name")]   
+		[JsonProperty("new_type_name")]
 		public string NewTypeName { get; set; }
-		[JsonProperty("type")]   
+		[JsonProperty("type")]
 		public string Type { get; set; }
     }
 	public class AbiField
     {
-		[JsonProperty("name")]   
+		[JsonProperty("name")]
 		public string Name { get; set; }
-		[JsonProperty("type")]   
+		[JsonProperty("type")]
 		public string Type { get; set; }
     }
 	public class AbiStruct
     {
-		[JsonProperty("name")]   
+		[JsonProperty("name")]
 		public string Name { get; set; }
-		[JsonProperty("base")]   
+		[JsonProperty("base")]
 		public string Base { get; set; }
-		[JsonProperty("fields")]   
+		[JsonProperty("fields")]
 		public List<AbiField> Fields { get; set; }
     }
 	public class AbiAction
     {
-		[JsonProperty("name")]   
+		[JsonProperty("name")]
 		public string Name { get; set; }
-		[JsonProperty("type")]   
+		[JsonProperty("type")]
 		public string Type { get; set; }
-		[JsonProperty("ricardian_contract")]   
+		[JsonProperty("ricardian_contract")]
 		public string RicardianContract { get; set; }
     }
 	public class AbiTable
     {
-		[JsonProperty("name")]   
+		[JsonProperty("name")]
 		public string Name { get; set; }
-		[JsonProperty("index_type")]   
+		[JsonProperty("index_type")]
 		public string IndexType { get; set; }
-		[JsonProperty("key_names")]   
+		[JsonProperty("key_names")]
 		public List<string> KeyNames { get; set; }
-		[JsonProperty("key_types")]   
+		[JsonProperty("key_types")]
 		public List<string> KeyTypes { get; set; }
-		[JsonProperty("type")]   
+		[JsonProperty("type")]
 		public string Type { get; set; }
     }
 	public class Abi
     {
-		[JsonProperty("version")]   
+		[JsonProperty("version")]
 		public string Version { get; set; }
-		[JsonProperty("types")]   
+		[JsonProperty("types")]
 		public List<AbiType> Types { get; set; }
-		[JsonProperty("structs")]   
+		[JsonProperty("structs")]
 		public List<AbiStruct> Structs { get; set; }
-		[JsonProperty("actions")]   
+		[JsonProperty("actions")]
 		public List<AbiAction> Actions { get; set; }
-		[JsonProperty("tables")]   
+		[JsonProperty("tables")]
 		public List<AbiTable> Tables { get; set; }
-		[JsonProperty("ricardian_clauses")]   
+		[JsonProperty("ricardian_clauses")]
 		public List<string> RicardianClauses { get; set; }
-		[JsonProperty("error_messages")]   
+		[JsonProperty("error_messages")]
 		public List<string> ErrorMessages { get; set; }
-		[JsonProperty("abi_extensions")]   
+		[JsonProperty("abi_extensions")]
 		public List<string> AbiExtensions { get; set; }
     }
 	public class CurrencyStat
     {
-		[JsonProperty("supply")]   
+		[JsonProperty("supply")]
 		public string Supply { get; set; }
-		[JsonProperty("max_supply")]   
+		[JsonProperty("max_supply")]
 		public string MaxSupply { get; set; }
-		[JsonProperty("issuer")]   
+		[JsonProperty("issuer")]
 		public string Issuer { get; set; }
     }
 	public class Producer
     {
-		[JsonProperty("owner")]   
+		[JsonProperty("owner")]
 		public string Owner { get; set; }
-		[JsonProperty("total_votes")]   
+		[JsonProperty("total_votes")]
 		public double? TotalVotes { get; set; }
-		[JsonProperty("producer_key")]   
+		[JsonProperty("producer_key")]
 		public string ProducerKey { get; set; }
-		[JsonProperty("is_active")]   
+		[JsonProperty("is_active")]
 		public bool? IsActive { get; set; }
-		[JsonProperty("url")]   
+		[JsonProperty("url")]
 		public string Url { get; set; }
-		[JsonProperty("unpaid_blocks")]   
+		[JsonProperty("unpaid_blocks")]
 		public UInt32? UnpaidBlocks { get; set; }
-		[JsonProperty("last_claim_time")]   
+		[JsonProperty("last_claim_time")]
 		public string LastClaimTime { get; set; }
-		[JsonProperty("location")]   
+		[JsonProperty("location")]
 		public UInt32 Location { get; set; }
     }
 	public class ScheduleProducers
     {
-		[JsonProperty("producer_name")]   
+		[JsonProperty("producer_name")]
 		public string ProducerName { get; set; }
-		[JsonProperty("block_signing_key")]   
+		[JsonProperty("block_signing_key")]
 		public string BlockSigningKey { get; set; }
     }
 	public class Schedule
     {
-		[JsonProperty("version")]   
+		[JsonProperty("version")]
 		public UInt32? Version { get; set; }
-		[JsonProperty("producers")]   
+		[JsonProperty("producers")]
 		public List<ScheduleProducers> Producers { get; set; }
+    }
+	public class PermissionLevel
+    {
+		[JsonProperty("actor")]
+		public string Actor { get; set; }
+		[JsonProperty("permission")]
+		public string Permission { get; set; }
+    }
+	public class Action
+    {
+		[JsonProperty("account")]
+		public string Account { get; set; }
+		[JsonProperty("name")]
+		public string Name { get; set; }
+		[JsonProperty("authorization")]
+		public List<PermissionLevel> Authorization { get; set; }
+		[JsonProperty("data")]
+		public object Data { get; set; }
+		[JsonProperty("hex_data")]
+		public string HexData { get; set; }
+    }
+	public class Transaction
+    {
+		[JsonProperty("expiration")]
+		public DateTime? Expiration { get; set; }
+		[JsonProperty("ref_block_num")]
+		public UInt32? RefBlockNum { get; set; }
+		[JsonProperty("ref_block_prefix")]
+		public UInt32? RefBlockPrefix { get; set; }
+		[JsonProperty("max_net_usage_words")]
+		public UInt32? MaxNetUsageWords { get; set; }
+		[JsonProperty("max_cpu_usage_ms")]
+		public UInt32? MaxCpuUsageMs { get; set; }
+		[JsonProperty("delay_sec")]
+		public UInt32? DelaySec { get; set; }
+		[JsonProperty("context_free_actions")]
+		public List<object> ContextFreeActions { get; set; }
+		[JsonProperty("actions")]
+		public List<Action> Actions { get; set; }
+		[JsonProperty("transaction_extensions")]
+		public List<object> TransactionExtensions { get; set; }
+    }
+	public class ScheduledTransaction
+    {
+		[JsonProperty("trx_id")]
+		public string TrxId { get; set; }
+		[JsonProperty("sender")]
+		public string Sender { get; set; }
+		[JsonProperty("sender_id")]
+		public string SenderId { get; set; }
+		[JsonProperty("payer")]
+		public string Payer { get; set; }
+		[JsonProperty("delay_until")]
+		public DateTime? DelayUntil { get; set; }
+		[JsonProperty("expiration")]
+		public DateTime? Expiration { get; set; }
+		[JsonProperty("published")]
+		public DateTime? Published { get; set; }
+		[JsonProperty("transaction")]
+		public Transaction Transaction { get; set; }
+    }
+	public class Receipt
+    {
+		[JsonProperty("receiver")]
+		public string Receiver { get; set; }
+		[JsonProperty("act_digest")]
+		public string ActDigest { get; set; }
+		[JsonProperty("global_sequence")]
+		public UInt64? GlobalSequence { get; set; }
+		[JsonProperty("recv_sequence")]
+		public UInt64? RecvSequence { get; set; }
+		[JsonProperty("auth_sequence")]
+		public object AuthSequence { get; set; }
+		[JsonProperty("code_sequence")]
+		public UInt64? CodeSequence { get; set; }
+		[JsonProperty("abi_sequence")]
+		public UInt64? AbiSequence { get; set; }
+    }
+	public class ActionTrace
+    {
+		[JsonProperty("receipt")]
+		public Receipt Receipt { get; set; }
+		[JsonProperty("act")]
+		public Action Act { get; set; }
+		[JsonProperty("elapsed")]
+		public UInt32? Elapsed { get; set; }
+		[JsonProperty("cpu_usage")]
+		public UInt32? CpuUsage { get; set; }
+		[JsonProperty("console")]
+		public string Console { get; set; }
+		[JsonProperty("total_cpu_usage")]
+		public UInt32? TotalCpuUsage { get; set; }
+		[JsonProperty("trx_id")]
+		public string TrxId { get; set; }
+		[JsonProperty("inline_traces")]
+		public List<ActionTrace> InlineTraces { get; set; }
+    }
+	public class GlobalAction
+    {
+		[JsonProperty("global_action_seq")]
+		public UInt64? GlobalActionSeq { get; set; }
+		[JsonProperty("account_action_seq")]
+		public UInt64? AccountActionSeq { get; set; }
+		[JsonProperty("block_num")]
+		public UInt32? BlockNum { get; set; }
+		[JsonProperty("block_time")]
+		public DateTime? BlockTime { get; set; }
+		[JsonProperty("action_trace")]
+		public ActionTrace ActionTrace { get; set; }
     }
 	#endregion
 
@@ -473,9 +586,9 @@ namespace EosSharp.Api.v1
     public class GetScheduledTransactionsResponse
     {
 		[JsonProperty("transactions")]   
-		public List<object> Transactions { get; set; }
+		public List<ScheduledTransaction> Transactions { get; set; }
 		[JsonProperty("more")]   
-		public bool? More { get; set; }
+		public string More { get; set; }
     }
 
     public class PushBlockRequest
@@ -523,7 +636,7 @@ namespace EosSharp.Api.v1
     public class GetActionsResponse
     {
 		[JsonProperty("actions")]   
-		public List<string> Actions { get; set; }
+		public List<GlobalAction> Actions { get; set; }
 		[JsonProperty("last_irreversible_block")]   
 		public UInt32? LastIrreversibleBlock { get; set; }
 		[JsonProperty("time_limit_exceeded_error")]   
