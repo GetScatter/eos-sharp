@@ -130,6 +130,39 @@ namespace EosSharp.Api.v1
 		[JsonProperty("issuer")]   
 		public string Issuer { get; set; }
     }
+	public class Producer
+    {
+		[JsonProperty("owner")]   
+		public string Owner { get; set; }
+		[JsonProperty("total_votes")]   
+		public double? TotalVotes { get; set; }
+		[JsonProperty("producer_key")]   
+		public string ProducerKey { get; set; }
+		[JsonProperty("is_active")]   
+		public bool? IsActive { get; set; }
+		[JsonProperty("url")]   
+		public string Url { get; set; }
+		[JsonProperty("unpaid_blocks")]   
+		public UInt32? UnpaidBlocks { get; set; }
+		[JsonProperty("last_claim_time")]   
+		public string LastClaimTime { get; set; }
+		[JsonProperty("location")]   
+		public UInt32 Location { get; set; }
+    }
+	public class ScheduleProducers
+    {
+		[JsonProperty("producer_name")]   
+		public string ProducerName { get; set; }
+		[JsonProperty("block_signing_key")]   
+		public string BlockSigningKey { get; set; }
+    }
+	public class Schedule
+    {
+		[JsonProperty("version")]   
+		public UInt32? Version { get; set; }
+		[JsonProperty("producers")]   
+		public List<ScheduleProducers> Producers { get; set; }
+    }
 	#endregion
 
 	#region generate api method types
@@ -411,21 +444,21 @@ namespace EosSharp.Api.v1
     public class GetProducersResponse
     {
 		[JsonProperty("rows")]   
-		public List<object> Rows { get; set; }
+		public List<Producer> Rows { get; set; }
 		[JsonProperty("total_producer_vote_weight")]   
 		public double? TotalProducerVoteWeight { get; set; }
 		[JsonProperty("more")]   
-		public bool? More { get; set; }
+		public string More { get; set; }
     }
 
     public class GetProducerScheduleResponse
     {
 		[JsonProperty("active")]   
-		public List<object> Active { get; set; }
+		public Schedule Active { get; set; }
 		[JsonProperty("pending")]   
-		public List<object> Pending { get; set; }
+		public Schedule Pending { get; set; }
 		[JsonProperty("proposed")]   
-		public List<object> Proposed { get; set; }
+		public Schedule Proposed { get; set; }
     }
 
     public class GetScheduledTransactionsRequest

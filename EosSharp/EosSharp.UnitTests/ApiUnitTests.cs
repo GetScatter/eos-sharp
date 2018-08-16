@@ -120,9 +120,75 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO abi_json_to_bin
-        //TODO abi_bin_to_json
-        //TODO get_required_keys
+        //TODO add inputs and types
+        [TestMethod]
+        public async Task AbiJsonToBin()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.AbiJsonToBin(new AbiJsonToBinRequest() {
+                    Code = "eosio.token",
+                    Action = "",
+                    Args = ""
+                });
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        //TODO add inputs and types
+        [TestMethod]
+        public async Task AbiBinToJson()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.AbiBinToJson(new AbiBinToJsonRequest()
+                {
+                    Code = "eosio.token",
+                    Action = "",
+                    Binargs = ""
+                });
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        //TODO add inputs and types
+        [TestMethod]
+        public async Task GetRequiredKeys()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.GetRequiredKeys(new GetRequiredKeysRequest()
+                {
+                    AvailableKeys = "",
+                    Transaction = ""
+                });
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
 
         //TODO add missing types
         [TestMethod]
@@ -236,8 +302,45 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO get_producers
-        //TODO get_producer_schedule
+        [TestMethod]
+        public async Task GetProducers()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.GetProducers(new GetProducersRequest()
+                {
+                    Json = true,                    
+                });
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        public async Task GetProducerSchedule()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.GetProducerSchedule();
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
         //TODO get_scheduled_transactions
 
         //TODO push_block

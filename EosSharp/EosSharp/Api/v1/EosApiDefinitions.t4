@@ -188,6 +188,42 @@
 				new Field() { Name = "max_supply", Type = "string" },
 				new Field() { Name = "issuer", Type = "string" }
             }
+        },
+
+		new ApiType()
+        {
+			Name = "Producer",
+			Fields = new Field[]
+            {
+				new Field() { Name = "owner", Type = "string" },
+				new Field() { Name = "total_votes", Type = "double?" },
+				new Field() { Name = "producer_key", Type = "string" },
+				new Field() { Name = "is_active", Type = "bool?" },
+				new Field() { Name = "url", Type = "string" },
+				new Field() { Name = "unpaid_blocks", Type = "UInt32?" },
+				new Field() { Name = "last_claim_time", Type = "string" }, //TODO convert to dateTime
+				new Field() { Name = "location", Type = "UInt32" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "ScheduleProducers",
+			Fields = new Field[]
+            {
+				new Field() { Name = "producer_name", Type = "string" },
+				new Field() { Name = "block_signing_key", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Schedule",
+			Fields = new Field[]
+            {
+				new Field() { Name = "version", Type = "UInt32?" },
+				new Field() { Name = "producers", Type = "List<ScheduleProducers>" }
+            }
         }
     };
 	#endregion
@@ -451,9 +487,9 @@
 			},
 			Response = new Field[] 
 			{
-				new Field() { Name = "rows", Type = "List<object>" },
+				new Field() { Name = "rows", Type = "List<Producer>" },
 				new Field() { Name = "total_producer_vote_weight", Type = "double?" },
-				new Field() { Name = "more", Type = "bool?" }
+				new Field() { Name = "more", Type = "string" }
 			}
 		},
 
@@ -463,9 +499,9 @@
 			Name = "get_producer_schedule",
 			Response = new Field[] 
 			{
-				new Field() { Name = "active", Type = "List<object>" },
-				new Field() { Name = "pending", Type = "List<object>" },
-				new Field() { Name = "proposed", Type = "List<object>" }
+				new Field() { Name = "active", Type = "Schedule" },
+				new Field() { Name = "pending", Type = "Schedule" },
+				new Field() { Name = "proposed", Type = "Schedule" }
 			}
 		},
 
