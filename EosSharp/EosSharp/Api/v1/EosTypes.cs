@@ -406,7 +406,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("action")]   
 		public string Action { get; set; }
 		[JsonProperty("args")]   
-		public string Args { get; set; }
+		public object Args { get; set; }
     }
     public class AbiJsonToBinResponse
     {
@@ -426,7 +426,7 @@ namespace EosSharp.Api.v1
     public class AbiBinToJsonResponse
     {
 		[JsonProperty("args")]   
-		public string Args { get; set; }
+		public object Args { get; set; }
     }
 
     public class GetRequiredKeysRequest

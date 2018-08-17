@@ -111,7 +111,7 @@
 			{
 				new Field() { Name = "code",   Type = "string" },
 				new Field() { Name = "action", Type = "string" },
-				new Field() { Name = "args",   Type = "string" }
+				new Field() { Name = "args",   Type = "object" }
 			},
 			Response = new Field[] 
 			{
@@ -131,7 +131,7 @@
 			},
 			Response = new Field[] 
 			{
-				new Field() { Name = "args", Type = "string" }
+				new Field() { Name = "args", Type = "object" }
 			}
 		},
 

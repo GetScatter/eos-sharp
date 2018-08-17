@@ -10,5 +10,6 @@ namespace EosSharp
         public string ChainId { get; set; }
         public bool Broadcast { get; set; } = true;
         public bool Sign { get; set; } = true;
+        public ISignProvider SignProvider { get; set; } = new DefaultSignProvider();
     }
 }

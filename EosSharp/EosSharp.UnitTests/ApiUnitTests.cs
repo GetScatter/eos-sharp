@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using EosSharp.Api.v1;
 using EosSharp.Exceptions;
@@ -15,8 +16,9 @@ namespace EosSharp.UnitTests
         {
             DefaultApi = new EosApi(new EosConfigurator()
             {
-                //HttpEndpoint = "https://nodeos01.btuga.io"
-                HttpEndpoint = "https://nodes.eos42.io" //Mainnet
+                //HttpEndpoint = "https://nodeos01.btuga.io",
+                HttpEndpoint = "https://nodes.eos42.io", //Mainnet
+                
             });
         }
 
@@ -120,7 +122,6 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO add inputs and types
         [TestMethod]
         public async Task AbiJsonToBin()
         {
@@ -129,8 +130,8 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.AbiJsonToBin(new AbiJsonToBinRequest() {
                     Code = "eosio.token",
-                    Action = "",
-                    Args = ""
+                    Action = "transfer",
+                    Args = new { from = "eosio", to = "eosio.names", quantity = "1.0000 EOS", memo = "hello crypto world!" }
                 });
                 success = true;
             }
@@ -143,18 +144,24 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO add inputs and types
         [TestMethod]
         public async Task AbiBinToJson()
         {
             bool success = false;
             try
             {
+                var binArgsResult = await DefaultApi.AbiJsonToBin(new AbiJsonToBinRequest()
+                {
+                    Code = "eosio.token",
+                    Action = "transfer",
+                    Args = new { from = "eosio", to = "eosio.names", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                });
+
                 var result = await DefaultApi.AbiBinToJson(new AbiBinToJsonRequest()
                 {
                     Code = "eosio.token",
-                    Action = "",
-                    Binargs = ""
+                    Action = "transfer",
+                    Binargs = binArgsResult.Binargs
                 });
                 success = true;
             }
@@ -364,9 +371,72 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO push_block
-        //TODO push_transaction
-        //TODO push_transactions
+        //TODO add inputs and types
+        [TestMethod]
+        public async Task PushBlock()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.PushBlock(new PushBlockRequest() {
+                    Block = ""
+                });
+
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        //TODO add inputs and types
+        [TestMethod]
+        public async Task PushTransaction()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.PushTransaction(new PushTransactionRequest()
+                {
+                    SignedTransaction = ""
+                });
+
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        //TODO add inputs and types
+        [TestMethod]
+        public async Task PushTransactions()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.PushTransactions(new PushTransactionsRequest() {
+                    SignedTransaction = new List<string>()
+                });
+
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
 
         [TestMethod]
         public async Task GetActions()
