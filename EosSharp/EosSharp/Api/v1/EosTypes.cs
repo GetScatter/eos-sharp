@@ -12,6 +12,14 @@ namespace EosSharp.Api.v1
 {
 	#region generate api types
 	[Serializable]
+	public class Symbol
+    {
+		[JsonProperty("name")]
+		public string Name { get; set; }
+		[JsonProperty("precision")]
+		public UInt16 Precision { get; set; }
+    }
+	[Serializable]
 	public class Resource
     {
 		[JsonProperty("used")]
@@ -479,7 +487,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("transaction")]   
 		public string Transaction { get; set; }
 		[JsonProperty("available_keys")]   
-		public string AvailableKeys { get; set; }
+		public List<string> AvailableKeys { get; set; }
     }
 	[Serializable]
     public class GetRequiredKeysResponse

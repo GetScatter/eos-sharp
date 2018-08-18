@@ -19,9 +19,11 @@ namespace EosSharp.UnitTests
         {
             DefaultApi = new EosApi(new EosConfigurator()
             {
-                //HttpEndpoint = "https://nodeos01.btuga.io",
-                HttpEndpoint = "https://nodes.eos42.io", //Mainnet
-                ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+                //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
+                //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+
+                HttpEndpoint = "https://nodeos01.btuga.io",
+                ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
             });
         }
 
@@ -186,8 +188,6 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetRequiredKeys(new GetRequiredKeysRequest()
                 {
-                    AvailableKeys = "",
-                    Transaction = ""
                 });
                 success = true;
             }
@@ -381,9 +381,20 @@ namespace EosSharp.UnitTests
             bool success = false;
             try
             {
+                var getInfoResult = await DefaultApi.GetInfo();
+                var getBlockResult = await DefaultApi.GetBlock(new GetBlockRequest()
+                {
+                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.Value.ToString()
+                });
+
+
                 var trx = new Transaction()
                 {
-                    Expiration = DateTime.Now,
+                    //trx headers
+                    Expiration = getInfoResult.HeadBlockTime.Value.AddSeconds(60), //expire Seconds
+                    RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.Value & 0xFFFF),
+                    RefBlockPrefix = getBlockResult.RefBlockPrefix,
+                    // trx info
                     MaxNetUsageWords = 0,
                     MaxCpuUsageMs = 0,
                     DelaySec = 0,
@@ -404,10 +415,17 @@ namespace EosSharp.UnitTests
                     }
                 };
 
+                var abiSerializer = new AbiSerializationProvider(DefaultApi);
+                var packedTrx = await abiSerializer.SerializePackedTransaction(trx);
+
+                var getRequiredResult = await DefaultApi.GetRequiredKeys(new GetRequiredKeysRequest()
+                {
+                    AvailableKeys = new List<string>() { "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" },
+                    Transaction = SerializationHelper.ByteArrayToHexString(packedTrx)
+                });
+
                 var signProvider = new DefaultSignProvider();
-                var abiSerializer = new AbiSerializationProvider();
                 var requiredKeys = new List<string>() { "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" };
-                var packedTrx = abiSerializer.SerializePackedTransaction(trx);
                 var signs = await signProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
                 var result = await DefaultApi.PushTransaction(new PushTransactionRequest()

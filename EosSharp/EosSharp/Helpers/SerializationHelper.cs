@@ -9,6 +9,14 @@ namespace EosSharp.Helpers
 {
     public class SerializationHelper
     {
+        public static byte CharToSymbol(char c)
+        {
+            if (c >= 'a' && c <= 'z')
+                return (byte)(c - 'a' + 6);
+            if (c >= '1' && c <= '5')
+                return (byte)(c - '1' + 1);
+            return 0;
+        }
 
         public static byte[] ObjectToByteArray(object obj)
         {

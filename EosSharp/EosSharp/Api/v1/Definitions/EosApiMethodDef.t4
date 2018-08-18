@@ -144,7 +144,7 @@
 			Request = new Field[] 
 			{
 				new Field() { Name = "transaction",    Type = "string" },
-				new Field() { Name = "available_keys", Type = "string" }
+				new Field() { Name = "available_keys", Type = "List<string>" }
 			},
 			Response = new Field[] {}
 		},

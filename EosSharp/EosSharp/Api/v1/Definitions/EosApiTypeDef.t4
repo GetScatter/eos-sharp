@@ -4,6 +4,16 @@
 	ApiType[] apiTypes = new ApiType[] {
 		new ApiType() 
 		{
+			Name = "Symbol",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "precision", Type = "UInt16" }
+            }
+        },
+
+		new ApiType() 
+		{
 			Name = "Resource",
 			Fields = new Field[]
             {
@@ -12,6 +22,7 @@
 				new Field() { Name = "max", Type = "Int32" }
             }
         },
+
 		new ApiType() 
 		{
 			Name = "AuthorityKey",
