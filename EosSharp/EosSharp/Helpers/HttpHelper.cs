@@ -124,10 +124,12 @@ namespace EosSharp.Helpers
 
         private static string GetRequestHashKey(string url, object data)
         {
-            var keyBytes = new List<byte>(Encoding.UTF8.GetBytes(url));
-            keyBytes.AddRange(ChainHelper.ObjectToByteArray(data));
-            var hashKey = Encoding.Default.GetString(Sha256Manager.GetHash(keyBytes.ToArray()));
-            return hashKey;
+            var keyBytes = new List<byte[]>()
+            {
+                Encoding.UTF8.GetBytes(url),
+                SerializationHelper.ObjectToByteArray(data)
+            };
+            return Encoding.Default.GetString(Sha256Manager.GetHash(SerializationHelper.Combine(keyBytes)));
         }
 
         private static async Task<Stream> BuildSendResponse(HttpResponseMessage response)

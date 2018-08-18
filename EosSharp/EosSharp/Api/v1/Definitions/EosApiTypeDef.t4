@@ -224,12 +224,12 @@
 			Name = "Transaction",
 			Fields = new Field[]
             {
-				new Field() { Name = "expiration", Type = "DateTime?" },
-				new Field() { Name = "ref_block_num", Type = "UInt16?" },
-				new Field() { Name = "ref_block_prefix", Type = "UInt32?" },
-				new Field() { Name = "max_net_usage_words", Type = "UInt32?" },
+				new Field() { Name = "expiration", Type = "DateTime" },
+				new Field() { Name = "ref_block_num", Type = "UInt16" },
+				new Field() { Name = "ref_block_prefix", Type = "UInt32" },
+				new Field() { Name = "max_net_usage_words", Type = "UInt32" },
 				new Field() { Name = "max_cpu_usage_ms", Type = "byte" },
-				new Field() { Name = "delay_sec", Type = "UInt32?" },
+				new Field() { Name = "delay_sec", Type = "UInt32" },
 				new Field() { Name = "context_free_actions", Type = "List<Action>" },
 				new Field() { Name = "actions", Type = "List<Action>" },
 				new Field() { Name = "transaction_extensions", Type = "List<Extension>" }

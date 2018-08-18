@@ -217,17 +217,17 @@ namespace EosSharp.Api.v1
 	public class Transaction
     {
 		[JsonProperty("expiration")]
-		public DateTime? Expiration { get; set; }
+		public DateTime Expiration { get; set; }
 		[JsonProperty("ref_block_num")]
-		public UInt16? RefBlockNum { get; set; }
+		public UInt16 RefBlockNum { get; set; }
 		[JsonProperty("ref_block_prefix")]
-		public UInt32? RefBlockPrefix { get; set; }
+		public UInt32 RefBlockPrefix { get; set; }
 		[JsonProperty("max_net_usage_words")]
-		public UInt32? MaxNetUsageWords { get; set; }
+		public UInt32 MaxNetUsageWords { get; set; }
 		[JsonProperty("max_cpu_usage_ms")]
 		public byte MaxCpuUsageMs { get; set; }
 		[JsonProperty("delay_sec")]
-		public UInt32? DelaySec { get; set; }
+		public UInt32 DelaySec { get; set; }
 		[JsonProperty("context_free_actions")]
 		public List<Action> ContextFreeActions { get; set; }
 		[JsonProperty("actions")]

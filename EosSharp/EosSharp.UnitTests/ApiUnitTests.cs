@@ -7,6 +7,7 @@ using EosSharp.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using EosSharp.Helpers;
+using EosSharp.Providers;
 
 namespace EosSharp.UnitTests
 {
@@ -382,6 +383,7 @@ namespace EosSharp.UnitTests
             {
                 var trx = new Transaction()
                 {
+                    Expiration = DateTime.Now,
                     MaxNetUsageWords = 0,
                     MaxCpuUsageMs = 0,
                     DelaySec = 0,
@@ -403,15 +405,17 @@ namespace EosSharp.UnitTests
                 };
 
                 var signProvider = new DefaultSignProvider();
+                var abiSerializer = new AbiSerializationProvider();
                 var requiredKeys = new List<string>() { "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" };
-                var signs = await signProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, trx);
+                var packedTrx = abiSerializer.SerializePackedTransaction(trx);
+                var signs = await signProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
                 var result = await DefaultApi.PushTransaction(new PushTransactionRequest()
                 {
                     Signatures = signs.ToArray(),
                     Compression = 0,
                     PackedContextFreeData = "",
-                    PackedTrx = ChainHelper.TransactionToHexString(trx)
+                    PackedTrx = SerializationHelper.ByteArrayToHexString(packedTrx)
                 });
 
                 success = true;

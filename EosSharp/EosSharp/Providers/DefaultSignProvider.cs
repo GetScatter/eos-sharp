@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using EosSharp.Helpers;
 
 namespace EosSharp
 {
@@ -22,27 +23,26 @@ namespace EosSharp
             throw new System.NotImplementedException();
         }
 
-        public Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, object transaction)
+        public Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, byte[] trxBytes)
         {
             var keyTypeBytes = Encoding.UTF8.GetBytes("K1");
-            var data = new List<byte>(Hex.HexToBytes(chainId));
-            data.AddRange(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction)));
-            data.AddRange(new byte[32]);
+            var data = new List<byte[]>()
+            {
+                Hex.HexToBytes(chainId),
+                trxBytes,
+                new byte[32]
+            };
 
-            var hash = Sha256Manager.GetHash(data.ToArray());
+            var hash = Sha256Manager.GetHash(SerializationHelper.Combine(data));
 
             return Task.FromResult(requiredKeys.Select(key => {
                 var privKeyBytes = Base58.RemoveCheckSum(Base58.Decode(Keys[key])).Skip(1).ToArray();
                 var sign = Secp256K1Manager.SignCompressedCompact(hash, privKeyBytes);
+                var check = new List<byte[]>() { sign, keyTypeBytes};
+                var checksum = Ripemd160Manager.GetHash(SerializationHelper.Combine(check)).Take(4).ToArray();
+                var signAndChecksum = new List<byte[]>() { sign, checksum };
 
-                var check = new List<byte>(sign);
-                check.AddRange(keyTypeBytes);
-                var checksum = Ripemd160Manager.GetHash(check.ToArray()).Take(4);
-
-                var signAndChecksum = new List<byte>(sign);
-                signAndChecksum.AddRange(checksum);
-
-                return "SIG_K1_" + Base58.Encode(signAndChecksum.ToArray());
+                return "SIG_K1_" + Base58.Encode(SerializationHelper.Combine(signAndChecksum));
             }));
         }
     }
