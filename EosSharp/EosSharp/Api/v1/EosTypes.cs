@@ -174,6 +174,13 @@ namespace EosSharp.Api.v1
 		[JsonProperty("permission")]
 		public string Permission { get; set; }
     }
+	public class Extension
+    {
+		[JsonProperty("type")]
+		public UInt16 Type { get; set; }
+		[JsonProperty("data")]
+		public object Data { get; set; }
+    }
 	public class Action
     {
 		[JsonProperty("account")]
@@ -192,21 +199,21 @@ namespace EosSharp.Api.v1
 		[JsonProperty("expiration")]
 		public DateTime? Expiration { get; set; }
 		[JsonProperty("ref_block_num")]
-		public UInt32? RefBlockNum { get; set; }
+		public UInt16? RefBlockNum { get; set; }
 		[JsonProperty("ref_block_prefix")]
 		public UInt32? RefBlockPrefix { get; set; }
 		[JsonProperty("max_net_usage_words")]
 		public UInt32? MaxNetUsageWords { get; set; }
 		[JsonProperty("max_cpu_usage_ms")]
-		public UInt32? MaxCpuUsageMs { get; set; }
+		public byte MaxCpuUsageMs { get; set; }
 		[JsonProperty("delay_sec")]
 		public UInt32? DelaySec { get; set; }
 		[JsonProperty("context_free_actions")]
-		public List<object> ContextFreeActions { get; set; }
+		public List<Action> ContextFreeActions { get; set; }
 		[JsonProperty("actions")]
 		public List<Action> Actions { get; set; }
 		[JsonProperty("transaction_extensions")]
-		public List<object> TransactionExtensions { get; set; }
+		public List<Extension> TransactionExtensions { get; set; }
     }
 	public class ScheduledTransaction
     {
@@ -591,19 +598,16 @@ namespace EosSharp.Api.v1
 		public string More { get; set; }
     }
 
-    public class PushBlockRequest
-    {
-		[JsonProperty("block")]   
-		public string Block { get; set; }
-    }
-    public class PushBlockResponse
-    {
-    }
-
     public class PushTransactionRequest
     {
-		[JsonProperty("signed_transaction")]   
-		public string SignedTransaction { get; set; }
+		[JsonProperty("signatures")]   
+		public string[] Signatures { get; set; }
+		[JsonProperty("compression")]   
+		public UInt32? Compression { get; set; }
+		[JsonProperty("packed_context_free_data")]   
+		public string PackedContextFreeData { get; set; }
+		[JsonProperty("packed_trx")]   
+		public string PackedTrx { get; set; }
     }
     public class PushTransactionResponse
     {
@@ -611,17 +615,6 @@ namespace EosSharp.Api.v1
 		public string TransactionId { get; set; }
 		[JsonProperty("processed")]   
 		public string Processed { get; set; }
-    }
-
-    public class PushTransactionsRequest
-    {
-		[JsonProperty("signed_transaction")]   
-		public List<string> SignedTransaction { get; set; }
-    }
-    public class PushTransactionsResponse
-    {
-		[JsonProperty("results")]   
-		public List<string> Results { get; set; }
     }
 
     public class GetActionsRequest

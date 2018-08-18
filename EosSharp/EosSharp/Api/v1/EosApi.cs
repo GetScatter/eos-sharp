@@ -97,20 +97,10 @@ namespace EosSharp.Api.v1
             var url = string.Format("{0}/v1/chain/get_scheduled_transactions", Config.HttpEndpoint);
             return await HttpHelper.PostJsonAsync<GetScheduledTransactionsResponse>(url, data);
         }
-		public async Task<PushBlockResponse> PushBlock(PushBlockRequest data)
-        {
-            var url = string.Format("{0}/v1/chain/push_block", Config.HttpEndpoint);
-            return await HttpHelper.PostJsonAsync<PushBlockResponse>(url, data);
-        }
 		public async Task<PushTransactionResponse> PushTransaction(PushTransactionRequest data)
         {
             var url = string.Format("{0}/v1/chain/push_transaction", Config.HttpEndpoint);
             return await HttpHelper.PostJsonAsync<PushTransactionResponse>(url, data);
-        }
-		public async Task<PushTransactionsResponse> PushTransactions(PushTransactionsRequest data)
-        {
-            var url = string.Format("{0}/v1/chain/push_transactions", Config.HttpEndpoint);
-            return await HttpHelper.PostJsonAsync<PushTransactionsResponse>(url, data);
         }
 		public async Task<GetActionsResponse> GetActions(GetActionsRequest data)
         {

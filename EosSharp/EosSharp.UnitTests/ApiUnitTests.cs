@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using EosSharp.Api.v1;
 using EosSharp.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using EosSharp.Helpers;
 
 namespace EosSharp.UnitTests
 {
@@ -18,7 +20,7 @@ namespace EosSharp.UnitTests
             {
                 //HttpEndpoint = "https://nodeos01.btuga.io",
                 HttpEndpoint = "https://nodes.eos42.io", //Mainnet
-                
+                ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
             });
         }
 
@@ -373,58 +375,43 @@ namespace EosSharp.UnitTests
 
         //TODO add inputs and types
         [TestMethod]
-        public async Task PushBlock()
-        {
-            bool success = false;
-            try
-            {
-                var result = await DefaultApi.PushBlock(new PushBlockRequest() {
-                    Block = ""
-                });
-
-                success = true;
-            }
-            catch (ApiException ex)
-            {
-                Console.WriteLine(ex.StatusCode);
-                Console.WriteLine(ex.Content);
-            }
-
-            Assert.IsTrue(success);
-        }
-
-        //TODO add inputs and types
-        [TestMethod]
         public async Task PushTransaction()
         {
             bool success = false;
             try
             {
+                var trx = new Transaction()
+                {
+                    MaxNetUsageWords = 0,
+                    MaxCpuUsageMs = 0,
+                    DelaySec = 0,
+                    ContextFreeActions = new List<Api.v1.Action>(),
+                    TransactionExtensions = new List<Extension>(),
+                    Actions = new List<Api.v1.Action>()
+                    {
+                        new Api.v1.Action()
+                        {
+                            Account = "eosio.token",
+                            Authorization = new List<PermissionLevel>()
+                            {
+                                new PermissionLevel() {Actor = "eosio", Permission = "active" }
+                            },
+                            Name = "transfer",
+                            Data = new { from = "eosio", to = "eosio.token", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                        }
+                    }
+                };
+
+                var signProvider = new DefaultSignProvider();
+                var requiredKeys = new List<string>() { "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" };
+                var signs = await signProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, trx);
+
                 var result = await DefaultApi.PushTransaction(new PushTransactionRequest()
                 {
-                    SignedTransaction = ""
-                });
-
-                success = true;
-            }
-            catch (ApiException ex)
-            {
-                Console.WriteLine(ex.StatusCode);
-                Console.WriteLine(ex.Content);
-            }
-
-            Assert.IsTrue(success);
-        }
-
-        //TODO add inputs and types
-        [TestMethod]
-        public async Task PushTransactions()
-        {
-            bool success = false;
-            try
-            {
-                var result = await DefaultApi.PushTransactions(new PushTransactionsRequest() {
-                    SignedTransaction = new List<string>()
+                    Signatures = signs.ToArray(),
+                    Compression = 0,
+                    PackedContextFreeData = "",
+                    PackedTrx = ChainHelper.TransactionToHexString(trx)
                 });
 
                 success = true;

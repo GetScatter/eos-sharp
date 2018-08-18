@@ -297,41 +297,19 @@
 		new ApiMethod() 
 		{ 
 			Module = "chain", 
-			Name = "push_block",
-			Request = new Field[] 
-			{
-				new Field() { Name = "block", Type = "string" }
-			},
-			Response = new Field[] {}
-		},
-
-		new ApiMethod() 
-		{ 
-			Module = "chain", 
 			Name = "push_transaction",
 			Request = new Field[] 
 			{
-				new Field() { Name = "signed_transaction", Type = "string" }
+				new Field() { Name = "signatures", Type = "string[]" },
+				new Field() { Name = "compression", Type = "UInt32?" },
+				new Field() { Name = "packed_context_free_data", Type = "string" },
+				new Field() { Name = "packed_trx", Type = "string" }
 			},
 			Response = new Field[]
 			{
 				new Field() { Name = "transaction_id", Type = "string" },
 				new Field() { Name = "processed", Type = "string" }
 			}
-		},
-
-		new ApiMethod() 
-		{ 
-			Module = "chain", 
-			Name = "push_transactions",
-			Request = new Field[] 
-			{
-				new Field() { Name = "signed_transaction", Type = "List<string>" }
-			},
-			Response = new Field[]
-			{
-				new Field() { Name = "results", Type = "List<string>" }
-			} 
 		},
 
 		// chain history methods
