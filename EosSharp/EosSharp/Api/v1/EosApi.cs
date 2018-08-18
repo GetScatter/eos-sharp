@@ -27,15 +27,15 @@ namespace EosSharp.Api.v1
             var url = string.Format("{0}/v1/chain/get_account", Config.HttpEndpoint);
             return await HttpHelper.PostJsonAsync<GetAccountResponse>(url, data);
         }
-		public async Task<GetCodeResponse> GetCode(GetCodeRequest data)
+		public async Task<GetCodeResponse> GetCode(GetCodeRequest data, bool reload = false)
         {
             var url = string.Format("{0}/v1/chain/get_code", Config.HttpEndpoint);
-            return await HttpHelper.PostJsonAsync<GetCodeResponse>(url, data);
+            return await HttpHelper.PostJsonWithCacheAsync<GetCodeResponse>(url, data, reload);
         }
-		public async Task<GetAbiResponse> GetAbi(GetAbiRequest data)
+		public async Task<GetAbiResponse> GetAbi(GetAbiRequest data, bool reload = false)
         {
             var url = string.Format("{0}/v1/chain/get_abi", Config.HttpEndpoint);
-            return await HttpHelper.PostJsonAsync<GetAbiResponse>(url, data);
+            return await HttpHelper.PostJsonWithCacheAsync<GetAbiResponse>(url, data, reload);
         }
 		public async Task<GetRawCodeAndAbiResponse> GetRawCodeAndAbi(GetRawCodeAndAbiRequest data)
         {

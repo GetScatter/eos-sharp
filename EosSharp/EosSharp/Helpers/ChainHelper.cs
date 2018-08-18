@@ -1,40 +1,30 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace EosSharp.Helpers
 {
     public class ChainHelper
     {
-        public static bool CheckChainId(/*network, chainId, logger*/)
-        {
-            //        network.getInfo({ }).then(info => {
-            //        if (info.chain_id !== chainId)
-            //        {
-            //            if (logger.log)
-            //            {
-            //                logger.log(
-            //                  'chainId mismatch, signatures will not match transaction authority. ' +
-            //                  `expected ${ chainId} !== actual ${ info.chain_id}`
-
-            //            )
-            //  }
-            //}
-            //}).catch(error => {
-            //    if(logger.error) {
-            //      logger.error('Warning, unable to validate chainId: ' + error.message)
-            //    }
-            //  })
-            return true;
-        }
-
         //TODO optimize
         public static string TransactionToHexString(object trx)
         {
             return ByteArrayToHexString(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(trx)));
         }
-        
+
+        public static byte[] ObjectToByteArray(object obj)
+        {
+            if (obj == null)
+                return null;
+            BinaryFormatter bf = new BinaryFormatter();
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bf.Serialize(ms, obj);
+                return ms.ToArray();
+            }
+        }
+
         public static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hex = new StringBuilder(ba.Length * 2);

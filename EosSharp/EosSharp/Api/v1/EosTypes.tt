@@ -15,6 +15,7 @@ namespace EosSharp.Api.v1
 {
 	#region generate api types
 <# foreach (var type in apiTypes) { #>
+	[Serializable]
 	public class <#= type.Name #>
     {
 <#      foreach (var field in type.Fields) { #>
@@ -28,6 +29,7 @@ namespace EosSharp.Api.v1
 	#region generate api method types
 <# foreach (var method in apiMethods) { #>
 <#  if (method.Request != null) { #>
+	[Serializable]
     public class <#= ConvertPascalCase(method.Name) #>Request
     {
 <#      foreach (var field in method.Request) { #>
@@ -37,6 +39,7 @@ namespace EosSharp.Api.v1
     }
 <#   } #>
 <#  if (method.Response != null) { #>
+	[Serializable]
     public class <#= ConvertPascalCase(method.Name) #>Response
     {
 <#      foreach (var field in method.Response) { #>

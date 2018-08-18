@@ -32,13 +32,13 @@ namespace EosSharp.Api.v1
 <#        } #>
         }
 <#   } else { #>
-		public async Task<<#= ConvertPascalCase(method.Name) #>Response> <#= ConvertPascalCase(method.Name) #>(<#= ConvertPascalCase(method.Name) #>Request data)
+		public async Task<<#= ConvertPascalCase(method.Name) #>Response> <#= ConvertPascalCase(method.Name) #>(<#= ConvertPascalCase(method.Name) #>Request data<#= method.IsCachable ? ", bool reload = false" : "" #>)
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
 <#        if(method.IsResponseCollection) { #>
-			return new <#= ConvertPascalCase(method.Name) #>Response() { <#= ConvertPascalCase(method.Response[0].Name) #> = await HttpHelper.PostJsonAsync<<#= method.Response[0].Type#>>(url, data) };
+			return new <#= ConvertPascalCase(method.Name) #>Response() { <#= ConvertPascalCase(method.Response[0].Name) #> = await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>) };
 <#        } else { #>
-            return await HttpHelper.PostJsonAsync<<#= ConvertPascalCase(method.Name) #>Response>(url, data);
+            return await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= ConvertPascalCase(method.Name) #>Response>(url, data<#= method.IsCachable ? ", reload" : "" #>);
 <#        } #>
         }
 <#   } #>

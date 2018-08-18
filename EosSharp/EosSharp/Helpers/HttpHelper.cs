@@ -1,6 +1,8 @@
-﻿using EosSharp.Exceptions;
+﻿using Cryptography.ECDSA;
+using EosSharp.Exceptions;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -12,7 +14,12 @@ namespace EosSharp.Helpers
     public class HttpHelper
     {
         private static readonly HttpClient client = new HttpClient();
+        private static Dictionary<string, object> ResponseCache { get; set; } = new Dictionary<string, object>();
 
+        public static void ClearResponseCache()
+        {
+            ResponseCache.Clear();
+        }
 
         public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data)
         {
@@ -26,6 +33,42 @@ namespace EosSharp.Helpers
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
             var result = await SendAsync<TResponseData>(request, cancellationToken);
             return DeserializeJsonFromStream<TResponseData>(result);
+        }
+
+        public static async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, bool reload = false)
+        {
+            string hashKey = GetRequestHashKey(url, data);
+
+            if (!reload)
+            {
+                if (ResponseCache.TryGetValue(hashKey, out object value))
+                    return (TResponseData)value;
+            }
+
+            HttpRequestMessage request = BuildJsonRequestMessage(url, data);
+            var result = await SendAsync<TResponseData>(request);
+            var responseData = DeserializeJsonFromStream<TResponseData>(result);
+            UpdateResponseDataCache(hashKey, responseData);
+
+            return responseData;
+        }
+
+        public static async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, bool reload = false)
+        {
+            string hashKey = GetRequestHashKey(url, data);
+
+            if (!reload)
+            {
+                if (ResponseCache.TryGetValue(hashKey, out object value))
+                    return (TResponseData)value;
+            }
+
+            HttpRequestMessage request = BuildJsonRequestMessage(url, data);
+            var result = await SendAsync<TResponseData>(request, cancellationToken);
+            var responseData = DeserializeJsonFromStream<TResponseData>(result);
+            UpdateResponseDataCache(hashKey, responseData);
+
+            return responseData;
         }
 
         public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url)
@@ -64,6 +107,27 @@ namespace EosSharp.Helpers
             {
                 return new JsonSerializer().Deserialize<TData>(jtr);
             }
+        }
+
+
+        private static void UpdateResponseDataCache<TResponseData>(string hashKey, TResponseData responseData)
+        {
+            if (ResponseCache.ContainsKey(hashKey))
+            {
+                ResponseCache[hashKey] = responseData;
+            }
+            else
+            {
+                ResponseCache.Add(hashKey, responseData);
+            }
+        }
+
+        private static string GetRequestHashKey(string url, object data)
+        {
+            var keyBytes = new List<byte>(Encoding.UTF8.GetBytes(url));
+            keyBytes.AddRange(ChainHelper.ObjectToByteArray(data));
+            var hashKey = Encoding.Default.GetString(Sha256Manager.GetHash(keyBytes.ToArray()));
+            return hashKey;
         }
 
         private static async Task<Stream> BuildSendResponse(HttpResponseMessage response)

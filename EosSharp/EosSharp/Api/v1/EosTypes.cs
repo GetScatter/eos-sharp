@@ -11,6 +11,7 @@ using System.Collections.Generic;
 namespace EosSharp.Api.v1
 {
 	#region generate api types
+	[Serializable]
 	public class Resource
     {
 		[JsonProperty("used")]
@@ -20,6 +21,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("max")]
 		public Int32 Max { get; set; }
     }
+	[Serializable]
 	public class AuthorityKey
     {
 		[JsonProperty("key")]
@@ -27,6 +29,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("weight")]
 		public Int32 Weight { get; set; }
     }
+	[Serializable]
 	public class AuthorityAccount
     {
 		[JsonProperty("account")]
@@ -34,6 +37,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("weight")]
 		public Int32 Weight { get; set; }
     }
+	[Serializable]
 	public class AuthorityWait
     {
 		[JsonProperty("wait_sec")]
@@ -41,6 +45,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("weight")]
 		public Int32 Weight { get; set; }
     }
+	[Serializable]
 	public class Authority
     {
 		[JsonProperty("threshold")]
@@ -52,6 +57,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("waits")]
 		public List<AuthorityWait> Waits { get; set; }
     }
+	[Serializable]
 	public class Permission
     {
 		[JsonProperty("perm_name")]
@@ -61,6 +67,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("required_auth")]
 		public Authority RequiredAuth { get; set; }
     }
+	[Serializable]
 	public class AbiType
     {
 		[JsonProperty("new_type_name")]
@@ -68,6 +75,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("type")]
 		public string Type { get; set; }
     }
+	[Serializable]
 	public class AbiField
     {
 		[JsonProperty("name")]
@@ -75,6 +83,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("type")]
 		public string Type { get; set; }
     }
+	[Serializable]
 	public class AbiStruct
     {
 		[JsonProperty("name")]
@@ -84,6 +93,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("fields")]
 		public List<AbiField> Fields { get; set; }
     }
+	[Serializable]
 	public class AbiAction
     {
 		[JsonProperty("name")]
@@ -93,6 +103,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("ricardian_contract")]
 		public string RicardianContract { get; set; }
     }
+	[Serializable]
 	public class AbiTable
     {
 		[JsonProperty("name")]
@@ -106,6 +117,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("type")]
 		public string Type { get; set; }
     }
+	[Serializable]
 	public class Abi
     {
 		[JsonProperty("version")]
@@ -125,6 +137,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("abi_extensions")]
 		public List<string> AbiExtensions { get; set; }
     }
+	[Serializable]
 	public class CurrencyStat
     {
 		[JsonProperty("supply")]
@@ -134,6 +147,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("issuer")]
 		public string Issuer { get; set; }
     }
+	[Serializable]
 	public class Producer
     {
 		[JsonProperty("owner")]
@@ -153,6 +167,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("location")]
 		public UInt32 Location { get; set; }
     }
+	[Serializable]
 	public class ScheduleProducers
     {
 		[JsonProperty("producer_name")]
@@ -160,6 +175,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("block_signing_key")]
 		public string BlockSigningKey { get; set; }
     }
+	[Serializable]
 	public class Schedule
     {
 		[JsonProperty("version")]
@@ -167,6 +183,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("producers")]
 		public List<ScheduleProducers> Producers { get; set; }
     }
+	[Serializable]
 	public class PermissionLevel
     {
 		[JsonProperty("actor")]
@@ -174,6 +191,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("permission")]
 		public string Permission { get; set; }
     }
+	[Serializable]
 	public class Extension
     {
 		[JsonProperty("type")]
@@ -181,6 +199,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("data")]
 		public object Data { get; set; }
     }
+	[Serializable]
 	public class Action
     {
 		[JsonProperty("account")]
@@ -194,6 +213,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("hex_data")]
 		public string HexData { get; set; }
     }
+	[Serializable]
 	public class Transaction
     {
 		[JsonProperty("expiration")]
@@ -215,6 +235,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("transaction_extensions")]
 		public List<Extension> TransactionExtensions { get; set; }
     }
+	[Serializable]
 	public class ScheduledTransaction
     {
 		[JsonProperty("trx_id")]
@@ -234,6 +255,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("transaction")]
 		public Transaction Transaction { get; set; }
     }
+	[Serializable]
 	public class Receipt
     {
 		[JsonProperty("receiver")]
@@ -251,6 +273,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("abi_sequence")]
 		public UInt64? AbiSequence { get; set; }
     }
+	[Serializable]
 	public class ActionTrace
     {
 		[JsonProperty("receipt")]
@@ -270,6 +293,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("inline_traces")]
 		public List<ActionTrace> InlineTraces { get; set; }
     }
+	[Serializable]
 	public class GlobalAction
     {
 		[JsonProperty("global_action_seq")]
@@ -286,6 +310,7 @@ namespace EosSharp.Api.v1
 	#endregion
 
 	#region generate api method types
+	[Serializable]
     public class GetInfoResponse
     {
 		[JsonProperty("server_version")]   
@@ -314,11 +339,13 @@ namespace EosSharp.Api.v1
 		public string BlockNetLimit { get; set; }
     }
 
+	[Serializable]
     public class GetAccountRequest
     {
 		[JsonProperty("account_name")]   
 		public string AccountName { get; set; }
     }
+	[Serializable]
     public class GetAccountResponse
     {
 		[JsonProperty("account_name")]   
@@ -357,6 +384,7 @@ namespace EosSharp.Api.v1
 		public object VoterInfo { get; set; }
     }
 
+	[Serializable]
     public class GetCodeRequest
     {
 		[JsonProperty("account_name")]   
@@ -364,6 +392,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("code_as_wasm")]   
 		public bool? CodeAsWasm { get; set; }
     }
+	[Serializable]
     public class GetCodeResponse
     {
 		[JsonProperty("account_name")]   
@@ -378,11 +407,13 @@ namespace EosSharp.Api.v1
 		public Abi Abi { get; set; }
     }
 
+	[Serializable]
     public class GetAbiRequest
     {
 		[JsonProperty("account_name")]   
 		public string AccountName { get; set; }
     }
+	[Serializable]
     public class GetAbiResponse
     {
 		[JsonProperty("account_name")]   
@@ -391,11 +422,13 @@ namespace EosSharp.Api.v1
 		public Abi Abi { get; set; }
     }
 
+	[Serializable]
     public class GetRawCodeAndAbiRequest
     {
 		[JsonProperty("account_name")]   
 		public string AccountName { get; set; }
     }
+	[Serializable]
     public class GetRawCodeAndAbiResponse
     {
 		[JsonProperty("account_name")]   
@@ -406,6 +439,7 @@ namespace EosSharp.Api.v1
 		public string Abi { get; set; }
     }
 
+	[Serializable]
     public class AbiJsonToBinRequest
     {
 		[JsonProperty("code")]   
@@ -415,12 +449,14 @@ namespace EosSharp.Api.v1
 		[JsonProperty("args")]   
 		public object Args { get; set; }
     }
+	[Serializable]
     public class AbiJsonToBinResponse
     {
 		[JsonProperty("binargs")]   
 		public string Binargs { get; set; }
     }
 
+	[Serializable]
     public class AbiBinToJsonRequest
     {
 		[JsonProperty("code")]   
@@ -430,12 +466,14 @@ namespace EosSharp.Api.v1
 		[JsonProperty("binargs")]   
 		public string Binargs { get; set; }
     }
+	[Serializable]
     public class AbiBinToJsonResponse
     {
 		[JsonProperty("args")]   
 		public object Args { get; set; }
     }
 
+	[Serializable]
     public class GetRequiredKeysRequest
     {
 		[JsonProperty("transaction")]   
@@ -443,15 +481,18 @@ namespace EosSharp.Api.v1
 		[JsonProperty("available_keys")]   
 		public string AvailableKeys { get; set; }
     }
+	[Serializable]
     public class GetRequiredKeysResponse
     {
     }
 
+	[Serializable]
     public class GetBlockRequest
     {
 		[JsonProperty("block_num_or_id")]   
 		public string BlockNumOrId { get; set; }
     }
+	[Serializable]
     public class GetBlockResponse
     {
 		[JsonProperty("timestamp")]   
@@ -484,15 +525,18 @@ namespace EosSharp.Api.v1
 		public UInt32 RefBlockPrefix { get; set; }
     }
 
+	[Serializable]
     public class GetBlockHeaderStateRequest
     {
 		[JsonProperty("block_num_or_id")]   
 		public string BlockNumOrId { get; set; }
     }
+	[Serializable]
     public class GetBlockHeaderStateResponse
     {
     }
 
+	[Serializable]
     public class GetTableRowsRequest
     {
 		[JsonProperty("json")]   
@@ -516,6 +560,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("index_position")]   
 		public string IndexPosition { get; set; }
     }
+	[Serializable]
     public class GetTableRowsResponse
     {
 		[JsonProperty("rows")]   
@@ -524,6 +569,7 @@ namespace EosSharp.Api.v1
 		public bool? More { get; set; }
     }
 
+	[Serializable]
     public class GetCurrencyBalanceRequest
     {
 		[JsonProperty("code")]   
@@ -533,12 +579,14 @@ namespace EosSharp.Api.v1
 		[JsonProperty("symbol")]   
 		public string Symbol { get; set; }
     }
+	[Serializable]
     public class GetCurrencyBalanceResponse
     {
 		[JsonProperty("assets")]   
 		public List<string> Assets { get; set; }
     }
 
+	[Serializable]
     public class GetCurrencyStatsRequest
     {
 		[JsonProperty("code")]   
@@ -546,12 +594,14 @@ namespace EosSharp.Api.v1
 		[JsonProperty("symbol")]   
 		public string Symbol { get; set; }
     }
+	[Serializable]
     public class GetCurrencyStatsResponse
     {
 		[JsonProperty("stats")]   
 		public Dictionary<string, CurrencyStat> Stats { get; set; }
     }
 
+	[Serializable]
     public class GetProducersRequest
     {
 		[JsonProperty("json")]   
@@ -561,6 +611,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("limit")]   
 		public UInt32? Limit { get; set; } = 50;
     }
+	[Serializable]
     public class GetProducersResponse
     {
 		[JsonProperty("rows")]   
@@ -571,6 +622,7 @@ namespace EosSharp.Api.v1
 		public string More { get; set; }
     }
 
+	[Serializable]
     public class GetProducerScheduleResponse
     {
 		[JsonProperty("active")]   
@@ -581,6 +633,7 @@ namespace EosSharp.Api.v1
 		public Schedule Proposed { get; set; }
     }
 
+	[Serializable]
     public class GetScheduledTransactionsRequest
     {
 		[JsonProperty("json")]   
@@ -590,6 +643,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("limit")]   
 		public UInt32? Limit { get; set; } = 50;
     }
+	[Serializable]
     public class GetScheduledTransactionsResponse
     {
 		[JsonProperty("transactions")]   
@@ -598,6 +652,7 @@ namespace EosSharp.Api.v1
 		public string More { get; set; }
     }
 
+	[Serializable]
     public class PushTransactionRequest
     {
 		[JsonProperty("signatures")]   
@@ -609,6 +664,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("packed_trx")]   
 		public string PackedTrx { get; set; }
     }
+	[Serializable]
     public class PushTransactionResponse
     {
 		[JsonProperty("transaction_id")]   
@@ -617,6 +673,7 @@ namespace EosSharp.Api.v1
 		public string Processed { get; set; }
     }
 
+	[Serializable]
     public class GetActionsRequest
     {
 		[JsonProperty("account_name")]   
@@ -626,6 +683,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("offset")]   
 		public Int32? Offset { get; set; }
     }
+	[Serializable]
     public class GetActionsResponse
     {
 		[JsonProperty("actions")]   
@@ -636,6 +694,7 @@ namespace EosSharp.Api.v1
 		public bool? TimeLimitExceededError { get; set; }
     }
 
+	[Serializable]
     public class GetTransactionRequest
     {
 		[JsonProperty("id")]   
@@ -643,6 +702,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("block_num_hint")]   
 		public string BlockNumHint { get; set; }
     }
+	[Serializable]
     public class GetTransactionResponse
     {
 		[JsonProperty("id")]   
@@ -659,22 +719,26 @@ namespace EosSharp.Api.v1
 		public List<string> Traces { get; set; }
     }
 
+	[Serializable]
     public class GetKeyAccountsRequest
     {
 		[JsonProperty("public_key")]   
 		public string PublicKey { get; set; }
     }
+	[Serializable]
     public class GetKeyAccountsResponse
     {
 		[JsonProperty("account_names")]   
 		public List<string> AccountNames { get; set; }
     }
 
+	[Serializable]
     public class GetControlledAccountsRequest
     {
 		[JsonProperty("controlling_account")]   
 		public string ControllingAccount { get; set; }
     }
+	[Serializable]
     public class GetControlledAccountsResponse
     {
 		[JsonProperty("controlled_accounts")]   
