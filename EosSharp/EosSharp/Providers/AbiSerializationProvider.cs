@@ -206,8 +206,9 @@ namespace EosSharp.Providers
         private static void WriteString(MemoryStream ms, object value)
         {
             string s = (string)value;
-            WriteUint32(ms, (UInt32)s.Length);
-            ms.Write(Encoding.UTF8.GetBytes(s), 0, s.Length);
+            WriteVarUint32(ms, (UInt32)s.Length);
+            if(s.Length > 0)
+                ms.Write(Encoding.UTF8.GetBytes(s), 0, s.Length);
         }
 
         public static void WriteUint8(MemoryStream ms, object value)
