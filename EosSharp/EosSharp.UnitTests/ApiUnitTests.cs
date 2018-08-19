@@ -418,11 +418,11 @@ namespace EosSharp.UnitTests
                 var abiSerializer = new AbiSerializationProvider(DefaultApi);
                 var packedTrx = await abiSerializer.SerializePackedTransaction(trx);
 
-                var getRequiredResult = await DefaultApi.GetRequiredKeys(new GetRequiredKeysRequest()
-                {
-                    AvailableKeys = new List<string>() { "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" },
-                    Transaction = SerializationHelper.ByteArrayToHexString(packedTrx)
-                });
+                //var getRequiredResult = await DefaultApi.GetRequiredKeys(new GetRequiredKeysRequest()
+                //{
+                //    AvailableKeys = new List<string>() { "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" },
+                //    Transaction = SerializationHelper.ByteArrayToHexString(packedTrx)
+                //});
 
                 var signProvider = new DefaultSignProvider();
                 var requiredKeys = new List<string>() { "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" };

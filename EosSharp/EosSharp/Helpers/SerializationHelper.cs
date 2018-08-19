@@ -9,6 +9,50 @@ namespace EosSharp.Helpers
 {
     public class SerializationHelper
     {
+        public static void Negate(byte[] bin)
+        {
+            int carry = 1;
+            for (int i = 0; i < bin.Length; ++i)
+            {
+                byte x = (byte)((~bin[i] & 0xff) + carry);
+                bin[i] = x;
+                carry = x >> 8;
+            }
+        }
+
+        public static byte[] DecimalToBinary(uint size, string s)
+        {
+            byte[] result = new byte[size];
+            for (int i = 0; i < s.Length; ++i)
+            {
+                char srcDigit = s[i];
+                if (srcDigit < '0' || srcDigit > '9')
+                    throw new Exception("invalid number");
+                int carry = srcDigit - '0';
+                for (int j = 0; j < size; ++j)
+                {
+                    byte x = (byte)(result[j] * 10 + carry);
+                    result[j] = x;
+                    carry = x >> 8;
+                }
+                if (carry != 0)
+                    throw new Exception("number is out of range");
+            }
+            return result;
+        }
+
+        public static byte[] SignedDecimalToBinary(uint size, string s)
+        {
+            bool negative = s[0] == '-';
+            if (negative)
+                s = s.Substring(0, 1);
+            byte[] result = DecimalToBinary(size, s);
+            if (negative)
+                Negate(result);
+            return result;
+        }
+
+
         public static byte CharToSymbol(char c)
         {
             if (c >= 'a' && c <= 'z')
@@ -55,6 +99,18 @@ namespace EosSharp.Helpers
                 offset += data.Length;
             }
             return ret;
+        }
+
+        public static UInt64 DateToTimePoint(DateTime value)
+        {
+            var span = (value - new DateTime(1970, 1, 1));
+            return (UInt64)span.TotalMilliseconds;
+        }
+
+        public static UInt32 DateToTimePointSec(DateTime value)
+        {
+            var span = (value - new DateTime(1970, 1, 1));
+            return (UInt32)span.TotalSeconds;
         }
     }
 }
