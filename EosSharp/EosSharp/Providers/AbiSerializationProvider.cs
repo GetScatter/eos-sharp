@@ -244,6 +244,22 @@ namespace EosSharp.Providers
             }
         }
 
+        private static void WriteVarInt32(MemoryStream ms, object value)
+        {
+            var n = (Int32)value;
+            WriteVarUint32(ms, (UInt32)((n << 1) ^ (n >> 31)));
+        }
+
+        private static void WriteFloat32(MemoryStream ms, object value)
+        {
+            ms.Write(BitConverter.GetBytes((float)value), 0, 4);
+        }
+
+        private static void WriteFloat64(MemoryStream ms, object value)
+        {
+            ms.Write(BitConverter.GetBytes((double)value), 0, 8);
+        }
+
         private static void WriteUint64(MemoryStream ms, object value)
         {
             ms.Write(BitConverter.GetBytes((UInt64)value), 0, 8);

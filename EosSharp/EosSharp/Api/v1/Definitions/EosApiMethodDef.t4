@@ -143,10 +143,12 @@
 			Name = "get_required_keys",
 			Request = new Field[] 
 			{
-				new Field() { Name = "transaction",    Type = "string" },
+				new Field() { Name = "transaction",    Type = "Transaction" },
 				new Field() { Name = "available_keys", Type = "List<string>" }
 			},
-			Response = new Field[] {}
+			Response = new Field[] {
+				new Field() { Name = "required_keys", Type = "List<string>" }
+			}
 		},
 
 		new ApiMethod() 

@@ -15,7 +15,7 @@ namespace EosSharp
         public DefaultSignProvider()
         {
             //TEST Wif
-            Keys.Add("EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV", "5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3");
+            Keys.Add("EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr", "5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA");
         }
 
         public Task<IEnumerable<string>> GetAvailableKeys()

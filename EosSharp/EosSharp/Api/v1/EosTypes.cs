@@ -485,13 +485,15 @@ namespace EosSharp.Api.v1
     public class GetRequiredKeysRequest
     {
 		[JsonProperty("transaction")]   
-		public string Transaction { get; set; }
+		public Transaction Transaction { get; set; }
 		[JsonProperty("available_keys")]   
 		public List<string> AvailableKeys { get; set; }
     }
 	[Serializable]
     public class GetRequiredKeysResponse
     {
+		[JsonProperty("required_keys")]   
+		public List<string> RequiredKeys { get; set; }
     }
 
 	[Serializable]
