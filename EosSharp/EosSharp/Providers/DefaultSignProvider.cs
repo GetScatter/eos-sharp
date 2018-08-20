@@ -20,16 +20,16 @@ namespace EosSharp
 
         public Task<IEnumerable<string>> GetAvailableKeys()
         {
-            throw new System.NotImplementedException();
+            return Task.FromResult(Keys.Keys.AsEnumerable());
         }
 
-        public Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, byte[] trxBytes)
+        public Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, byte[] signBytes)
         {
             var keyTypeBytes = Encoding.UTF8.GetBytes("K1");
             var data = new List<byte[]>()
             {
                 Hex.HexToBytes(chainId),
-                trxBytes,
+                signBytes,
                 new byte[32]
             };
 

@@ -463,11 +463,11 @@ namespace EosSharp.UnitTests
                 var packedTrx = await abiSerializer.SerializePackedTransaction(trx);
                 var signProvider = new DefaultSignProvider();
                 var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
-                var signs = await signProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
+                var signatures = await signProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
                 var result = await DefaultApi.PushTransaction(new PushTransactionRequest()
                 {
-                    Signatures = signs.ToArray(),
+                    Signatures = signatures.ToArray(),
                     Compression = 0,
                     PackedContextFreeData = "",
                     PackedTrx = SerializationHelper.ByteArrayToHexString(packedTrx)
