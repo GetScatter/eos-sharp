@@ -218,6 +218,8 @@ namespace EosSharp.Api.v1
 		public List<PermissionLevel> Authorization { get; set; }
 		[JsonProperty("data")]
 		public object Data { get; set; }
+		[JsonProperty("hex_data")]
+		public string HexData { get; set; }
     }
 	[Serializable]
 	public class Transaction
@@ -312,6 +314,32 @@ namespace EosSharp.Api.v1
 		public DateTime? BlockTime { get; set; }
 		[JsonProperty("action_trace")]
 		public ActionTrace ActionTrace { get; set; }
+    }
+	[Serializable]
+	public class ProcessedReceipt
+    {
+		[JsonProperty("status")]
+		public string Status { get; set; }
+		[JsonProperty("cpu_usage_us")]
+		public UInt32? CpuUsageUs { get; set; }
+		[JsonProperty("net_usage_words")]
+		public UInt32? NetUsageWords { get; set; }
+    }
+	[Serializable]
+	public class ProcessedTransaction
+    {
+		[JsonProperty("id")]
+		public string Id { get; set; }
+		[JsonProperty("receipt")]
+		public ProcessedReceipt Receipt { get; set; }
+		[JsonProperty("elapsed")]
+		public UInt32 Elapsed { get; set; }
+		[JsonProperty("net_usage")]
+		public UInt32 NetUsage { get; set; }
+		[JsonProperty("scheduled")]
+		public bool Scheduled { get; set; }
+		[JsonProperty("action_traces")]
+		public List<ActionTrace> ActionTraces { get; set; }
     }
 	#endregion
 
@@ -678,7 +706,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("transaction_id")]   
 		public string TransactionId { get; set; }
 		[JsonProperty("processed")]   
-		public string Processed { get; set; }
+		public ProcessedTransaction Processed { get; set; }
     }
 
 	[Serializable]

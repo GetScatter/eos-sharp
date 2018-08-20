@@ -214,8 +214,6 @@
             }
         },
 
-		
-
 		new ApiType()
         {
 			Name = "Action",
@@ -225,7 +223,8 @@
 				new Field() { Name = "account", Type = "string" },
 				new Field() { Name = "name", Type = "string" },
 				new Field() { Name = "authorization", Type = "List<PermissionLevel>" },
-				new Field() { Name = "data", Type = "object" }
+				new Field() { Name = "data", Type = "object" },
+				new Field() { Name = "hex_data", Type = "string" }
             }
         },
 
@@ -304,6 +303,33 @@
 				new Field() { Name = "block_num", Type = "UInt32?" },
 				new Field() { Name = "block_time", Type = "DateTime?" },
 				new Field() { Name = "action_trace", Type = "ActionTrace" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "ProcessedReceipt",
+			Fields = new Field[]
+            {
+				new Field() { Name = "status", Type = "string" },
+				new Field() { Name = "cpu_usage_us", Type = "UInt32?" },
+				new Field() { Name = "net_usage_words", Type = "UInt32?" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "ProcessedTransaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "receipt", Type = "ProcessedReceipt" },
+				new Field() { Name = "elapsed", Type = "UInt32" },
+				new Field() { Name = "net_usage", Type = "UInt32" },
+				new Field() { Name = "scheduled", Type = "bool" },
+				new Field() { Name = "except", Type = "string" },
+				new Field() { Name = "action_traces", Type = "List<ActionTrace>" }
+
             }
         },
     };

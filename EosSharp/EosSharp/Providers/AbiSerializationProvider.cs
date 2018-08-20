@@ -66,7 +66,7 @@ namespace EosSharp.Providers
             }
         }
 
-        public async Task<string> SerializeActionDataHexString(Api.v1.Action action)
+        public async Task<byte[]> SerializeActionData(Api.v1.Action action)
         {
             var abiResult = await Api.GetAbi(new GetAbiRequest()
             {
@@ -85,7 +85,7 @@ namespace EosSharp.Providers
                     WriteAbiType(ms, value, field.Type, abiResult.Abi);
                 }
                 
-                return SerializationHelper.ByteArrayToHexString(ms.ToArray());
+                return ms.ToArray();
             }
         }
 
@@ -107,7 +107,7 @@ namespace EosSharp.Providers
                 WritePermissionLevel(ms, perm);
             }
 
-            WriteString(ms, action.Data is string ? action.Data : await SerializeActionDataHexString(action));
+            WriteBytes(ms, await SerializeActionData(action));
         }
 
         private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi)
@@ -119,6 +119,14 @@ namespace EosSharp.Providers
         {
             WriteName(ms, perm.Actor);
             WriteName(ms, perm.Permission);
+        }
+
+        private static void WriteBytes(MemoryStream ms, object value)
+        {
+            var bytes = (byte[])value;
+
+            WriteVarUint32(ms, (UInt32)bytes.Length);
+            ms.Write(bytes, 0, bytes.Length);
         }
 
         private static void WriteName(MemoryStream ms, object value)

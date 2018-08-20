@@ -32,13 +32,10 @@ namespace EosSharp.UnitTests
             var signProvider = new DefaultSignProvider();
             var chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
             var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
-            var helloBytes = Encoding.UTF8.GetBytes("Hello world");
-
+            var helloBytes = Encoding.UTF8.GetBytes("Hello world!");
             var signatures = await signProvider.Sign(chainId, requiredKeys, helloBytes);
 
-            Console.WriteLine(JsonConvert.SerializeObject(signatures));
-
-            Assert.IsTrue(true);
+            Assert.IsTrue(signatures.First() == "SIG_K1_JxtwrzV246xdAgqgH36oX5MjMeg1sEFdUWuwnE9Fhr9eqi5JzgmKXm9UEJgNZMLYdnZhphL1QmE8aW7rTDPC8k8acvkoMR");
         }
 
         [TestMethod]

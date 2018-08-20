@@ -221,7 +221,7 @@ namespace EosSharp.UnitTests
                 var abiSerializer = new AbiSerializationProvider(DefaultApi);
                 foreach (var action in trx.Actions)
                 {
-                    action.Data = await abiSerializer.SerializeActionDataHexString(action);
+                    action.Data = SerializationHelper.ByteArrayToHexString(await abiSerializer.SerializeActionData(action));
                 }
 
                 var getRequiredResult = await DefaultApi.GetRequiredKeys(new GetRequiredKeysRequest()
@@ -454,7 +454,7 @@ namespace EosSharp.UnitTests
                                 new PermissionLevel() {Actor = "tester112345", Permission = "active" }
                             },
                             Name = "transfer",
-                            Data = new { from = "tester112345", to = "tester212345", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                            Data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
                         }
                     }
                 };

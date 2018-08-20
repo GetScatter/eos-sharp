@@ -312,7 +312,7 @@
 			Response = new Field[]
 			{
 				new Field() { Name = "transaction_id", Type = "string" },
-				new Field() { Name = "processed", Type = "string" }
+				new Field() { Name = "processed", Type = "ProcessedTransaction" }
 			}
 		},
 
