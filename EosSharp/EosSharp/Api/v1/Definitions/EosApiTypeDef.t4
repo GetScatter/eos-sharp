@@ -8,7 +8,7 @@
 			Fields = new Field[]
             {
 				new Field() { Name = "name", Type = "string" },
-				new Field() { Name = "precision", Type = "UInt16" }
+				new Field() { Name = "precision", Type = "byte" }
             }
         },
 
@@ -225,8 +225,7 @@
 				new Field() { Name = "account", Type = "string" },
 				new Field() { Name = "name", Type = "string" },
 				new Field() { Name = "authorization", Type = "List<PermissionLevel>" },
-				new Field() { Name = "data", Type = "object" },
-				new Field() { Name = "hex_data", Type = "string" }
+				new Field() { Name = "data", Type = "object" }
             }
         },
 

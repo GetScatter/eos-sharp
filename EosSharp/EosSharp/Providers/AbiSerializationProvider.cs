@@ -66,6 +66,29 @@ namespace EosSharp.Providers
             }
         }
 
+        public async Task<string> SerializeActionDataHexString(Api.v1.Action action)
+        {
+            var abiResult = await Api.GetAbi(new GetAbiRequest()
+            {
+                AccountName = action.Account
+            });
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var abiAction = abiResult.Abi.Actions.First(aa => aa.Name == action.Name);
+                var abiStruct = abiResult.Abi.Structs.First(s => s.Name == abiAction.Type);
+
+                Type dataType = action.Data.GetType();
+                foreach (var field in abiStruct.Fields)
+                {
+                    var value = dataType.GetProperty(field.Name).GetValue(action.Data, null);
+                    WriteAbiType(ms, value, field.Type, abiResult.Abi);
+                }
+                
+                return SerializationHelper.ByteArrayToHexString(ms.ToArray());
+            }
+        }
+
         private void WriteExtension(MemoryStream ms, Api.v1.Extension extension)
         {
             WriteUint16(ms, extension.Type);
@@ -84,25 +107,7 @@ namespace EosSharp.Providers
                 WritePermissionLevel(ms, perm);
             }
 
-            await WriteAbiData(ms, action);
-        }
-
-        private async Task WriteAbiData(MemoryStream ms, Api.v1.Action action)
-        {
-            var abiResult = await Api.GetAbi(new GetAbiRequest()
-            {
-                AccountName = action.Account
-            });
-
-            var abiAction = abiResult.Abi.Actions.First(aa => aa.Name == action.Name);
-            var abiStruct = abiResult.Abi.Structs.First(s => s.Name == abiAction.Type);
-
-            Type dataType = action.Data.GetType();
-            foreach (var field in abiStruct.Fields)
-            {
-                var value = dataType.GetProperty(field.Name).GetValue(action.Data, null);
-                WriteAbiType(ms, value, field.Type, abiResult.Abi);
-            }
+            WriteString(ms, action.Data is string ? action.Data : await SerializeActionDataHexString(action));
         }
 
         private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi)
@@ -143,7 +148,7 @@ namespace EosSharp.Providers
             var s = ((string)value).Trim();
             Int32 pos = 0;
             string amount = "";
-            UInt16 precision = 0;
+            byte precision = 0;
 
             if (s[pos] == '-')
             {
@@ -184,18 +189,17 @@ namespace EosSharp.Providers
         {
             var symbol = (Symbol)value;
 
-            WriteUint16(ms, symbol.Precision);
+            WriteUint8(ms, symbol.Precision);
 
-            if (symbol.Name.Length > 4)
-                ms.Write(Encoding.UTF8.GetBytes(symbol.Name.Substring(0, 4)), 0, 4);
+            if (symbol.Name.Length > 7)
+                ms.Write(Encoding.UTF8.GetBytes(symbol.Name.Substring(0, 7)), 0, 7);
             else
             {
-
                 ms.Write(Encoding.UTF8.GetBytes(symbol.Name), 0, symbol.Name.Length);
 
-                if (symbol.Name.Length < 4)
+                if (symbol.Name.Length < 7)
                 {
-                    var fill = new byte[4 - symbol.Name.Length];
+                    var fill = new byte[7 - symbol.Name.Length];
                     for (int i = 0; i < fill.Length; i++)
                         fill[i] = 0;
                     ms.Write(fill, 0, fill.Length);

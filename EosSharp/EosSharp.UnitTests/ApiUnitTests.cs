@@ -218,6 +218,12 @@ namespace EosSharp.UnitTests
                     }
                 };
 
+                var abiSerializer = new AbiSerializationProvider(DefaultApi);
+                foreach (var action in trx.Actions)
+                {
+                    action.Data = await abiSerializer.SerializeActionDataHexString(action);
+                }
+
                 var getRequiredResult = await DefaultApi.GetRequiredKeys(new GetRequiredKeysRequest()
                 {
                     AvailableKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" },

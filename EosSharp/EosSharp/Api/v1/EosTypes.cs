@@ -17,7 +17,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("name")]
 		public string Name { get; set; }
 		[JsonProperty("precision")]
-		public UInt16 Precision { get; set; }
+		public byte Precision { get; set; }
     }
 	[Serializable]
 	public class Resource
@@ -218,8 +218,6 @@ namespace EosSharp.Api.v1
 		public List<PermissionLevel> Authorization { get; set; }
 		[JsonProperty("data")]
 		public object Data { get; set; }
-		[JsonProperty("hex_data")]
-		public string HexData { get; set; }
     }
 	[Serializable]
 	public class Transaction
