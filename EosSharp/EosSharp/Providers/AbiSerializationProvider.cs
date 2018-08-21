@@ -7,6 +7,7 @@ using System.Linq;
 using System.Collections.Generic;
 using EosSharp.Helpers;
 using FastMember;
+using System.Text.RegularExpressions;
 
 namespace EosSharp.Providers
 {
@@ -21,11 +22,11 @@ namespace EosSharp.Providers
 
             TypeWriters = new Dictionary<string, Action<MemoryStream, object>>()
             {     
-                {"int8",                 WriteInt8               },
-                {"uint8",                WriteUint8              },
-                {"int16",                WriteInt16              },
+                {"int8",                 WriteByte               },
+                {"uint8",                WriteByte               },
+                {"int16",                WriteUint16             },
                 {"uint16",               WriteUint16             },
-                {"int32",                WriteInt32              },
+                {"int32",                WriteUint32             },
                 {"uint32",               WriteUint32             },
                 {"int64",                WriteInt64              },
                 {"uint64",               WriteUint64             },
@@ -45,7 +46,7 @@ namespace EosSharp.Providers
                 {"time_point_sec",       WriteTimePointSec       },
                 {"block_timestamp_type", WriteBlockTimestampType },
                 {"symbol_code",          WriteSymbolCode         },
-                {"symbol",               WriteSymbol             },
+                {"symbol",               WriteSymbolString       },
                 {"checksum160",          WriteChecksum160        },
                 {"checksum256",          WriteChecksum256        },
                 {"checksum512",          WriteChecksum512        },
@@ -70,7 +71,7 @@ namespace EosSharp.Providers
 
                 //trx info
                 WriteVarUint32(ms, trx.MaxNetUsageWords);
-                WriteUint8(ms, trx.MaxCpuUsageMs);
+                WriteByte(ms, trx.MaxCpuUsageMs);
                 WriteVarUint32(ms, trx.DelaySec);
 
                 WriteVarUint32(ms, (UInt32)trx.ContextFreeActions.Count);
@@ -137,29 +138,14 @@ namespace EosSharp.Providers
 
         #region Writer Functions
 
-        private static void WriteInt8(MemoryStream ms, object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void WriteUint8(MemoryStream ms, object value)
+        private static void WriteByte(MemoryStream ms, object value)
         {
             ms.Write(new byte[] { (byte)value }, 0, 1);
         }
-
-        private static void WriteInt16(MemoryStream ms, object value)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         private static void WriteUint16(MemoryStream ms, object value)
         {
             ms.Write(BitConverter.GetBytes((UInt16)value), 0, 2);
-        }
-
-        private static void WriteInt32(MemoryStream ms, object value)
-        {
-            throw new NotImplementedException();
         }
 
         private static void WriteUint32(MemoryStream ms, object value)
@@ -169,22 +155,26 @@ namespace EosSharp.Providers
 
         private static void WriteInt64(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var decimalBytes = SerializationHelper.SignedDecimalToBinary(8, value.ToString());
+            ms.Write(decimalBytes, 0, decimalBytes.Length);
         }
 
         private static void WriteUint64(MemoryStream ms, object value)
         {
-            ms.Write(BitConverter.GetBytes((UInt64)value), 0, 8);
-        }
-
-        private static void WriteUInt128(MemoryStream ms, object value)
-        {
-            throw new NotImplementedException();
+            var decimalBytes = SerializationHelper.DecimalToBinary(8, value.ToString());
+            ms.Write(decimalBytes, 0, decimalBytes.Length);
         }
 
         private static void WriteInt128(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var decimalBytes = SerializationHelper.SignedDecimalToBinary(16, value.ToString());
+            ms.Write(decimalBytes, 0, decimalBytes.Length);
+        }
+
+        private static void WriteUInt128(MemoryStream ms, object value)
+        {
+            var decimalBytes = SerializationHelper.DecimalToBinary(16, value.ToString());
+            ms.Write(decimalBytes, 0, decimalBytes.Length);
         }
 
         private static void WriteVarUint32(MemoryStream ms, object value)
@@ -223,7 +213,14 @@ namespace EosSharp.Providers
 
         private static void WriteFloat128(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            Int32[] bits = decimal.GetBits((decimal)value);
+            List<byte> bytes = new List<byte>();
+            foreach (Int32 i in bits)
+            {
+                bytes.AddRange(BitConverter.GetBytes(i));
+            }
+
+            ms.Write(bytes.ToArray(), 0, 16);
         }
 
         private static void WriteBytes(MemoryStream ms, object value)
@@ -236,7 +233,7 @@ namespace EosSharp.Providers
 
         private static void WriteBool(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            WriteByte(ms, (bool)value ? 1 : 0);
         }
 
         private static void WriteString(MemoryStream ms, object value)
@@ -313,34 +310,45 @@ namespace EosSharp.Providers
 
         private static void WriteTimePoint(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var ticks = SerializationHelper.DateToTimePoint((DateTime)value);
+            WriteUint32(ms, (UInt32)ticks >> 0);
+            WriteUint32(ms, (UInt32)Math.Floor((double)ticks / 0x10000_0000) >> 0);
         }
 
         private static void WriteTimePointSec(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            WriteUint32(ms, SerializationHelper.DateToTimePointSec((DateTime)value));
         }
 
         private static void WriteBlockTimestampType(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            WriteUint32(ms, SerializationHelper.DateToBlockTimestamp((DateTime)value));
         }
 
-        private static void WriteSymbol(MemoryStream ms, object value)
+        private static void WriteSymbolString(MemoryStream ms, object value)
         {
-            var symbol = (Symbol)value;
+            Regex r = new Regex("^([0-9]+),([A-Z]+)$", RegexOptions.IgnoreCase);
+            Match m = r.Match((string)value);
 
-            WriteUint8(ms, symbol.Precision);
+            if (!m.Success)
+                throw new Exception("Invalid symbol.");
 
-            if (symbol.Name.Length > 7)
-                ms.Write(Encoding.UTF8.GetBytes(symbol.Name.Substring(0, 7)), 0, 7);
+            WriteSymbol(ms, new Symbol() { Name = m.Groups[1].ToString(), Precision = byte.Parse(m.Groups[0].ToString()) });
+        }
+
+        private static void WriteSymbolCode(MemoryStream ms, object value)
+        {
+            var name = (string)value;
+
+            if (name.Length > 7)
+                ms.Write(Encoding.UTF8.GetBytes(name.Substring(0, 7)), 0, 7);
             else
             {
-                ms.Write(Encoding.UTF8.GetBytes(symbol.Name), 0, symbol.Name.Length);
+                ms.Write(Encoding.UTF8.GetBytes(name), 0, name.Length);
 
-                if (symbol.Name.Length < 7)
+                if (name.Length < 7)
                 {
-                    var fill = new byte[7 - symbol.Name.Length];
+                    var fill = new byte[7 - name.Length];
                     for (int i = 0; i < fill.Length; i++)
                         fill[i] = 0;
                     ms.Write(fill, 0, fill.Length);
@@ -348,24 +356,34 @@ namespace EosSharp.Providers
             }
         }
 
-        private static void WriteSymbolCode(MemoryStream ms, object value)
-        {
-            throw new NotImplementedException();
-        }
-
         private static void WriteChecksum160(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var bytes = SerializationHelper.HexStringToByteArray((string)value);
+
+            if (bytes.Length != 20)
+                throw new Exception("Binary data has incorrect size");
+
+            ms.Write(bytes, 0, bytes.Length);
         }
 
         private static void WriteChecksum256(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var bytes = SerializationHelper.HexStringToByteArray((string)value);
+
+            if (bytes.Length != 32)
+                throw new Exception("Binary data has incorrect size");
+
+            ms.Write(bytes, 0, bytes.Length);
         }
 
         private static void WriteChecksum512(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var bytes = SerializationHelper.HexStringToByteArray((string)value);
+
+            if (bytes.Length != 64)
+                throw new Exception("Binary data has incorrect size");
+
+            ms.Write(bytes, 0, bytes.Length);
         }
         
         private static void WritePublicKey(MemoryStream ms, object value)
@@ -388,11 +406,25 @@ namespace EosSharp.Providers
             throw new NotImplementedException();
         }
 
-        private void WriteExtension(MemoryStream ms, Api.v1.Extension extension)
+        private static void WriteSymbol(MemoryStream ms, object value)
+        {
+            var symbol = (Symbol)value;
+
+            WriteByte(ms, symbol.Precision);
+            WriteSymbolCode(ms, symbol);
+        }
+
+        private static void WriteExtension(MemoryStream ms, Api.v1.Extension extension)
         {
             WriteUint16(ms, extension.Type);
             //TODO abi data?
             //public object Data { get; set; }
+        }
+
+        private static void WritePermissionLevel(MemoryStream ms, PermissionLevel perm)
+        {
+            WriteName(ms, perm.Actor);
+            WriteName(ms, perm.Permission);
         }
 
         private void WriteAction(MemoryStream ms, Api.v1.Action action, Abi abi)
@@ -448,11 +480,7 @@ namespace EosSharp.Providers
         //    }
         //}
 
-        private static void WritePermissionLevel(MemoryStream ms, PermissionLevel perm)
-        {
-            WriteName(ms, perm.Actor);
-            WriteName(ms, perm.Permission);
-        }
+        
 
         #endregion
     }

@@ -84,6 +84,15 @@ namespace EosSharp.Helpers
             return hex.ToString();
         }
 
+        public static byte[] HexStringToByteArray(string hex)
+        {
+            var l = hex.Length / 2;
+            var result = new byte[l];
+            for (var i = 0; i < l; ++i)
+                result[i] = (byte)Convert.ToInt32(hex.Substring(i * 2, 2), 16);
+            return result;
+        }
+
         public static string ObjectToHexString(object obj)
         {
             return ByteArrayToHexString(ObjectToByteArray(obj));
@@ -112,5 +121,12 @@ namespace EosSharp.Helpers
             var span = (value - new DateTime(1970, 1, 1));
             return (UInt32)span.TotalSeconds;
         }
+
+        public static UInt32 DateToBlockTimestamp(DateTime value)
+        { 
+            var span = (value - new DateTime(1970, 1, 1));
+            return (UInt32)Math.Round((span.TotalMilliseconds - 946684800000) / 500);
+        }
+
     }
 }
