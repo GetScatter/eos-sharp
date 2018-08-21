@@ -18,6 +18,21 @@ namespace EosSharp
             Keys.Add("EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr", "5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA");
         }
 
+        public DefaultSignProvider(string privateKey)
+        {
+            //TODO
+        }
+
+        public DefaultSignProvider(List<string> privateKeys)
+        {
+            //TEST TODO
+        }
+
+        public DefaultSignProvider(Dictionary<string, string> keys)
+        {
+            Keys = keys;
+        }
+
         public Task<IEnumerable<string>> GetAvailableKeys()
         {
             return Task.FromResult(Keys.Keys.AsEnumerable());

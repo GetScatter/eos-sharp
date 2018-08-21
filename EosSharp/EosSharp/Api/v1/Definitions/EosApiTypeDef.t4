@@ -271,7 +271,7 @@
 				new Field() { Name = "act_digest", Type = "string" },
 				new Field() { Name = "global_sequence", Type = "UInt64?" },
 				new Field() { Name = "recv_sequence", Type = "UInt64?" },
-				new Field() { Name = "auth_sequence", Type = "object" }, //TODO multiple array
+				new Field() { Name = "auth_sequence", Type = "List<List<object>>" },
 				new Field() { Name = "code_sequence", Type = "UInt64?" },
 				new Field() { Name = "abi_sequence", Type = "UInt64?" }
             }
@@ -330,6 +330,16 @@
 				new Field() { Name = "except", Type = "string" },
 				new Field() { Name = "action_traces", Type = "List<ActionTrace>" }
 
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "DetailedTransaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "receipt", Type = "ProcessedReceipt" },
+				new Field() { Name = "trx", Type = "Transaction" }
             }
         },
     };

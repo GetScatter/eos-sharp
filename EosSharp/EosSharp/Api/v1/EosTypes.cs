@@ -275,7 +275,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("recv_sequence")]
 		public UInt64? RecvSequence { get; set; }
 		[JsonProperty("auth_sequence")]
-		public object AuthSequence { get; set; }
+		public List<List<object>> AuthSequence { get; set; }
 		[JsonProperty("code_sequence")]
 		public UInt64? CodeSequence { get; set; }
 		[JsonProperty("abi_sequence")]
@@ -338,8 +338,18 @@ namespace EosSharp.Api.v1
 		public UInt32 NetUsage { get; set; }
 		[JsonProperty("scheduled")]
 		public bool Scheduled { get; set; }
+		[JsonProperty("except")]
+		public string Except { get; set; }
 		[JsonProperty("action_traces")]
 		public List<ActionTrace> ActionTraces { get; set; }
+    }
+	[Serializable]
+	public class DetailedTransaction
+    {
+		[JsonProperty("receipt")]
+		public ProcessedReceipt Receipt { get; set; }
+		[JsonProperty("trx")]
+		public Transaction Trx { get; set; }
     }
 	#endregion
 
@@ -744,15 +754,15 @@ namespace EosSharp.Api.v1
 		[JsonProperty("id")]   
 		public string Id { get; set; }
 		[JsonProperty("trx")]   
-		public string Trx { get; set; }
+		public Transaction Trx { get; set; }
 		[JsonProperty("block_time")]   
-		public string BlockTime { get; set; }
+		public DateTime? BlockTime { get; set; }
 		[JsonProperty("block_num")]   
 		public UInt32? BlockNum { get; set; }
 		[JsonProperty("last_irreversible_block")]   
 		public UInt32? LastIrreversibleBlock { get; set; }
 		[JsonProperty("traces")]   
-		public List<string> Traces { get; set; }
+		public List<ActionTrace> Traces { get; set; }
     }
 
 	[Serializable]

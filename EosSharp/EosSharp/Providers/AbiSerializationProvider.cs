@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using EosSharp.Helpers;
+using FastMember;
 
 namespace EosSharp.Providers
 {
@@ -25,13 +26,22 @@ namespace EosSharp.Providers
                 { "uint16", WriteUint16 },
                 { "uint32", WriteUint32 },
                 { "uint64", WriteUint8 },
+                { "varuint32", WriteVarUint32 },
+                { "varint32", WriteVarInt32 },
+                { "float32", WriteFloat32 },
+                { "float64", WriteFloat64 },
                 { "account_name", WriteName },
-                { "asset", WriteAsset }
+                { "asset", WriteAsset },
+                { "bytes", WriteBytes },
+                //TODO add missing types and array support
             };
         }
 
         public async Task<byte[]> SerializePackedTransaction(Transaction trx)
         {
+            int actionIndex = 0;
+            var abiResponses = await GetTransactionAbis(trx);
+
             using (MemoryStream ms = new MemoryStream())
             {
                 //trx headers
@@ -47,13 +57,13 @@ namespace EosSharp.Providers
                 WriteVarUint32(ms, (UInt32)trx.ContextFreeActions.Count);
                 foreach (var action in trx.ContextFreeActions)
                 {
-                    await WriteAction(ms, action);
+                    WriteAction(ms, action, abiResponses[actionIndex++].Abi);
                 }
 
                 WriteVarUint32(ms, (UInt32)trx.Actions.Count);
                 foreach (var action in trx.Actions)
                 {
-                    await WriteAction(ms, action);
+                    WriteAction(ms, action, abiResponses[actionIndex++].Abi);
                 }
 
                 WriteVarUint32(ms, (UInt32)trx.TransactionExtensions.Count);
@@ -66,27 +76,44 @@ namespace EosSharp.Providers
             }
         }
 
-        public async Task<byte[]> SerializeActionData(Api.v1.Action action)
+        public byte[] SerializeActionData(Api.v1.Action action, Abi abi)
         {
-            var abiResult = await Api.GetAbi(new GetAbiRequest()
-            {
-                AccountName = action.Account
-            });
-
             using (MemoryStream ms = new MemoryStream())
             {
-                var abiAction = abiResult.Abi.Actions.First(aa => aa.Name == action.Name);
-                var abiStruct = abiResult.Abi.Structs.First(s => s.Name == abiAction.Type);
+                var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
+                var abiStruct = abi.Structs.First(s => s.Name == abiAction.Type);
 
-                Type dataType = action.Data.GetType();
+                var accessor = ObjectAccessor.Create(action.Data);
                 foreach (var field in abiStruct.Fields)
                 {
-                    var value = dataType.GetProperty(field.Name).GetValue(action.Data, null);
-                    WriteAbiType(ms, value, field.Type, abiResult.Abi);
+                    WriteAbiType(ms, accessor[field.Name], field.Type, abi);
                 }
                 
                 return ms.ToArray();
             }
+        }
+
+        public Task<GetAbiResponse[]> GetTransactionAbis(Transaction trx)
+        {
+            var abiTasks = new List<Task<GetAbiResponse>>();
+
+            foreach (var action in trx.ContextFreeActions)
+            {
+                abiTasks.Add(Api.GetAbi(new GetAbiRequest()
+                {
+                    AccountName = action.Account
+                }));
+            }
+
+            foreach (var action in trx.Actions)
+            {
+                abiTasks.Add(Api.GetAbi(new GetAbiRequest()
+                {
+                    AccountName = action.Account
+                }));
+            }
+
+            return Task.WhenAll(abiTasks);
         }
 
         private void WriteExtension(MemoryStream ms, Api.v1.Extension extension)
@@ -96,7 +123,7 @@ namespace EosSharp.Providers
             //public object Data { get; set; }
         }
 
-        private async Task WriteAction(MemoryStream ms, Api.v1.Action action)
+        private void WriteAction(MemoryStream ms, Api.v1.Action action, Abi abi)
         {
             WriteName(ms, action.Account);
             WriteName(ms, action.Name);
@@ -107,7 +134,7 @@ namespace EosSharp.Providers
                 WritePermissionLevel(ms, perm);
             }
 
-            WriteBytes(ms, await SerializeActionData(action));
+            WriteBytes(ms, SerializeActionData(action, abi));
         }
 
         private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi)

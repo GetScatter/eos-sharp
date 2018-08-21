@@ -347,11 +347,11 @@
 			Response = new Field[]
 			{
 				new Field() { Name = "id", Type = "string" },
-				new Field() { Name = "trx", Type = "string" },
-				new Field() { Name = "block_time", Type = "string" },
+				new Field() { Name = "trx", Type = "Transaction" },
+				new Field() { Name = "block_time", Type = "DateTime?" },
 				new Field() { Name = "block_num", Type = "UInt32?" },
 				new Field() { Name = "last_irreversible_block", Type = "UInt32?" },
-				new Field() { Name = "traces", Type = "List<string>" }
+				new Field() { Name = "traces", Type = "List<ActionTrace>" }
 			}
 		},
 
