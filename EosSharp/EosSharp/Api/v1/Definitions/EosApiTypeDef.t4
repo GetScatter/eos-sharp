@@ -342,5 +342,54 @@
 				new Field() { Name = "trx", Type = "Transaction" }
             }
         },
+
+		new ApiType()
+        {
+			Name = "RefundRequest",
+			Fields = new Field[]
+            {
+				new Field() { Name = "cpu_amount", Type = "string" },
+				new Field() { Name = "net_amount", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "SelfDelegatedBandwidth",
+			Fields = new Field[]
+            {
+				new Field() { Name = "cpu_weight", Type = "string" },
+				new Field() { Name = "from", Type = "string" },
+				new Field() { Name = "net_weight", Type = "string" },
+				new Field() { Name = "to", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "TotalResources",
+			Fields = new Field[]
+            {
+				new Field() { Name = "cpu_weight", Type = "string" },
+				new Field() { Name = "net_weight", Type = "string" },
+				new Field() { Name = "owner", Type = "string" },
+				new Field() { Name = "ram_bytes", Type = "UInt64?" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "VoterInfo",
+			Fields = new Field[]
+            {
+				new Field() { Name = "is_proxy", Type = "bool?" },
+				new Field() { Name = "last_vote_weight", Type = "double?" },
+				new Field() { Name = "owner", Type = "string" },
+				new Field() { Name = "producers", Type = "List<string>" },
+				new Field() { Name = "proxied_vote_weight", Type = "double?" },
+				new Field() { Name = "proxy", Type = "string" },
+				new Field() { Name = "staked", Type = "UInt64?" }
+            }
+        }
     };
 #>

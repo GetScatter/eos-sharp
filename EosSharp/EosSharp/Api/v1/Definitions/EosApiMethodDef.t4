@@ -46,10 +46,10 @@
 				new Field() { Name = "cpu_limit", Type = "Resource" }, 
 				new Field() { Name = "ram_usage", Type = "UInt32?" },
 				new Field() { Name = "permissions", Type = "List<Permission>" },
-				new Field() { Name = "total_resources", Type = "string" },
-				new Field() { Name = "self_delegated_bandwidth", Type = "string" },
-				new Field() { Name = "refund_request", Type = "object" }, //TODO
-				new Field() { Name = "voter_info", Type = "object" } //TODO
+				new Field() { Name = "refund_request", Type = "RefundRequest" },
+				new Field() { Name = "self_delegated_bandwidth", Type = "SelfDelegatedBandwidth" },
+				new Field() { Name = "total_resources", Type = "TotalResources" },
+				new Field() { Name = "voter_info", Type = "VoterInfo" }
 			}
 		},
 
@@ -169,9 +169,10 @@
 				new Field() { Name = "action_mroot", Type = "string" },
 				new Field() { Name = "schedule_version", Type = "UInt32" },
 				new Field() { Name = "new_producers", Type = "string" },
-				new Field() { Name = "header_extensions", Type = "List<object>" },
+				new Field() { Name = "block_extensions", Type = "List<object>" }, //TODO
+				new Field() { Name = "header_extensions", Type = "List<object>" }, //TODO
 				new Field() { Name = "producer_signature", Type = "string" },
-				new Field() { Name = "transactions", Type = "List<object>" },
+				new Field() { Name = "transactions", Type = "List<object>" }, //TODO
 				new Field() { Name = "id", Type = "string" },
 				new Field() { Name = "block_num", Type = "UInt32" },
 				new Field() { Name = "ref_block_prefix", Type = "UInt32" }

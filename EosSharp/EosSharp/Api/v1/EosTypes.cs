@@ -351,6 +351,56 @@ namespace EosSharp.Api.v1
 		[JsonProperty("trx")]
 		public Transaction Trx { get; set; }
     }
+	[Serializable]
+	public class RefundRequest
+    {
+		[JsonProperty("cpu_amount")]
+		public string CpuAmount { get; set; }
+		[JsonProperty("net_amount")]
+		public string NetAmount { get; set; }
+    }
+	[Serializable]
+	public class SelfDelegatedBandwidth
+    {
+		[JsonProperty("cpu_weight")]
+		public string CpuWeight { get; set; }
+		[JsonProperty("from")]
+		public string From { get; set; }
+		[JsonProperty("net_weight")]
+		public string NetWeight { get; set; }
+		[JsonProperty("to")]
+		public string To { get; set; }
+    }
+	[Serializable]
+	public class TotalResources
+    {
+		[JsonProperty("cpu_weight")]
+		public string CpuWeight { get; set; }
+		[JsonProperty("net_weight")]
+		public string NetWeight { get; set; }
+		[JsonProperty("owner")]
+		public string Owner { get; set; }
+		[JsonProperty("ram_bytes")]
+		public UInt64? RamBytes { get; set; }
+    }
+	[Serializable]
+	public class VoterInfo
+    {
+		[JsonProperty("is_proxy")]
+		public bool? IsProxy { get; set; }
+		[JsonProperty("last_vote_weight")]
+		public double? LastVoteWeight { get; set; }
+		[JsonProperty("owner")]
+		public string Owner { get; set; }
+		[JsonProperty("producers")]
+		public List<string> Producers { get; set; }
+		[JsonProperty("proxied_vote_weight")]
+		public double? ProxiedVoteWeight { get; set; }
+		[JsonProperty("proxy")]
+		public string Proxy { get; set; }
+		[JsonProperty("staked")]
+		public UInt64? Staked { get; set; }
+    }
 	#endregion
 
 	#region generate api method types
@@ -418,14 +468,14 @@ namespace EosSharp.Api.v1
 		public UInt32? RamUsage { get; set; }
 		[JsonProperty("permissions")]   
 		public List<Permission> Permissions { get; set; }
-		[JsonProperty("total_resources")]   
-		public string TotalResources { get; set; }
-		[JsonProperty("self_delegated_bandwidth")]   
-		public string SelfDelegatedBandwidth { get; set; }
 		[JsonProperty("refund_request")]   
-		public object RefundRequest { get; set; }
+		public RefundRequest RefundRequest { get; set; }
+		[JsonProperty("self_delegated_bandwidth")]   
+		public SelfDelegatedBandwidth SelfDelegatedBandwidth { get; set; }
+		[JsonProperty("total_resources")]   
+		public TotalResources TotalResources { get; set; }
 		[JsonProperty("voter_info")]   
-		public object VoterInfo { get; set; }
+		public VoterInfo VoterInfo { get; set; }
     }
 
 	[Serializable]
@@ -557,6 +607,8 @@ namespace EosSharp.Api.v1
 		public UInt32 ScheduleVersion { get; set; }
 		[JsonProperty("new_producers")]   
 		public string NewProducers { get; set; }
+		[JsonProperty("block_extensions")]   
+		public List<object> BlockExtensions { get; set; }
 		[JsonProperty("header_extensions")]   
 		public List<object> HeaderExtensions { get; set; }
 		[JsonProperty("producer_signature")]   
