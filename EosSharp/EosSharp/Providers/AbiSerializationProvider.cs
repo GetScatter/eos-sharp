@@ -102,13 +102,8 @@ namespace EosSharp.Providers
             {
                 var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
                 var abiStruct = abi.Structs.First(s => s.Name == abiAction.Type);
+                WriteStruct(ms, action.Data, abiStruct, abi);
 
-                var accessor = ObjectAccessor.Create(action.Data);
-                foreach (var field in abiStruct.Fields)
-                {
-                    WriteAbiType(ms, accessor[field.Name], field.Type, abi);
-                }
-                
                 return ms.ToArray();
             }
         }
@@ -411,7 +406,7 @@ namespace EosSharp.Providers
             var symbol = (Symbol)value;
 
             WriteByte(ms, symbol.Precision);
-            WriteSymbolCode(ms, symbol);
+            WriteSymbolCode(ms, symbol.Name);
         }
 
         private static void WriteExtension(MemoryStream ms, Api.v1.Extension extension)
@@ -443,44 +438,91 @@ namespace EosSharp.Providers
 
         private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi)
         {
+            //optional type
+            if(type.EndsWith("?"))
+            {
+                WriteByte(ms, value != null ? 1 : 0);
+                if(value != null)
+                {
+                    WriteByte(ms, 1);
+                    type.Substring(0, type.Length - 1);
+                }
+                else
+                {
+                    WriteByte(ms, 0);
+                    return;
+                }
+            }
 
+            // array type
+            if(type.EndsWith("[]"))
+            {
+                var items = (IEnumerable<object>)value;
+                var arrayType = type.Substring(0, type.Length - 2);
 
-            TypeWriters[type](ms, value);
+                WriteVarUint32(ms, items.Count());
+                foreach (var item in items)
+                    WriteAbiType(ms, item, arrayType, abi);
+
+                return;
+            }
+
+            var writer = GetTypeWriterAndCache(type, abi);
+
+            if (writer != null)
+            {
+                writer(ms, value);
+            }
+            else
+            {
+                var abiStruct = abi.Structs.FirstOrDefault(s => s.Name == type);
+                if (abiStruct != null)
+                {
+                    WriteStruct(ms, value, abiStruct, abi);
+                }
+                else
+                {
+                    throw new Exception("Type supported writer not found.");
+                }
+            }
         }
 
-        //    function serializeStruct(buffer: SerialBuffer, data: any)
-        //    {
-        //        if (this.base)
-        //this.base.serialize(buffer, data);
-        //        for (let field of this.fields)
-        //        {
-        //            if (!(field.name in data))
-        //  throw new Error('missing ' + this.name + '.' + field.name + ' (type=' + field.type.name + ')');
-        //        field.type.serialize(buffer, data[field.name]);
-        //    }
-        //}
+        private void WriteStruct(MemoryStream ms, object value, AbiStruct abiStruct, Abi abi)
+        {
+            if(!string.IsNullOrWhiteSpace(abiStruct.Base))
+            {
+                WriteAbiType(ms, value, abiStruct.Base, abi);
+            }
 
-        //function serializeArray(buffer: SerialBuffer, data: any[])
-        //{
-        //    buffer.pushVaruint32(data.length);
-        //    for (let item of data)
-        //        this.arrayOf.serialize(buffer, item);
-        //}
+            var accessor = ObjectAccessor.Create(value);
+            foreach (var field in abiStruct.Fields)
+            {
+                WriteAbiType(ms, accessor[field.Name], field.Type, abi);
+            }
+        }
 
-        //function serializeOptional(buffer: SerialBuffer, data: any)
-        //{
-        //    if (data === null || data === undefined)
-        //    {
-        //        buffer.push(0);
-        //    }
-        //    else
-        //    {
-        //        buffer.push(1);
-        //        this.optionalOf.serialize(buffer, data);
-        //    }
-        //}
+        private Action<MemoryStream, object> GetTypeWriterAndCache(string type, Abi abi)
+        {
+            if (TypeWriters.TryGetValue(type, out Action<MemoryStream, object> nativeTypeWriter))
+            {
+                return nativeTypeWriter;
+            }
 
-        
+            var abiType = abi.Types.FirstOrDefault(t => t.NewTypeName == type);
+
+            if(abiType != null)
+            {
+                var writer = GetTypeWriterAndCache(abiType.Type, abi);
+
+                if(writer != null)
+                {
+                    TypeWriters.Add(type, writer);
+                    return writer;
+                }
+            }
+
+            return null;
+        }
 
         #endregion
     }
