@@ -239,9 +239,9 @@
 				new Field() { Name = "max_net_usage_words", Type = "UInt32" },
 				new Field() { Name = "max_cpu_usage_ms", Type = "byte" },
 				new Field() { Name = "delay_sec", Type = "UInt32" },
-				new Field() { Name = "context_free_actions", Type = "List<Action>" },
-				new Field() { Name = "actions", Type = "List<Action>" },
-				new Field() { Name = "transaction_extensions", Type = "List<Extension>" }
+				new Field() { Name = "context_free_actions", Type = "List<Action>", Default = "new List<Action>()"},
+				new Field() { Name = "actions", Type = "List<Action>" , Default = "new List<Action>()"},
+				new Field() { Name = "transaction_extensions", Type = "List<Extension>" , Default = "new List<Extension>()"}
 
             }
         },

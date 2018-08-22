@@ -237,11 +237,11 @@ namespace EosSharp.Api.v1
 		[JsonProperty("delay_sec")]
 		public UInt32 DelaySec { get; set; }
 		[JsonProperty("context_free_actions")]
-		public List<Action> ContextFreeActions { get; set; }
+		public List<Action> ContextFreeActions { get; set; } = new List<Action>();
 		[JsonProperty("actions")]
-		public List<Action> Actions { get; set; }
+		public List<Action> Actions { get; set; } = new List<Action>();
 		[JsonProperty("transaction_extensions")]
-		public List<Extension> TransactionExtensions { get; set; }
+		public List<Extension> TransactionExtensions { get; set; } = new List<Extension>();
     }
 	[Serializable]
 	public class ScheduledTransaction
