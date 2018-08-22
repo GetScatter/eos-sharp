@@ -249,7 +249,6 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO add missing types
         [TestMethod]
         public async Task GetBlock()
         {
@@ -273,7 +272,6 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO add missing types
         [TestMethod]
         public async Task GetBlockHeaderState()
         {

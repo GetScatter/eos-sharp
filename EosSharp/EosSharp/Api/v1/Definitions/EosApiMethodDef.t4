@@ -169,10 +169,10 @@
 				new Field() { Name = "action_mroot", Type = "string" },
 				new Field() { Name = "schedule_version", Type = "UInt32" },
 				new Field() { Name = "new_producers", Type = "string" },
-				new Field() { Name = "block_extensions", Type = "List<object>" }, //TODO
-				new Field() { Name = "header_extensions", Type = "List<object>" }, //TODO
+				new Field() { Name = "block_extensions", Type = "List<object>" }, //TODO check type
+				new Field() { Name = "header_extensions", Type = "List<object>" }, //TODO check type
 				new Field() { Name = "producer_signature", Type = "string" },
-				new Field() { Name = "transactions", Type = "List<object>" }, //TODO
+				new Field() { Name = "transactions", Type = "List<object>" }, //TODO check type
 				new Field() { Name = "id", Type = "string" },
 				new Field() { Name = "block_num", Type = "UInt32" },
 				new Field() { Name = "ref_block_prefix", Type = "UInt32" }
