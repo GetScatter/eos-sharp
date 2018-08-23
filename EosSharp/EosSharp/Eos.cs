@@ -15,14 +15,15 @@ namespace EosSharp
         private EosApi Api { get; set; }
         private AbiSerializationProvider AbiSerializer { get; set; }
 
-        public Eos(EosConfigurator config = null)
+        public Eos(EosConfigurator config)
         {
-            EosConfig = config ?? new EosConfigurator();
+            EosConfig = config ?? throw new ArgumentNullException("config");
             Api = new EosApi(EosConfig);
             AbiSerializer = new AbiSerializationProvider(Api);
         }
 
         #region Api Methods
+
         public Task<GetInfoResponse> GetInfo()
         {
             return Api.GetInfo();
@@ -167,11 +168,25 @@ namespace EosSharp
 
         public async Task<string> CreateTransaction(Transaction trx)
         {
-            if(trx.Expiration == DateTime.MinValue ||
+            if (EosConfig.SignProvider == null)
+                throw new ArgumentNullException("SignProvider");
+
+            GetInfoResponse getInfoResult = null;
+            string chainId = EosConfig.ChainId;
+
+            if (string.IsNullOrWhiteSpace(chainId))
+            {
+                getInfoResult = await Api.GetInfo();
+                chainId = getInfoResult.ChainId;
+            }
+
+            if (trx.Expiration == DateTime.MinValue ||
                trx.RefBlockNum == 0 ||
                trx.RefBlockPrefix == 0)
             {
-                var getInfoResult = await Api.GetInfo();
+                if(getInfoResult == null)
+                    getInfoResult = await Api.GetInfo();
+
                 var getBlockResult = await Api.GetBlock(new GetBlockRequest()
                 {
                     BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
@@ -186,7 +201,7 @@ namespace EosSharp
 
             var availableKeys = await EosConfig.SignProvider.GetAvailableKeys();
             var requiredKeys = await GetRequiredKeys(availableKeys.ToList(), trx);
-            var signatures = await EosConfig.SignProvider.Sign(Api.Config.ChainId, requiredKeys, packedTrx);
+            var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx);
 
             var result = await Api.PushTransaction(new PushTransactionRequest()
             {
