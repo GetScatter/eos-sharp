@@ -13,6 +13,12 @@ namespace EosSharp.Providers
 {
     public class AbiSerializationProvider
     {
+        private enum KeyType
+        {
+            k1 = 0,
+            r1 = 1,
+        };
+
         private EosApi Api { get; set; }
         private Dictionary<string, Action<MemoryStream, object>> TypeWriters { get; set; }
 
@@ -383,17 +389,32 @@ namespace EosSharp.Providers
         
         private static void WritePublicKey(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var s = (string)value;
+            var keyBytes = CryptoHelper.PubKeyStringToBytes(s);
+
+            WriteByte(ms, s.StartsWith("PUB_R1_") ? KeyType.r1 : KeyType.k1);
+            ms.Write(keyBytes, 0, keyBytes.Length);
         }
 
         private static void WritePrivateKey(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var s = (string)value;
+            var keyBytes = CryptoHelper.PrivKeyStringToBytes(s);
+            WriteByte(ms, KeyType.r1);
+            ms.Write(keyBytes, 0, keyBytes.Length);
         }
 
         private static void WriteSignature(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var s = (string)value;
+            var signBytes = CryptoHelper.SignStringToSignature(s);
+            
+            if (s.StartsWith("SIG_K1_"))
+                WriteByte(ms, KeyType.k1);
+            else if (s.StartsWith("SIG_R1_"))
+                WriteByte(ms, KeyType.r1);
+
+            ms.Write(signBytes, 0, signBytes.Length);
         }
 
         private static void WriteExtendedAsset(MemoryStream ms, object value)

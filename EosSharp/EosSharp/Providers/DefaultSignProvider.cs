@@ -16,7 +16,7 @@ namespace EosSharp
 
         public DefaultSignProvider(string privateKey)
         {
-            var privKeyBytes = CryptoHelper.GetKeyBytes(privateKey);
+            var privKeyBytes = CryptoHelper.GetPrivateKeyBytesWithoutCheckSum(privateKey);
             var pubKey = CryptoHelper.PubKeyBytesToString(Secp256K1Manager.GetPublicKey(privKeyBytes, true));
             Keys.Add(pubKey, privKeyBytes);
         }
@@ -28,7 +28,7 @@ namespace EosSharp
 
             foreach(var key in privateKeys)
             {
-                var privKeyBytes = CryptoHelper.GetKeyBytes(key);
+                var privKeyBytes = CryptoHelper.GetPrivateKeyBytesWithoutCheckSum(key);
                 var pubKey = CryptoHelper.PubKeyBytesToString(Secp256K1Manager.GetPublicKey(privKeyBytes, true));
                 Keys.Add(pubKey, privKeyBytes);
             }
@@ -41,7 +41,7 @@ namespace EosSharp
 
             foreach (var keyPair in encodedKeys)
             {
-                var privKeyBytes = CryptoHelper.GetKeyBytes(keyPair.Value);
+                var privKeyBytes = CryptoHelper.GetPrivateKeyBytesWithoutCheckSum(keyPair.Value);
                 Keys.Add(keyPair.Key, privKeyBytes);
             }
         }
