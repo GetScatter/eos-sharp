@@ -1,5 +1,5 @@
 # eos-sharp
-C# client library for EOS blockchains. The library is based on https://github.com/EOSIO/eosjs2
+C# client library for EOS blockchains. The library is based on https://github.com/EOSIO/eosjs2 and MIT licensed.
 
 # Prerequisite
 
