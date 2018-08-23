@@ -169,7 +169,7 @@
 				new Field() { Name = "is_active", Type = "bool?" },
 				new Field() { Name = "url", Type = "string" },
 				new Field() { Name = "unpaid_blocks", Type = "UInt32?" },
-				new Field() { Name = "last_claim_time", Type = "string" }, //TODO convert to dateTime
+				new Field() { Name = "last_claim_time", Type = "UInt64?" },
 				new Field() { Name = "location", Type = "UInt32" }
             }
         },
@@ -340,6 +340,33 @@
             {
 				new Field() { Name = "receipt", Type = "ProcessedReceipt" },
 				new Field() { Name = "trx", Type = "Transaction" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "BlockDetailedTransaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "compression", Type = "string" },
+				new Field() { Name = "context_free_data", Type = "List<object>" },
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "packed_context_free_data", Type = "string" },
+				new Field() { Name = "packed_trx", Type = "string" },
+				new Field() { Name = "signatures", Type = "List<string>" },
+				new Field() { Name = "transaction", Type = "Transaction" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "BlockTransaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "status", Type = "string" },
+				new Field() { Name = "cpu_usage_us", Type = "UInt32?" },
+				new Field() { Name = "net_usage_words", Type = "UInt32?" },
+				new Field() { Name = "trx", Type = "BlockDetailedTransaction" }
             }
         },
 

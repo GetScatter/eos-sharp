@@ -171,7 +171,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("unpaid_blocks")]
 		public UInt32? UnpaidBlocks { get; set; }
 		[JsonProperty("last_claim_time")]
-		public string LastClaimTime { get; set; }
+		public UInt64? LastClaimTime { get; set; }
 		[JsonProperty("location")]
 		public UInt32 Location { get; set; }
     }
@@ -350,6 +350,36 @@ namespace EosSharp.Api.v1
 		public ProcessedReceipt Receipt { get; set; }
 		[JsonProperty("trx")]
 		public Transaction Trx { get; set; }
+    }
+	[Serializable]
+	public class BlockDetailedTransaction
+    {
+		[JsonProperty("compression")]
+		public string Compression { get; set; }
+		[JsonProperty("context_free_data")]
+		public List<object> ContextFreeData { get; set; }
+		[JsonProperty("id")]
+		public string Id { get; set; }
+		[JsonProperty("packed_context_free_data")]
+		public string PackedContextFreeData { get; set; }
+		[JsonProperty("packed_trx")]
+		public string PackedTrx { get; set; }
+		[JsonProperty("signatures")]
+		public List<string> Signatures { get; set; }
+		[JsonProperty("transaction")]
+		public Transaction Transaction { get; set; }
+    }
+	[Serializable]
+	public class BlockTransaction
+    {
+		[JsonProperty("status")]
+		public string Status { get; set; }
+		[JsonProperty("cpu_usage_us")]
+		public UInt32? CpuUsageUs { get; set; }
+		[JsonProperty("net_usage_words")]
+		public UInt32? NetUsageWords { get; set; }
+		[JsonProperty("trx")]
+		public BlockDetailedTransaction Trx { get; set; }
     }
 	[Serializable]
 	public class RefundRequest
@@ -614,7 +644,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("producer_signature")]   
 		public string ProducerSignature { get; set; }
 		[JsonProperty("transactions")]   
-		public List<object> Transactions { get; set; }
+		public List<BlockTransaction> Transactions { get; set; }
 		[JsonProperty("id")]   
 		public string Id { get; set; }
 		[JsonProperty("block_num")]   
