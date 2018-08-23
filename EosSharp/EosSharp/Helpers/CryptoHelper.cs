@@ -12,19 +12,12 @@ namespace EosSharp.Helpers
         public static readonly int PRIV_KEY_DATA_SIZE = 32;
         public static readonly int SIGN_KEY_DATA_SIZE = 64;
 
-        public static byte[] GetKeyBytes(string key)
-        {
-            return Base58.RemoveCheckSum(Base58.Decode(key));
-        }
-
         public static byte[] GetPrivateKeyBytesWithoutCheckSum(string privateKey)
         {
-            //if (privateKey.StartsWith("PVT_R1_"))
-            //    return PrivKeyStringToBytes(privateKey).Skip(4).ToArray();
-            //else
-            //    return PrivKeyStringToBytes(privateKey).Skip(5).ToArray();
-
-            return GetKeyBytes(privateKey).Skip(1).ToArray();
+            if (privateKey.StartsWith("PVT_R1_"))
+                return PrivKeyStringToBytes(privateKey).Take(PRIV_KEY_DATA_SIZE).ToArray();
+            else
+                return PrivKeyStringToBytes(privateKey).Skip(1).Take(PRIV_KEY_DATA_SIZE).ToArray();
         }
 
         public static string PubKeyBytesToString(byte[] keyBytes, byte[] keyTypeBytes = null, string prefix = "EOS")
@@ -74,27 +67,25 @@ namespace EosSharp.Helpers
 
         public static byte[] StringToKey(string key, int size, string suffix = null, bool hasVersion = false) 
         {
-            var whole = Base58.Decode(key);
-            var keyBytes = whole;
+            var keyBytes = Base58.Decode(key);
             byte[] digest = null;
 
             if(!string.IsNullOrWhiteSpace(suffix))
             {
                 digest = Ripemd160Manager.GetHash(SerializationHelper.Combine(new List<byte[]>() {
-                    keyBytes,
+                    keyBytes.Take(size).ToArray(),
                     Encoding.UTF8.GetBytes(suffix)
                 }));
             }
             else
             {
-                digest = Sha256Manager.GetHash(Sha256Manager.GetHash(keyBytes));
+                digest = Sha256Manager.GetHash(Sha256Manager.GetHash(keyBytes.Take(size + (hasVersion ? 1 : 0)).ToArray()));
             }
 
-            //TODO commented for now
-            //if (!whole.Skip(size + (hasVersion ? 1 : 0)).SequenceEqual(digest.Take(4)))
-            //{
-            //    throw new Exception("checksum doesn't match");
-            //}
+            if (!keyBytes.Skip(size + (hasVersion ? 1 : 0)).SequenceEqual(digest.Take(4)))
+            {
+                throw new Exception("checksum doesn't match");
+            }
             return keyBytes;
         }
     }
