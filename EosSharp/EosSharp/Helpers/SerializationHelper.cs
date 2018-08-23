@@ -100,10 +100,12 @@ namespace EosSharp.Helpers
 
         public static byte[] Combine(IEnumerable<byte[]> arrays)
         {
-            byte[] ret = new byte[arrays.Sum(x => x.Length)];
+            byte[] ret = new byte[arrays.Sum(x => x != null ? x.Length : 0)];
             int offset = 0;
             foreach (byte[] data in arrays)
             {
+                if (data == null) continue;
+
                 Buffer.BlockCopy(data, 0, ret, offset, data.Length);
                 offset += data.Length;
             }

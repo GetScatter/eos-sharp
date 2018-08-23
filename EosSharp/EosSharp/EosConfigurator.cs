@@ -11,6 +11,6 @@ namespace EosSharp
         public double ExpireSeconds { get; set; } = 60;
         public bool Broadcast { get; set; } = true;
         public bool Sign { get; set; } = true;
-        public ISignProvider SignProvider { get; set; } = new DefaultSignProvider();
+        public ISignProvider SignProvider { get; set; }
     }
 }

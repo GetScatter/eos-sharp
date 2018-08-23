@@ -13,27 +13,38 @@ namespace EosSharp.UnitTests
     [TestClass]
     public class SignUnitTests
     {
+        readonly EosConfigurator EosConfig = null;
         EosApi DefaultApi { get; set; }
         public SignUnitTests()
         {
-            DefaultApi = new EosApi(new EosConfigurator()
+            EosConfig = new EosConfigurator()
             {
+                SignProvider = new DefaultSignProvider("5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA"),
+
                 //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
                 //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
 
                 HttpEndpoint = "https://nodeos01.btuga.io",
                 ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
-            });
+            };
+            DefaultApi = new EosApi(EosConfig);
+        }
+
+        [TestMethod]
+        public async Task SignProvider()
+        {
+            var signProvider = new DefaultSignProvider("5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA");
+            var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
+            
+            Assert.IsTrue((await signProvider.GetAvailableKeys()).All(ak => requiredKeys.Contains(ak)));
         }
 
         [TestMethod]
         public async Task SignHelloWorld()
         {
-            var signProvider = new DefaultSignProvider();
-            var chainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f";
             var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
             var helloBytes = Encoding.UTF8.GetBytes("Hello world!");
-            var signatures = await signProvider.Sign(chainId, requiredKeys, helloBytes);
+            var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, helloBytes);
 
             Assert.IsTrue(signatures.First() == "SIG_K1_JxtwrzV246xdAgqgH36oX5MjMeg1sEFdUWuwnE9Fhr9eqi5JzgmKXm9UEJgNZMLYdnZhphL1QmE8aW7rTDPC8k8acvkoMR");
         }
@@ -66,13 +77,10 @@ namespace EosSharp.UnitTests
 
             var abiSerializer = new AbiSerializationProvider(DefaultApi);
             var packedTrx = await abiSerializer.SerializePackedTransaction(trx);
-            var signProvider = new DefaultSignProvider();
             var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
-            var signatures = await signProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
+            var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
-            Console.WriteLine(JsonConvert.SerializeObject(signatures));
-
-            Assert.IsTrue(true);
+            Assert.IsTrue(signatures.First() == "SIG_K1_K9atRrkPT67BSEdiEqCDvaokWJKXwFRYXni98zMGosvNM1kb9WpNNn1SQe5S8MaKqe495gUbLVnbAH7oLiEN8LoaMG9i3p");
         }
     }
 }

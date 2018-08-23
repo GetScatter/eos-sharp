@@ -14,17 +14,21 @@ namespace EosSharp.UnitTests
     [TestClass]
     public class ApiUnitTests
     {
+        readonly EosConfigurator EosConfig = null;
         EosApi DefaultApi { get; set; }
         public ApiUnitTests()
         {
-            DefaultApi = new EosApi(new EosConfigurator()
+            EosConfig = new EosConfigurator()
             {
-                HttpEndpoint = "https://nodes.eos42.io", //Mainnet
-                ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+                SignProvider = new DefaultSignProvider("5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA"),
 
-                //HttpEndpoint = "https://nodeos01.btuga.io",
-                //ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
-            });
+                //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
+                //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+
+                HttpEndpoint = "https://nodeos01.btuga.io",
+                ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
+            };
+            DefaultApi = new EosApi(EosConfig);
         }
 
         [TestMethod]
@@ -567,9 +571,8 @@ namespace EosSharp.UnitTests
 
             var abiSerializer = new AbiSerializationProvider(DefaultApi);
             var packedTrx = await abiSerializer.SerializePackedTransaction(trx);
-            var signProvider = new DefaultSignProvider();
             var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
-            var signatures = await signProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
+            var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
             return await DefaultApi.PushTransaction(new PushTransactionRequest()
             {

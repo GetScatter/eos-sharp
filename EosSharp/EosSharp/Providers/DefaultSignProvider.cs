@@ -5,31 +5,52 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using EosSharp.Helpers;
+using System;
 
 namespace EosSharp
 {
     public class DefaultSignProvider : ISignProvider
     {
-        private readonly Dictionary<string, string> Keys = new Dictionary<string, string>();
-
-        public DefaultSignProvider()
-        {
-            //TEST Wif
-            Keys.Add("EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr", "5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA");
-        }
+        private readonly byte[] KeyTypeBytes = Encoding.UTF8.GetBytes("K1");
+        private readonly Dictionary<string, byte[]> Keys = new Dictionary<string, byte[]>();
 
         public DefaultSignProvider(string privateKey)
         {
-            //TODO
+            var privKeyBytes = CryptoHelper.GetKeyBytes(privateKey);
+            var pubKey = CryptoHelper.PubKeyBytesToString(Secp256K1Manager.GetPublicKey(privKeyBytes, true));
+            Keys.Add(pubKey, privKeyBytes);
         }
 
         public DefaultSignProvider(List<string> privateKeys)
         {
-            //TEST TODO
+            if (privateKeys == null || privateKeys.Count == 0)
+                throw new ArgumentNullException("privateKeys");
+
+            foreach(var key in privateKeys)
+            {
+                var privKeyBytes = CryptoHelper.GetKeyBytes(key);
+                var pubKey = CryptoHelper.PubKeyBytesToString(Secp256K1Manager.GetPublicKey(privKeyBytes, true));
+                Keys.Add(pubKey, privKeyBytes);
+            }
         }
 
-        public DefaultSignProvider(Dictionary<string, string> keys)
+        public DefaultSignProvider(Dictionary<string, string> encodedKeys)
         {
+            if (encodedKeys == null || encodedKeys.Count == 0)
+                throw new ArgumentNullException("encodedKeys");
+
+            foreach (var keyPair in encodedKeys)
+            {
+                var privKeyBytes = CryptoHelper.GetKeyBytes(keyPair.Value);
+                Keys.Add(keyPair.Key, privKeyBytes);
+            }
+        }
+
+        public DefaultSignProvider(Dictionary<string, byte[]> keys)
+        {
+            if (keys == null || keys.Count == 0)
+                throw new ArgumentNullException("encodedKeys");
+
             Keys = keys;
         }
 
@@ -40,7 +61,6 @@ namespace EosSharp
 
         public Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, byte[] signBytes)
         {
-            var keyTypeBytes = Encoding.UTF8.GetBytes("K1");
             var data = new List<byte[]>()
             {
                 Hex.HexToBytes(chainId),
@@ -50,10 +70,10 @@ namespace EosSharp
 
             var hash = Sha256Manager.GetHash(SerializationHelper.Combine(data));
 
-            return Task.FromResult(requiredKeys.Select(key => {
-                var privKeyBytes = Base58.RemoveCheckSum(Base58.Decode(Keys[key])).Skip(1).ToArray();
-                var sign = Secp256K1Manager.SignCompressedCompact(hash, privKeyBytes);
-                var check = new List<byte[]>() { sign, keyTypeBytes};
+            return Task.FromResult(requiredKeys.Select(key =>
+            {
+                var sign = Secp256K1Manager.SignCompressedCompact(hash, Keys[key]);
+                var check = new List<byte[]>() { sign, KeyTypeBytes };
                 var checksum = Ripemd160Manager.GetHash(SerializationHelper.Combine(check)).Take(4).ToArray();
                 var signAndChecksum = new List<byte[]>() { sign, checksum };
 
