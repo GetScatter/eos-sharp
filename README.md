@@ -7,6 +7,8 @@ Visual Studio 2017
 
 # Usage
 
+The simplest way to do a transaction is to create a new instance of the **Eos** class with a **EosConfigurator** and call **eos.CreateTransaction**
+
 ```csharp
 Eos eos = new Eos(new EosConfigurator()
 {
