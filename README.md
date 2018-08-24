@@ -9,6 +9,9 @@ Visual Studio 2017
 
 The simplest way to do a transaction is to create a new instance of the **Eos** class with a **EosConfigurator** and call **eos.CreateTransaction**
 
+Example:
+
+
 ```csharp
 Eos eos = new Eos(new EosConfigurator()
 {
@@ -34,9 +37,12 @@ var result = await eos.CreateTransaction(new Transaction()
     }
 });
 ```
+
+
 Is also possible to implement your own **ISignProvider** to customize how the signatures and key handling is done.
 
 Example:
+
 
 ```csharp
 class SuperSecretSignProvider : ISignProvider
