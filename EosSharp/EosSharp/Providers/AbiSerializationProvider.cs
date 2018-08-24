@@ -432,9 +432,11 @@ namespace EosSharp.Providers
 
         private static void WriteExtension(MemoryStream ms, Api.v1.Extension extension)
         {
+            if (extension.Data == null)
+                return;
+
             WriteUint16(ms, extension.Type);
-            //TODO abi data?
-            //public object Data { get; set; }
+            ms.Write(extension.Data, 0, extension.Data.Length);
         }
 
         private static void WritePermissionLevel(MemoryStream ms, PermissionLevel perm)

@@ -143,7 +143,7 @@
 				new Field() { Name = "tables", Type = "List<AbiTable>" },
 				new Field() { Name = "ricardian_clauses", Type = "List<string>" },
 				new Field() { Name = "error_messages", Type = "List<string>" },
-				new Field() { Name = "abi_extensions", Type = "List<string>" }
+				new Field() { Name = "abi_extensions", Type = "List<Extension>" }
             }
         },
 
@@ -210,7 +210,7 @@
 			Fields = new Field[]
             {
 				new Field() { Name = "type", Type = "UInt16" },
-				new Field() { Name = "data", Type = "object" }
+				new Field() { Name = "data", Type = "byte[]" }
             }
         },
 

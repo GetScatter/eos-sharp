@@ -41,9 +41,13 @@ namespace EosSharp.Helpers
             {
                 return StringToKey(key.Substring(7), PUB_KEY_DATA_SIZE, "R1");
             }
-            else
+            else if(key.StartsWith(prefix))
             {
                 return StringToKey(key.Substring(prefix.Length), PUB_KEY_DATA_SIZE);
+            }
+            else
+            {
+                throw new Exception("unrecognized public key format.");
             }
         }
 
@@ -52,7 +56,7 @@ namespace EosSharp.Helpers
             if (key.StartsWith("PVT_R1_"))
                 return StringToKey(key.Substring(7), PRIV_KEY_DATA_SIZE, "R1");
             else
-                return StringToKey(key, PRIV_KEY_DATA_SIZE, hasVersion: true);
+                return StringToKey(key, PRIV_KEY_DATA_SIZE, "sha256x2");
         }
 
         public static byte[] SignStringToSignature(string sign)
@@ -65,26 +69,32 @@ namespace EosSharp.Helpers
                 throw new Exception("unrecognized signature format.");
         }
 
-        public static byte[] StringToKey(string key, int size, string suffix = null, bool hasVersion = false) 
+        public static byte[] StringToKey(string key, int size, string keyType = null) 
         {
             var keyBytes = Base58.Decode(key);
             byte[] digest = null;
+            int versionSize = 0;
 
-            if(!string.IsNullOrWhiteSpace(suffix))
+            if(keyType == "sha256x2")
+            {
+                versionSize = 1;
+                digest = Sha256Manager.GetHash(Sha256Manager.GetHash(keyBytes.Take(size + versionSize).ToArray()));
+            }
+            else if(!string.IsNullOrWhiteSpace(keyType))
             {
                 digest = Ripemd160Manager.GetHash(SerializationHelper.Combine(new List<byte[]>() {
                     keyBytes.Take(size).ToArray(),
-                    Encoding.UTF8.GetBytes(suffix)
+                    Encoding.UTF8.GetBytes(keyType)
                 }));
             }
             else
             {
-                digest = Sha256Manager.GetHash(Sha256Manager.GetHash(keyBytes.Take(size + (hasVersion ? 1 : 0)).ToArray()));
+                digest = Ripemd160Manager.GetHash(keyBytes.Take(size).ToArray());
             }
 
-            if (!keyBytes.Skip(size + (hasVersion ? 1 : 0)).SequenceEqual(digest.Take(4)))
+            if (!keyBytes.Skip(size + versionSize).SequenceEqual(digest.Take(4)))
             {
-                throw new Exception("checksum doesn't match");
+                throw new Exception("checksum doesn't match.");
             }
             return keyBytes;
         }

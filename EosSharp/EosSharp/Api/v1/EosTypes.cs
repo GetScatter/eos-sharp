@@ -143,7 +143,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("error_messages")]
 		public List<string> ErrorMessages { get; set; }
 		[JsonProperty("abi_extensions")]
-		public List<string> AbiExtensions { get; set; }
+		public List<Extension> AbiExtensions { get; set; }
     }
 	[Serializable]
 	public class CurrencyStat
@@ -205,7 +205,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("type")]
 		public UInt16 Type { get; set; }
 		[JsonProperty("data")]
-		public object Data { get; set; }
+		public byte[] Data { get; set; }
     }
 	[Serializable]
 	public class Action
@@ -638,9 +638,9 @@ namespace EosSharp.Api.v1
 		[JsonProperty("new_producers")]   
 		public string NewProducers { get; set; }
 		[JsonProperty("block_extensions")]   
-		public List<object> BlockExtensions { get; set; }
+		public List<Extension> BlockExtensions { get; set; }
 		[JsonProperty("header_extensions")]   
-		public List<object> HeaderExtensions { get; set; }
+		public List<Extension> HeaderExtensions { get; set; }
 		[JsonProperty("producer_signature")]   
 		public string ProducerSignature { get; set; }
 		[JsonProperty("transactions")]   
