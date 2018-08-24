@@ -510,7 +510,7 @@ namespace EosSharp.Providers
         private static void WriteSignature(MemoryStream ms, object value)
         {
             var s = (string)value;
-            var signBytes = CryptoHelper.SignStringToSignature(s);
+            var signBytes = CryptoHelper.SignStringToBytes(s);
             
             if (s.StartsWith("SIG_K1_"))
                 WriteByte(ms, KeyType.k1);
@@ -892,17 +892,57 @@ namespace EosSharp.Providers
 
         private static object ReadPublicKey(byte[] data, ref Int32 readIndex)
         {
-            throw new NotImplementedException();
+            var type = (byte)ReadByte(data, ref readIndex);
+            var keyBytes = data.Skip(readIndex + 1).Take(CryptoHelper.PUB_KEY_DATA_SIZE).ToArray();
+
+            readIndex += CryptoHelper.PUB_KEY_DATA_SIZE;
+
+            if (type == (int)KeyType.r1)
+            {
+                return CryptoHelper.PubKeyBytesToString(keyBytes, "R1", "PUB_R1_");
+            }
+            else
+            {
+                throw new Exception("public key type not supported.");
+            }
         }
 
         private static object ReadPrivateKey(byte[] data, ref Int32 readIndex)
         {
-            throw new NotImplementedException();
+            var type = (byte)ReadByte(data, ref readIndex);
+            var keyBytes = data.Skip(readIndex + 1).Take(CryptoHelper.PRIV_KEY_DATA_SIZE).ToArray();
+
+            readIndex += CryptoHelper.PRIV_KEY_DATA_SIZE;
+
+            if (type == (int)KeyType.r1)
+            {
+                return CryptoHelper.PrivKeyBytesToString(keyBytes, "R1", "PVT_R1_");
+            }
+            else
+            {
+                throw new Exception("private key type not supported.");
+            }
         }
 
         private static object ReadSignature(byte[] data, ref Int32 readIndex)
         {
-            throw new NotImplementedException();
+            var type = (byte)ReadByte(data, ref readIndex);
+            var signBytes = data.Skip(readIndex + 1).Take(CryptoHelper.SIGN_KEY_DATA_SIZE).ToArray();
+
+            readIndex += CryptoHelper.SIGN_KEY_DATA_SIZE;
+
+            if (type == (int)KeyType.r1)
+            {
+                return CryptoHelper.SignBytesToString(signBytes, "R1", "SIG_R1_");
+            }
+            else if (type == (int)KeyType.k1)
+            {
+                return CryptoHelper.SignBytesToString(signBytes, "K1", "SIG_K1_");
+            }
+            else
+            {
+                throw new Exception("signature type not supported.");
+            }
         }
 
         private static object ReadExtendedAsset(byte[] data, ref Int32 readIndex)
