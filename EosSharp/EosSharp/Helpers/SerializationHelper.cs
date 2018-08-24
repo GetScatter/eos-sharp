@@ -9,6 +9,11 @@ namespace EosSharp.Helpers
 {
     public class SerializationHelper
     {
+        public static bool IsNegative(byte[] bin)
+        {
+            return (bin[bin.Length - 1] & 0x80) != 0;
+        }
+
         public static void Negate(byte[] bin)
         {
             int carry = 1;
@@ -50,6 +55,44 @@ namespace EosSharp.Helpers
             if (negative)
                 Negate(result);
             return result;
+        }
+
+        public static string BinaryToDecimal(byte[] bin, int minDigits = 1)
+        {
+            var result = new List<char>(minDigits);
+
+            for (int i = 0; i < minDigits; i++)
+            {
+                result.Add('0');
+            }
+
+            for (int i = bin.Length - 1; i >= 0; --i)
+            {
+                int carry = bin[i];
+                for (int j = 0; j < result.Count; ++j)
+                {
+                    int x = ((result[j] - '0') << 8) + carry;
+                    result[j] = (char)('0' + (x % 10));
+                    carry = (x / 10) | 0;
+                }
+                while (carry != 0)
+                {
+                    result.Add((char)('0' + carry % 10));
+                    carry = (carry / 10) | 0;
+                }
+            }
+            result.Reverse();
+            return string.Join("", result);
+        }
+
+        public static string SignedBinaryToDecimal(byte[] bin, int minDigits = 1)
+        {
+            if (IsNegative(bin))
+            {
+                Negate(bin);
+                return '-' + BinaryToDecimal(bin, minDigits);
+            }
+            return BinaryToDecimal(bin, minDigits);
         }
 
 
