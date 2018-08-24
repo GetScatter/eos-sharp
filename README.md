@@ -32,7 +32,7 @@ var result = await eos.CreateTransaction(new Transaction()
     }
 });
 ```
-Is also possible to implement your own ISignProvider to customize how the signatures and key handling is done.
+Is also possible to implement your own **ISignProvider** to customize how the signatures and key handling is done.
 
 Example:
 
