@@ -17,8 +17,8 @@ Example:
 Eos eos = new Eos(new EosConfigurator()
 {    
     HttpEndpoint = "https://nodes.eos42.io", //Mainnet
-	ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906",
-	ExpireSeconds = 60,
+    ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906",
+    ExpireSeconds = 60,
     SignProvider = new DefaultSignProvider("myprivatekey")
 });
 ```
@@ -117,9 +117,9 @@ UInt32                 RefBlockPrefix
 * KeyType - Type of the index choosen, ex: i64
 * IndexPosition - 1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc
 
-NOTE: only Json = true supported.
+**NOTE:** only Json = true supported.
 
-NOTE: no GetTableRowsResponse TRowType template param supported yet.
+**NOTE:** no GetTableRowsResponse TRowType template param supported yet.
 
 ```csharp
 var result = await eos.GetTableRows(new GetTableRowsRequest() {
