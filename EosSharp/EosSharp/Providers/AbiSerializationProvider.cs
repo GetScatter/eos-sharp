@@ -522,7 +522,9 @@ namespace EosSharp.Providers
 
         private static void WriteExtendedAsset(MemoryStream ms, object value)
         {
-            throw new NotImplementedException();
+            var extAsset = (ExtendedAsset)value;
+            WriteAsset(ms, extAsset.Quantity);
+            WriteName(ms, extAsset.Contract);
         }
 
         private static void WriteSymbol(MemoryStream ms, object value)
@@ -731,7 +733,12 @@ namespace EosSharp.Providers
 
         private static object ReadVarInt32(byte[] data, ref Int32 readIndex)
         {
-            throw new NotImplementedException();
+            var v = (UInt32)ReadVarUint32(data, ref readIndex);
+
+            if ((v & 1) != 0)
+                return ((~v) >> 1) | 0x8000_0000;
+            else
+                return v >> 1;
         }
 
         private static object ReadFloat32(byte[] data, ref Int32 readIndex)
@@ -750,7 +757,10 @@ namespace EosSharp.Providers
 
         private static object ReadFloat128(byte[] data, ref Int32 readIndex)
         {
-            throw new NotImplementedException();
+            var a = data.Skip(readIndex + 1).Take(16).ToArray();
+            var value = SerializationHelper.ByteArrayToHexString(a);
+            readIndex += 16;
+            return value;
         }
 
         private static object ReadBytes(byte[] data, ref Int32 readIndex)
@@ -947,7 +957,11 @@ namespace EosSharp.Providers
 
         private static object ReadExtendedAsset(byte[] data, ref Int32 readIndex)
         {
-            throw new NotImplementedException();
+            return new ExtendedAsset()
+            {
+                Quantity = (string)ReadAsset(data, ref readIndex),
+                Contract = (string)ReadName(data, ref readIndex)
+            };
         }
 
         private static object ReadSymbol(byte[] data, ref Int32 readIndex)
