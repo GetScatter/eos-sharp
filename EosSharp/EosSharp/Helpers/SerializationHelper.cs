@@ -19,8 +19,8 @@ namespace EosSharp.Helpers
             int carry = 1;
             for (int i = 0; i < bin.Length; ++i)
             {
-                byte x = (byte)((~bin[i] & 0xff) + carry);
-                bin[i] = x;
+                int x = (~bin[i] & 0xff) + carry;
+                bin[i] = (byte)x;
                 carry = x >> 8;
             }
         }
@@ -36,8 +36,8 @@ namespace EosSharp.Helpers
                 int carry = srcDigit - '0';
                 for (int j = 0; j < size; ++j)
                 {
-                    byte x = (byte)(result[j] * 10 + carry);
-                    result[j] = x;
+                    int x = result[j] * 10 + carry;
+                    result[j] = (byte)x;
                     carry = x >> 8;
                 }
                 if (carry != 0)
