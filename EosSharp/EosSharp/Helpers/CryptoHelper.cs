@@ -20,19 +20,19 @@ namespace EosSharp.Helpers
                 return PrivKeyStringToBytes(privateKey).Skip(1).Take(PRIV_KEY_DATA_SIZE).ToArray();
         }
 
-        public static string PubKeyBytesToString(byte[] keyBytes, byte[] keyTypeBytes = null, string prefix = "EOS")
+        public static string PubKeyBytesToString(byte[] keyBytes, string keyType = null, string prefix = "EOS")
         {
-            List<byte[]> check = new List<byte[]>()
-            {
-                keyBytes,
-                keyTypeBytes
-            };
+            return KeyToString(keyBytes, keyType, prefix);
+        }
 
-            var checksum = Ripemd160Manager.GetHash(SerializationHelper.Combine(check)).Take(4).ToArray();
-            return (prefix ?? "") + Base58.Encode(SerializationHelper.Combine(new List<byte[]>() {
-                keyBytes,
-                checksum
-            }));
+        public static string PrivKeyBytesToString(byte[] keyBytes, string keyType = "R1", string prefix = "PVT_R1_")
+        {
+            return KeyToString(keyBytes, keyType, prefix);
+        }
+
+        public static string SignBytesToString(byte[] signBytes, string keyType = "K1", string prefix = "SIG_K1_")
+        {
+            return KeyToString(signBytes, keyType, prefix);
         }
 
         public static byte[] PubKeyStringToBytes(string key, string prefix = "EOS")
@@ -59,7 +59,7 @@ namespace EosSharp.Helpers
                 return StringToKey(key, PRIV_KEY_DATA_SIZE, "sha256x2");
         }
 
-        public static byte[] SignStringToSignature(string sign)
+        public static byte[] SignStringToBytes(string sign)
         {
             if (sign.StartsWith("SIG_K1_"))
                 return StringToKey(sign.Substring(7), SIGN_KEY_DATA_SIZE, "K1");
@@ -97,6 +97,35 @@ namespace EosSharp.Helpers
                 throw new Exception("checksum doesn't match.");
             }
             return keyBytes;
+        }
+
+        public static string KeyToString(byte[] key, string keyType, string prefix = null)
+        {
+            byte[] digest = null;
+
+            if (keyType == "sha256x2")
+            {
+                digest = Sha256Manager.GetHash(Sha256Manager.GetHash(SerializationHelper.Combine(new List<byte[]>() {
+                    new byte[] { 128 },
+                    key
+                })));
+            }
+            else if (!string.IsNullOrWhiteSpace(keyType))
+            {
+                digest = Ripemd160Manager.GetHash(SerializationHelper.Combine(new List<byte[]>() {
+                    key,
+                    Encoding.UTF8.GetBytes(keyType)
+                }));
+            }
+            else
+            {
+                digest = Ripemd160Manager.GetHash(key);
+            }
+
+            return prefix + Base58.Encode(SerializationHelper.Combine(new List<byte[]>() {
+                key,
+                digest.Take(4).ToArray()
+            }));
         }
     }
 }

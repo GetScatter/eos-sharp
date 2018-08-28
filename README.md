@@ -1,20 +1,168 @@
 # eos-sharp
 C# client library for EOS blockchains. The library is based on https://github.com/EOSIO/eosjs2 and MIT licensed.
 
-# Prerequisite
+### Prerequisite
 
 Visual Studio 2017 
 
-# Usage
+### Usage
+
+#### Configuration
+
+In order to interact with eos blockchain you need to create a new instance of the **Eos** class with a **EosConfigurator**.
+
+Example:
 
 ```csharp
 Eos eos = new Eos(new EosConfigurator()
-{
-    SignProvider = new DefaultSignProvider("myprivatekey"),
+{    
     HttpEndpoint = "https://nodes.eos42.io", //Mainnet
-    ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+    ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906",
+    ExpireSeconds = 60,
+    SignProvider = new DefaultSignProvider("myprivatekey")
 });
+```
+* HttpEndpoint - http or https location of a nodeosd server providing a chain API.
+* ChainId - unique ID for the blockchain you're connecting to. If no ChainId is provided it will get from the get_info API call.
+* ExpireInSeconds - number of seconds before the transaction will expire. The time is based on the nodeosd's clock. An unexpired transaction that may have had an error is a liability until the expiration is reached, this time should be brief.
+* SignProvider - signature implementation to handle available keys and signing transactions. Use the DefaultSignProvider with a privateKey to sign transactions inside the lib.
 
+#### Api read methods
+
+- **GetInfo** call
+```csharp
+var result = await eos.GetInfo();
+```
+Returns:
+```csharp
+class GetInfoResponse 
+{ 
+string    ServerVersion
+string    ChainId 
+UInt32?   HeadBlockNum   
+UInt32?   LastIrreversibleBlockNum
+string    LastIrreversibleBlockId
+string    HeadBlockId   
+DateTime? HeadBlockTime 
+string    HeadBlockProducer
+string    VirtualBlockCpuLimit
+string    VirtualBlockNetLimit  
+string    BlockCpuLimit
+string    BlockNetLimit
+}
+```
+
+- **GetAccount** call
+```csharp
+var result = await eos.GetAccount("myaccountname");
+```
+Returns:
+```csharp
+class GetAccountResponse
+{
+string                 AccountName
+UInt32?                HeadBlockNum 
+DateTime?              HeadBlockTime
+bool?                  Privileged
+DateTime?              LastCodeUpdate 
+DateTime?              Created
+Int32?                 RamQuota 
+Int32?                 NetWeight 
+Int32?                 CpuWeight
+Resource               NetLimit
+Resource               CpuLimit 
+UInt32?                RamUsage 
+List<Permission>       Permissions
+RefundRequest          RefundRequest
+SelfDelegatedBandwidth SelfDelegatedBandwidth 
+TotalResources         TotalResources 
+VoterInfo              VoterInfo
+}
+```
+
+- **GetBlock** call
+```csharp
+var result = await eos.GetBlock("blockIdOrNumber");
+```
+Returns:
+```csharp
+class GetBlockResponse
+{
+DateTime?              Timestamp  
+string                 Producer
+UInt32                 Confirmed  
+string                 Previous  
+string                 TransactionMroot  
+string                 ActionMroot 
+UInt32                 ScheduleVersion 
+string                 NewProducers
+List<Extension>        BlockExtensions  
+List<Extension>        HeaderExtensions
+string                 ProducerSignature 
+List<BlockTransaction> Transactions   
+string                 Id
+UInt32                 BlockNum 
+UInt32                 RefBlockPrefix
+}
+```
+
+- **GetTableRows** call
+* Json
+* Code - accountName of the contract to search for table rows
+* Scope - scope text segmenting the table set
+* Table - table name 
+* TableKey - unused so far?
+* LowerBound - lower bound for the selected index value
+* UpperBound - upper bound for the selected index value
+* KeyType - Type of the index choosen, ex: i64
+* IndexPosition - 1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc
+
+**NOTE:** only Json = true supported.
+
+**NOTE:** no GetTableRowsResponse TRowType template param supported yet.
+
+```csharp
+var result = await eos.GetTableRows(new GetTableRowsRequest() {
+    Json = true,
+    Code = "eosio.token",
+    Scope = "EOS",
+    Table = "stat"
+});
+```
+
+Returns:
+
+```csharp
+class GetTableRowsResponse
+{
+List<object> Rows
+bool?        More
+}
+```
+
+- **GetActions** call
+* accountName - accountName to get actions history
+* pos - a absolute sequence positon -1 is the end/last action
+* offset - the number of actions relative to pos, negative numbers return [pos-offset,pos), positive numbers return [pos,pos+offset)
+
+```csharp
+var result = await eos.GetActions("myaccountname", 0, 10);
+```
+
+Returns:
+
+```csharp
+class GetActionsResponse
+{
+List<GlobalAction> Actions
+UInt32?            LastIrreversibleBlock
+bool?              TimeLimitExceededError
+}
+```
+
+#### Create Transaction
+
+```csharp
 var result = await eos.CreateTransaction(new Transaction()
 {
     Actions = new List<Api.v1.Action>()
@@ -30,5 +178,40 @@ var result = await eos.CreateTransaction(new Transaction()
             Data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
         }
     }
+});
+```
+
+Returns the transactionId
+#### Custom SignProvider
+
+Is also possible to implement your own **ISignProvider** to customize how the signatures and key handling is done.
+
+Example:
+
+```csharp
+class SuperSecretSignProvider : ISignProvider
+{
+   public async Task<IEnumerable<string>> GetAvailableKeys()
+   {
+        var result = await HttpHelper.GetJsonAsync<SecretResponse>("https://supersecretserver.com/get_available_keys");
+        return result.Keys;
+   }
+   
+   public async Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, byte[] signBytes)
+   {
+        var result = await HttpHelper.PostJsonAsync<SecretSignResponse>("https://supersecretserver.com/sign", new SecretRequest {
+            chainId = chainId,
+            RequiredKeys = requiredKeys,
+            Data = signBytes
+        });
+        return result.Signatures;
+   }
+}
+
+Eos eos = new Eos(new EosConfigurator()
+{
+    SignProvider = new SuperSecretSignProvider(),
+    HttpEndpoint = "https://nodes.eos42.io", //Mainnet
+    ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
 });
 ```

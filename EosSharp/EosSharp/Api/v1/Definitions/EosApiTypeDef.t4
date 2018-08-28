@@ -417,6 +417,16 @@
 				new Field() { Name = "proxy", Type = "string" },
 				new Field() { Name = "staked", Type = "UInt64?" }
             }
+        },
+
+		new ApiType()
+        {
+			Name = "ExtendedAsset",
+			Fields = new Field[]
+            {
+				new Field() { Name = "quantity", Type = "string" },
+				new Field() { Name = "contract", Type = "string" }
+            }
         }
     };
 #>

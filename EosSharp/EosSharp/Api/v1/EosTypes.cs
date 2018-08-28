@@ -431,6 +431,14 @@ namespace EosSharp.Api.v1
 		[JsonProperty("staked")]
 		public UInt64? Staked { get; set; }
     }
+	[Serializable]
+	public class ExtendedAsset
+    {
+		[JsonProperty("quantity")]
+		public string Quantity { get; set; }
+		[JsonProperty("contract")]
+		public string Contract { get; set; }
+    }
 	#endregion
 
 	#region generate api method types
