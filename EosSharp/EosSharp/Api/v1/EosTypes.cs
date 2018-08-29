@@ -139,12 +139,21 @@ namespace EosSharp.Api.v1
 		[JsonProperty("tables")]
 		public List<AbiTable> Tables { get; set; }
 		[JsonProperty("ricardian_clauses")]
-		public List<string> RicardianClauses { get; set; }
+		public List<AbiRicardianClause> RicardianClauses { get; set; }
 		[JsonProperty("error_messages")]
 		public List<string> ErrorMessages { get; set; }
 		[JsonProperty("abi_extensions")]
 		public List<Extension> AbiExtensions { get; set; }
     }
+	[Serializable]
+    public class AbiRicardianClause
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("body")]
+        public string Body { get; set; }
+    }
+	
 	[Serializable]
 	public class CurrencyStat
     {
