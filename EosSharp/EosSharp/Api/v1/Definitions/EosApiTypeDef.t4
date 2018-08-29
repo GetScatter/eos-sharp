@@ -141,9 +141,19 @@
 				new Field() { Name = "structs", Type = "List<AbiStruct>" },
 				new Field() { Name = "actions", Type = "List<AbiAction>" },
 				new Field() { Name = "tables", Type = "List<AbiTable>" },
-				new Field() { Name = "ricardian_clauses", Type = "List<string>" },
+				new Field() { Name = "ricardian_clauses", Type = "List<AbiRicardianClause>" },
 				new Field() { Name = "error_messages", Type = "List<string>" },
 				new Field() { Name = "abi_extensions", Type = "List<Extension>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiRicardianClause",
+			Fields = new Field[]
+            {
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "body", Type = "string" }
             }
         },
 
