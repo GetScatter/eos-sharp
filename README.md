@@ -107,15 +107,15 @@ class GetBlockResponse
 ```
 
 - **GetTableRows** call
-* Json
-* Code - accountName of the contract to search for table rows
-* Scope - scope text segmenting the table set
-* Table - table name 
-* TableKey - unused so far?
-* LowerBound - lower bound for the selected index value
-* UpperBound - upper bound for the selected index value
-* KeyType - Type of the index choosen, ex: i64
-* IndexPosition - 1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc
+    * Json
+    * Code - accountName of the contract to search for table rows
+    * Scope - scope text segmenting the table set
+    * Table - table name 
+    * TableKey - unused so far?
+    * LowerBound - lower bound for the selected index value
+    * UpperBound - upper bound for the selected index value
+    * KeyType - Type of the index choosen, ex: i64
+    * IndexPosition - 1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc
 
 **NOTE:** only Json = true supported.
 
@@ -141,9 +141,9 @@ class GetTableRowsResponse
 ```
 
 - **GetActions** call
-* accountName - accountName to get actions history
-* pos - a absolute sequence positon -1 is the end/last action
-* offset - the number of actions relative to pos, negative numbers return [pos-offset,pos), positive numbers return [pos,pos+offset)
+    * accountName - accountName to get actions history
+    * pos - a absolute sequence positon -1 is the end/last action
+    * offset - the number of actions relative to pos, negative numbers return [pos-offset,pos), positive numbers return [pos,pos+offset)
 
 ```csharp
 var result = await eos.GetActions("myaccountname", 0, 10);
