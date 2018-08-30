@@ -95,6 +95,16 @@ namespace EosSharp.Helpers
             return BinaryToDecimal(bin, minDigits);
         }
 
+        public static byte[] Base64FcStringToByteArray(string s)
+        {
+            //fc adds extra '='
+            if((s.Length & 3) == 1 && s[s.Length - 1] == '=')
+            {
+                return Convert.FromBase64String(s.Substring(0, s.Length - 1));
+            }
+
+            return Convert.FromBase64String(s);
+        }
 
         public static byte CharToSymbol(char c)
         {

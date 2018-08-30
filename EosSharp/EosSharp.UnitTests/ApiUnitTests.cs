@@ -125,6 +125,10 @@ namespace EosSharp.UnitTests
                 var result = await DefaultApi.GetRawCodeAndAbi(new GetRawCodeAndAbiRequest() {
                     AccountName = "eosio.token"
                 });
+
+                var wasmBytes = SerializationHelper.Base64FcStringToByteArray(result.Wasm);
+                var abiBytes = SerializationHelper.Base64FcStringToByteArray(result.Abi);
+
                 success = true;
             }
             catch (ApiException ex)
