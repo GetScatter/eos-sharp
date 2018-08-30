@@ -37,18 +37,18 @@ Returns:
 ```csharp
 class GetInfoResponse 
 { 
-string    ServerVersion
-string    ChainId 
-UInt32?   HeadBlockNum   
-UInt32?   LastIrreversibleBlockNum
-string    LastIrreversibleBlockId
-string    HeadBlockId   
-DateTime? HeadBlockTime 
-string    HeadBlockProducer
-string    VirtualBlockCpuLimit
-string    VirtualBlockNetLimit  
-string    BlockCpuLimit
-string    BlockNetLimit
+    string    ServerVersion
+    string    ChainId 
+    UInt32?   HeadBlockNum   
+    UInt32?   LastIrreversibleBlockNum
+    string    LastIrreversibleBlockId
+    string    HeadBlockId   
+    DateTime? HeadBlockTime 
+    string    HeadBlockProducer
+    string    VirtualBlockCpuLimit
+    string    VirtualBlockNetLimit  
+    string    BlockCpuLimit
+    string    BlockNetLimit
 }
 ```
 
@@ -60,23 +60,23 @@ Returns:
 ```csharp
 class GetAccountResponse
 {
-string                 AccountName
-UInt32?                HeadBlockNum 
-DateTime?              HeadBlockTime
-bool?                  Privileged
-DateTime?              LastCodeUpdate 
-DateTime?              Created
-Int32?                 RamQuota 
-Int32?                 NetWeight 
-Int32?                 CpuWeight
-Resource               NetLimit
-Resource               CpuLimit 
-UInt32?                RamUsage 
-List<Permission>       Permissions
-RefundRequest          RefundRequest
-SelfDelegatedBandwidth SelfDelegatedBandwidth 
-TotalResources         TotalResources 
-VoterInfo              VoterInfo
+    string                 AccountName
+    UInt32?                HeadBlockNum 
+    DateTime?              HeadBlockTime
+    bool?                  Privileged
+    DateTime?              LastCodeUpdate 
+    DateTime?              Created
+    Int32?                 RamQuota 
+    Int32?                 NetWeight 
+    Int32?                 CpuWeight
+    Resource               NetLimit
+    Resource               CpuLimit 
+    UInt32?                RamUsage 
+    List<Permission>       Permissions
+    RefundRequest          RefundRequest
+    SelfDelegatedBandwidth SelfDelegatedBandwidth 
+    TotalResources         TotalResources 
+    VoterInfo              VoterInfo
 }
 ```
 
@@ -88,21 +88,21 @@ Returns:
 ```csharp
 class GetBlockResponse
 {
-DateTime?              Timestamp  
-string                 Producer
-UInt32                 Confirmed  
-string                 Previous  
-string                 TransactionMroot  
-string                 ActionMroot 
-UInt32                 ScheduleVersion 
-string                 NewProducers
-List<Extension>        BlockExtensions  
-List<Extension>        HeaderExtensions
-string                 ProducerSignature 
-List<BlockTransaction> Transactions   
-string                 Id
-UInt32                 BlockNum 
-UInt32                 RefBlockPrefix
+    DateTime?              Timestamp  
+    string                 Producer
+    UInt32                 Confirmed  
+    string                 Previous  
+    string                 TransactionMroot  
+    string                 ActionMroot 
+    UInt32                 ScheduleVersion 
+    string                 NewProducers
+    List<Extension>        BlockExtensions  
+    List<Extension>        HeaderExtensions
+    string                 ProducerSignature 
+    List<BlockTransaction> Transactions   
+    string                 Id
+    UInt32                 BlockNum 
+    UInt32                 RefBlockPrefix
 }
 ```
 
@@ -135,8 +135,8 @@ Returns:
 ```csharp
 class GetTableRowsResponse
 {
-List<object> Rows
-bool?        More
+    List<object> Rows
+    bool?        More
 }
 ```
 
@@ -154,9 +154,9 @@ Returns:
 ```csharp
 class GetActionsResponse
 {
-List<GlobalAction> Actions
-UInt32?            LastIrreversibleBlock
-bool?              TimeLimitExceededError
+    List<GlobalAction> Actions
+    UInt32?            LastIrreversibleBlock
+    bool?              TimeLimitExceededError
 }
 ```
 
