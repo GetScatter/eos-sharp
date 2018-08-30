@@ -146,14 +146,13 @@ namespace EosSharp.Api.v1
 		public List<Extension> AbiExtensions { get; set; }
     }
 	[Serializable]
-    public class AbiRicardianClause
+	public class AbiRicardianClause
     {
-        [JsonProperty("id")]
-        public string Id { get; set; }
-        [JsonProperty("body")]
-        public string Body { get; set; }
+		[JsonProperty("id")]
+		public string Id { get; set; }
+		[JsonProperty("body")]
+		public string Body { get; set; }
     }
-	
 	[Serializable]
 	public class CurrencyStat
     {
@@ -388,7 +387,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("net_usage_words")]
 		public UInt32? NetUsageWords { get; set; }
 		[JsonProperty("trx")]
-		public BlockDetailedTransaction Trx { get; set; }
+		public object Trx { get; set; }
     }
 	[Serializable]
 	public class RefundRequest

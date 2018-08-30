@@ -376,7 +376,7 @@
 				new Field() { Name = "status", Type = "string" },
 				new Field() { Name = "cpu_usage_us", Type = "UInt32?" },
 				new Field() { Name = "net_usage_words", Type = "UInt32?" },
-				new Field() { Name = "trx", Type = "BlockDetailedTransaction" }
+				new Field() { Name = "trx", Type = "object" } //TODO change to BlockDetailedTransaction when trx unpack is supported
             }
         },
 
