@@ -172,7 +172,7 @@
 				new Field() { Name = "block_extensions", Type = "List<Extension>" },
 				new Field() { Name = "header_extensions", Type = "List<Extension>" },
 				new Field() { Name = "producer_signature", Type = "string" },
-				new Field() { Name = "transactions", Type = "List<BlockTransaction>" },
+				new Field() { Name = "transactions", Type = "List<TransactionReceipt>" },
 				new Field() { Name = "id", Type = "string" },
 				new Field() { Name = "block_num", Type = "UInt32" },
 				new Field() { Name = "ref_block_prefix", Type = "UInt32" }
@@ -348,7 +348,7 @@
 			Response = new Field[]
 			{
 				new Field() { Name = "id", Type = "string" },
-				new Field() { Name = "trx", Type = "Transaction" },
+				new Field() { Name = "trx", Type = "DetailedTransaction" },
 				new Field() { Name = "block_time", Type = "DateTime?" },
 				new Field() { Name = "block_num", Type = "UInt32?" },
 				new Field() { Name = "last_irreversible_block", Type = "UInt32?" },

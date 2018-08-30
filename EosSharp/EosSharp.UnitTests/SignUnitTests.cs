@@ -31,6 +31,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Signature Tests")]
         public async Task SignProvider()
         {
             var signProvider = new DefaultSignProvider("5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA");
@@ -40,6 +41,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Signature Tests")]
         public async Task SignHelloWorld()
         {
             var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
@@ -50,6 +52,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Signature Tests")]
         public async Task SignTransaction()
         {
             var trx = new Transaction()

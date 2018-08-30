@@ -324,7 +324,7 @@ namespace EosSharp.Api.v1
 		public ActionTrace ActionTrace { get; set; }
     }
 	[Serializable]
-	public class ProcessedReceipt
+	public class TransactionReceipt
     {
 		[JsonProperty("status")]
 		public string Status { get; set; }
@@ -332,6 +332,8 @@ namespace EosSharp.Api.v1
 		public UInt32? CpuUsageUs { get; set; }
 		[JsonProperty("net_usage_words")]
 		public UInt32? NetUsageWords { get; set; }
+		[JsonProperty("trx")]
+		public object Trx { get; set; }
     }
 	[Serializable]
 	public class ProcessedTransaction
@@ -339,7 +341,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("id")]
 		public string Id { get; set; }
 		[JsonProperty("receipt")]
-		public ProcessedReceipt Receipt { get; set; }
+		public TransactionReceipt Receipt { get; set; }
 		[JsonProperty("elapsed")]
 		public UInt32 Elapsed { get; set; }
 		[JsonProperty("net_usage")]
@@ -355,12 +357,12 @@ namespace EosSharp.Api.v1
 	public class DetailedTransaction
     {
 		[JsonProperty("receipt")]
-		public ProcessedReceipt Receipt { get; set; }
+		public TransactionReceipt Receipt { get; set; }
 		[JsonProperty("trx")]
 		public Transaction Trx { get; set; }
     }
 	[Serializable]
-	public class BlockDetailedTransaction
+	public class PackedTransaction
     {
 		[JsonProperty("compression")]
 		public string Compression { get; set; }
@@ -376,18 +378,6 @@ namespace EosSharp.Api.v1
 		public List<string> Signatures { get; set; }
 		[JsonProperty("transaction")]
 		public Transaction Transaction { get; set; }
-    }
-	[Serializable]
-	public class BlockTransaction
-    {
-		[JsonProperty("status")]
-		public string Status { get; set; }
-		[JsonProperty("cpu_usage_us")]
-		public UInt32? CpuUsageUs { get; set; }
-		[JsonProperty("net_usage_words")]
-		public UInt32? NetUsageWords { get; set; }
-		[JsonProperty("trx")]
-		public object Trx { get; set; }
     }
 	[Serializable]
 	public class RefundRequest
@@ -660,7 +650,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("producer_signature")]   
 		public string ProducerSignature { get; set; }
 		[JsonProperty("transactions")]   
-		public List<BlockTransaction> Transactions { get; set; }
+		public List<TransactionReceipt> Transactions { get; set; }
 		[JsonProperty("id")]   
 		public string Id { get; set; }
 		[JsonProperty("block_num")]   
@@ -852,7 +842,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("id")]   
 		public string Id { get; set; }
 		[JsonProperty("trx")]   
-		public Transaction Trx { get; set; }
+		public DetailedTransaction Trx { get; set; }
 		[JsonProperty("block_time")]   
 		public DateTime? BlockTime { get; set; }
 		[JsonProperty("block_num")]   

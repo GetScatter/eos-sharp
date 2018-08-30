@@ -28,6 +28,26 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Eos Tests")]
+        public async Task GetBlock()
+        {
+            bool success = false;
+            try
+            {
+                var result = await Eos.GetBlock("13503532");
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        [TestCategory("Eos Tests")]
         public async Task CreateTransaction()
         {
             bool success = false;

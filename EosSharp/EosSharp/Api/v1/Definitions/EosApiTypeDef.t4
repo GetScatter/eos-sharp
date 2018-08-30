@@ -318,12 +318,13 @@
 
 		new ApiType()
         {
-			Name = "ProcessedReceipt",
+			Name = "TransactionReceipt",
 			Fields = new Field[]
             {
 				new Field() { Name = "status", Type = "string" },
 				new Field() { Name = "cpu_usage_us", Type = "UInt32?" },
-				new Field() { Name = "net_usage_words", Type = "UInt32?" }
+				new Field() { Name = "net_usage_words", Type = "UInt32?" },
+				new Field() { Name = "trx", Type = "object" }
             }
         },
 
@@ -333,7 +334,7 @@
 			Fields = new Field[]
             {
 				new Field() { Name = "id", Type = "string" },
-				new Field() { Name = "receipt", Type = "ProcessedReceipt" },
+				new Field() { Name = "receipt", Type = "TransactionReceipt" },
 				new Field() { Name = "elapsed", Type = "UInt32" },
 				new Field() { Name = "net_usage", Type = "UInt32" },
 				new Field() { Name = "scheduled", Type = "bool" },
@@ -348,14 +349,14 @@
 			Name = "DetailedTransaction",
 			Fields = new Field[]
             {
-				new Field() { Name = "receipt", Type = "ProcessedReceipt" },
+				new Field() { Name = "receipt", Type = "TransactionReceipt" },
 				new Field() { Name = "trx", Type = "Transaction" }
             }
         },
 
 		new ApiType()
         {
-			Name = "BlockDetailedTransaction",
+			Name = "PackedTransaction",
 			Fields = new Field[]
             {
 				new Field() { Name = "compression", Type = "string" },
@@ -365,18 +366,6 @@
 				new Field() { Name = "packed_trx", Type = "string" },
 				new Field() { Name = "signatures", Type = "List<string>" },
 				new Field() { Name = "transaction", Type = "Transaction" }
-            }
-        },
-
-		new ApiType()
-        {
-			Name = "BlockTransaction",
-			Fields = new Field[]
-            {
-				new Field() { Name = "status", Type = "string" },
-				new Field() { Name = "cpu_usage_us", Type = "UInt32?" },
-				new Field() { Name = "net_usage_words", Type = "UInt32?" },
-				new Field() { Name = "trx", Type = "object" } //TODO change to BlockDetailedTransaction when trx unpack is supported
             }
         },
 

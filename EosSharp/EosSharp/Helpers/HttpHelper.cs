@@ -24,14 +24,14 @@ namespace EosSharp.Helpers
         public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data)
         {
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
-            var result = await SendAsync<TResponseData>(request);
+            var result = await SendAsync(request);
             return DeserializeJsonFromStream<TResponseData>(result);
         }
 
         public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, CancellationToken cancellationToken)
         {
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
-            var result = await SendAsync<TResponseData>(request, cancellationToken);
+            var result = await SendAsync(request, cancellationToken);
             return DeserializeJsonFromStream<TResponseData>(result);
         }
 
@@ -46,7 +46,7 @@ namespace EosSharp.Helpers
             }
 
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
-            var result = await SendAsync<TResponseData>(request);
+            var result = await SendAsync(request);
             var responseData = DeserializeJsonFromStream<TResponseData>(result);
             UpdateResponseDataCache(hashKey, responseData);
 
@@ -64,7 +64,7 @@ namespace EosSharp.Helpers
             }
 
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
-            var result = await SendAsync<TResponseData>(request, cancellationToken);
+            var result = await SendAsync(request, cancellationToken);
             var responseData = DeserializeJsonFromStream<TResponseData>(result);
             UpdateResponseDataCache(hashKey, responseData);
 
@@ -74,24 +74,24 @@ namespace EosSharp.Helpers
         public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
-            var result = await SendAsync<TResponseData>(request);
+            var result = await SendAsync(request);
             return DeserializeJsonFromStream<TResponseData>(result);
         }
 
         public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
-            var result = await SendAsync<TResponseData>(request, cancellationToken);
+            var result = await SendAsync(request, cancellationToken);
             return DeserializeJsonFromStream<TResponseData>(result);
         }
 
-        public static async Task<Stream> SendAsync<TResponseData>(HttpRequestMessage request)
+        public static async Task<Stream> SendAsync(HttpRequestMessage request)
         {
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             return await BuildSendResponse(response);
         }
 
-        public static async Task<Stream> SendAsync<TResponseData>(HttpRequestMessage request, CancellationToken cancellationToken)
+        public static async Task<Stream> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             return await BuildSendResponse(response);
@@ -107,6 +107,14 @@ namespace EosSharp.Helpers
             {
                 return new JsonSerializer().Deserialize<TData>(jtr);
             }
+        }
+
+        public static HttpRequestMessage BuildJsonRequestMessage(string url, object data)
+        {
+            return new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
+            };
         }
 
 
@@ -144,14 +152,6 @@ namespace EosSharp.Helpers
             {
                 StatusCode = (int)response.StatusCode,
                 Content = content
-            };
-        }
-
-        private static HttpRequestMessage BuildJsonRequestMessage(string url, object data)
-        {
-            return new HttpRequestMessage(HttpMethod.Post, url)
-            {
-                Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
             };
         }
 

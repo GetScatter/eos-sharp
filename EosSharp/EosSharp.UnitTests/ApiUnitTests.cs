@@ -32,6 +32,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetInfo()
         {
             bool success = false;
@@ -50,6 +51,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetAccount()
         {
             bool success = false;
@@ -70,6 +72,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetCode()
         {
             bool success = false;
@@ -92,6 +95,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetAbi()
         {
             bool success = false;
@@ -112,6 +116,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetRawCodeAndAbi()
         {
             bool success = false;
@@ -132,6 +137,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task AbiJsonToBin()
         {
             bool success = false;
@@ -154,6 +160,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task AbiBinToJson()
         {
             bool success = false;
@@ -184,6 +191,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetRequiredKeys()
         {
             bool success = false;
@@ -254,6 +262,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetBlock()
         {
             bool success = false;
@@ -277,6 +286,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetBlockHeaderState()
         {
             bool success = false;
@@ -300,6 +310,7 @@ namespace EosSharp.UnitTests
 
         //TODO check implementation for json/binary
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetTableRows()
         {
             bool success = false;
@@ -323,6 +334,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetCurrencyBalance()
         {
             bool success = false;
@@ -346,6 +358,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetCurrencyStats()
         {
             bool success = false;
@@ -369,6 +382,7 @@ namespace EosSharp.UnitTests
 
         //TODO check implementation for json/binary
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetProducers()
         {
             bool success = false;
@@ -390,6 +404,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetProducerSchedule()
         {
             bool success = false;
@@ -409,6 +424,7 @@ namespace EosSharp.UnitTests
 
         //TODO check implementation for json/binary
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetScheduledTransactions()
         {
             bool success = false;
@@ -430,6 +446,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task PushTransaction()
         {
             bool success = false;
@@ -449,6 +466,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetActions()
         {
             bool success = false;
@@ -469,6 +487,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetTransaction()
         {
             bool success = false;
@@ -492,6 +511,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetKeyAccounts()
         {
             bool success = false;
@@ -513,6 +533,7 @@ namespace EosSharp.UnitTests
         }
 
         [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetControlledAccounts()
         {
             bool success = false;

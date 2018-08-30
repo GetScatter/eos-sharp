@@ -148,7 +148,7 @@ namespace EosSharp.Providers
             {
                 Expiration = (DateTime)ReadTimePointSec(data, ref readIndex),
                 RefBlockNum = (UInt16)ReadUint16(data, ref readIndex),
-                RefBlockPrefix = (UInt16)ReadUint32(data, ref readIndex),
+                RefBlockPrefix = (UInt32)ReadUint32(data, ref readIndex),
                 MaxNetUsageWords = (UInt32)ReadVarUint32(data, ref readIndex),
                 MaxCpuUsageMs = (byte)ReadByte(data, ref readIndex),
                 DelaySec = (UInt32)ReadVarUint32(data, ref readIndex),
