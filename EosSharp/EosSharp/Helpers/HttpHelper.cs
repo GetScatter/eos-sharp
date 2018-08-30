@@ -21,21 +21,21 @@ namespace EosSharp.Helpers
             ResponseCache.Clear();
         }
 
-        public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data)
+        public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, JsonSerializerSettings jsonSettings = null)
         {
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
             var result = await SendAsync(request);
             return DeserializeJsonFromStream<TResponseData>(result);
         }
 
-        public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, CancellationToken cancellationToken)
+        public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, JsonSerializerSettings jsonSettings = null)
         {
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
             var result = await SendAsync(request, cancellationToken);
             return DeserializeJsonFromStream<TResponseData>(result);
         }
 
-        public static async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, bool reload = false)
+        public static async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, bool reload = false, JsonSerializerSettings jsonSettings = null)
         {
             string hashKey = GetRequestHashKey(url, data);
 
@@ -53,7 +53,7 @@ namespace EosSharp.Helpers
             return responseData;
         }
 
-        public static async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, bool reload = false)
+        public static async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, bool reload = false, JsonSerializerSettings jsonSettings = null)
         {
             string hashKey = GetRequestHashKey(url, data);
 
@@ -71,18 +71,18 @@ namespace EosSharp.Helpers
             return responseData;
         }
 
-        public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url)
+        public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url, JsonSerializerSettings jsonSettings = null)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var result = await SendAsync(request);
-            return DeserializeJsonFromStream<TResponseData>(result);
+            return DeserializeJsonFromStream<TResponseData>(result, jsonSettings);
         }
 
-        public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken)
+        public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken, JsonSerializerSettings jsonSettings = null)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var result = await SendAsync(request, cancellationToken);
-            return DeserializeJsonFromStream<TResponseData>(result);
+            return DeserializeJsonFromStream<TResponseData>(result, jsonSettings);
         }
 
         public static async Task<Stream> SendAsync(HttpRequestMessage request)
@@ -97,7 +97,7 @@ namespace EosSharp.Helpers
             return await BuildSendResponse(response);
         }
 
-        public static TData DeserializeJsonFromStream<TData>(Stream stream)
+        public static TData DeserializeJsonFromStream<TData>(Stream stream, JsonSerializerSettings jsonSettings = null)
         {
             if (stream == null || stream.CanRead == false)
                 return default(TData);
@@ -105,7 +105,7 @@ namespace EosSharp.Helpers
             using (var sr = new StreamReader(stream))
             using (var jtr = new JsonTextReader(sr))
             {
-                return new JsonSerializer().Deserialize<TData>(jtr);
+                return JsonSerializer.Create(jsonSettings).Deserialize<TData>(jtr);
             }
         }
 
