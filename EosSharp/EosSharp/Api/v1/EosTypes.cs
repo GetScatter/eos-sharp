@@ -105,7 +105,7 @@ namespace EosSharp.Api.v1
 	public class AbiAction
     {
 		[JsonProperty("name")]
-		public string Name { get; set; }
+		public Name Name { get; set; }
 		[JsonProperty("type")]
 		public string Type { get; set; }
 		[JsonProperty("ricardian_contract")]
@@ -115,7 +115,7 @@ namespace EosSharp.Api.v1
 	public class AbiTable
     {
 		[JsonProperty("name")]
-		public string Name { get; set; }
+		public Name Name { get; set; }
 		[JsonProperty("index_type")]
 		public string IndexType { get; set; }
 		[JsonProperty("key_names")]

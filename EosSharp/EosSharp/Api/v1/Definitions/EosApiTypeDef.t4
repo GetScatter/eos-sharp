@@ -112,7 +112,7 @@
 			Name = "AbiAction",
 			Fields = new Field[]
             {
-				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "name", Type = "Name" },
 				new Field() { Name = "type", Type = "string" },
 				new Field() { Name = "ricardian_contract", Type = "string" }
             }
@@ -123,7 +123,7 @@
 			Name = "AbiTable",
 			Fields = new Field[]
             {
-				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "name", Type = "Name" },
 				new Field() { Name = "index_type", Type = "string" },
 				new Field() { Name = "key_names", Type = "List<string>" },
 				new Field() { Name = "key_types", Type = "List<string>" },

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using EosSharp.Helpers;
 using FastMember;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace EosSharp.Providers
 {
@@ -154,10 +155,10 @@ namespace EosSharp.Providers
                 DelaySec = (UInt32)ReadVarUint32(data, ref readIndex),
             };
 
-            var contextFreeActionsSize = (int)ReadVarUint32(data, ref readIndex);
+            var contextFreeActionsSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             trx.ContextFreeActions = new List<Api.v1.Action>(contextFreeActionsSize);
 
-            for(int i = 0; i < contextFreeActionsSize; i++)
+            for (int i = 0; i < contextFreeActionsSize; i++)
             {
                 var action = (Api.v1.Action)ReadActionHeader(data, ref readIndex);
                 Abi abi = await GetActionAbi(action.Account);
@@ -165,7 +166,7 @@ namespace EosSharp.Providers
                 trx.ContextFreeActions.Add((Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
 
-            var actionsSize = (int)ReadVarUint32(data, ref readIndex);
+            var actionsSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             trx.Actions = new List<Api.v1.Action>(actionsSize);
 
             for (int i = 0; i < actionsSize; i++)
@@ -176,15 +177,28 @@ namespace EosSharp.Providers
                 trx.Actions.Add((Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
 
-            var extensionsSize = (int)ReadVarUint32(data, ref readIndex);
-            trx.TransactionExtensions = new List<Extension>(extensionsSize);
-
-            for (int i = 0; i < extensionsSize; i++)
-            {
-                trx.TransactionExtensions.Add((Extension)ReadExtension(data, ref readIndex));
-            }
+            trx.TransactionExtensions = ReadType<List<Extension>>(data, ref readIndex);
 
             return trx;
+        }
+
+        public Abi DeserializePackedAbi(string packabi)
+        {
+            var data = SerializationHelper.Base64FcStringToByteArray(packabi);
+            int readIndex = 0;
+
+            var abi = new Abi();
+
+            abi.Version = (string)ReadString(data, ref readIndex);
+            abi.Types = ReadType<List<AbiType>>(data, ref readIndex);
+            abi.Structs = ReadType<List<AbiStruct>>(data, ref readIndex);
+            abi.Actions = ReadType<List<AbiAction>>(data, ref readIndex);
+            abi.Tables = ReadType<List<AbiTable>>(data, ref readIndex);
+            abi.RicardianClauses = ReadType<List<AbiRicardianClause>>(data, ref readIndex);
+            abi.ErrorMessages = ReadType<List<string>>(data, ref readIndex);
+            abi.AbiExtensions = ReadType<List<Extension>>(data, ref readIndex);
+
+            return abi;
         }
 
         public byte[] SerializeActionData(Api.v1.Action action, Abi abi)
@@ -704,14 +718,14 @@ namespace EosSharp.Providers
 
         private static object ReadInt128(byte[] data, ref Int32 readIndex)
         {
-            byte[] amount = data.Skip(readIndex + 1).Take(16).ToArray();
+            byte[] amount = data.Skip(readIndex).Take(16).ToArray();
             readIndex += 16;
             return SerializationHelper.SignedBinaryToDecimal(amount);
         }
 
         private static object ReadUInt128(byte[] data, ref Int32 readIndex)
         {
-            byte[] amount = data.Skip(readIndex + 1).Take(16).ToArray();
+            byte[] amount = data.Skip(readIndex).Take(16).ToArray();
             readIndex += 16;
             return SerializationHelper.BinaryToDecimal(amount);
         }
@@ -757,7 +771,7 @@ namespace EosSharp.Providers
 
         private static object ReadFloat128(byte[] data, ref Int32 readIndex)
         {
-            var a = data.Skip(readIndex + 1).Take(16).ToArray();
+            var a = data.Skip(readIndex).Take(16).ToArray();
             var value = SerializationHelper.ByteArrayToHexString(a);
             readIndex += 16;
             return value;
@@ -765,8 +779,8 @@ namespace EosSharp.Providers
 
         private static object ReadBytes(byte[] data, ref Int32 readIndex)
         {
-            var size = (int)ReadVarUint32(data, ref readIndex);
-            var value = data.Skip(readIndex + 1).Take(size).ToArray();
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
+            var value = data.Skip(readIndex).Take(size).ToArray();
             readIndex += size;
             return value;
         }
@@ -778,11 +792,11 @@ namespace EosSharp.Providers
 
         private static object ReadString(byte[] data, ref Int32 readIndex)
         {
-            var size = (int)ReadVarUint32(data, ref readIndex);
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             string value = null;
             if (size > 0)
             {
-                value = Encoding.UTF8.GetString(data.Skip(readIndex + 1).Take(size).ToArray());
+                value = Encoding.UTF8.GetString(data.Skip(readIndex).Take(size).ToArray());
                 readIndex += size;
             }
             return value;
@@ -790,7 +804,7 @@ namespace EosSharp.Providers
 
         private static object ReadName(byte[] data, ref Int32 readIndex)
         {
-            byte[] a = data.Skip(readIndex+1).Take(8).ToArray();
+            byte[] a = data.Skip(readIndex).Take(8).ToArray();
             string result = "";
 
             readIndex += 8;
@@ -825,7 +839,7 @@ namespace EosSharp.Providers
 
         private static object ReadAsset(byte[] data, ref Int32 readIndex)
         {
-            byte[] amount = data.Skip(readIndex + 1).Take(8).ToArray();
+            byte[] amount = data.Skip(readIndex).Take(8).ToArray();
             var symbol = (Symbol)ReadSymbol(data, ref readIndex);
             string s = SerializationHelper.SignedBinaryToDecimal(amount, symbol.Precision + 1);
 
@@ -864,7 +878,7 @@ namespace EosSharp.Providers
 
         private static object ReadSymbolCode(byte[] data, ref Int32 readIndex)
         {
-            byte[] a = data.Skip(readIndex + 1).Take(8).ToArray();
+            byte[] a = data.Skip(readIndex).Take(8).ToArray();
 
             readIndex += 8;
 
@@ -878,7 +892,7 @@ namespace EosSharp.Providers
 
         private static object ReadChecksum160(byte[] data, ref Int32 readIndex)
         {
-            var a = data.Skip(readIndex + 1).Take(20).ToArray();
+            var a = data.Skip(readIndex).Take(20).ToArray();
             var value = SerializationHelper.ByteArrayToHexString(a);
             readIndex += 20;
             return value;
@@ -886,7 +900,7 @@ namespace EosSharp.Providers
 
         private static object ReadChecksum256(byte[] data, ref Int32 readIndex)
         {
-            var a = data.Skip(readIndex + 1).Take(32).ToArray();
+            var a = data.Skip(readIndex).Take(32).ToArray();
             var value = SerializationHelper.ByteArrayToHexString(a);
             readIndex += 32;
             return value;
@@ -894,7 +908,7 @@ namespace EosSharp.Providers
 
         private static object ReadChecksum512(byte[] data, ref Int32 readIndex)
         {
-            var a = data.Skip(readIndex + 1).Take(64).ToArray();
+            var a = data.Skip(readIndex).Take(64).ToArray();
             var value = SerializationHelper.ByteArrayToHexString(a);
             readIndex += 64;
             return value;
@@ -903,7 +917,7 @@ namespace EosSharp.Providers
         private static object ReadPublicKey(byte[] data, ref Int32 readIndex)
         {
             var type = (byte)ReadByte(data, ref readIndex);
-            var keyBytes = data.Skip(readIndex + 1).Take(CryptoHelper.PUB_KEY_DATA_SIZE).ToArray();
+            var keyBytes = data.Skip(readIndex).Take(CryptoHelper.PUB_KEY_DATA_SIZE).ToArray();
 
             readIndex += CryptoHelper.PUB_KEY_DATA_SIZE;
 
@@ -920,7 +934,7 @@ namespace EosSharp.Providers
         private static object ReadPrivateKey(byte[] data, ref Int32 readIndex)
         {
             var type = (byte)ReadByte(data, ref readIndex);
-            var keyBytes = data.Skip(readIndex + 1).Take(CryptoHelper.PRIV_KEY_DATA_SIZE).ToArray();
+            var keyBytes = data.Skip(readIndex).Take(CryptoHelper.PRIV_KEY_DATA_SIZE).ToArray();
 
             readIndex += CryptoHelper.PRIV_KEY_DATA_SIZE;
 
@@ -937,7 +951,7 @@ namespace EosSharp.Providers
         private static object ReadSignature(byte[] data, ref Int32 readIndex)
         {
             var type = (byte)ReadByte(data, ref readIndex);
-            var signBytes = data.Skip(readIndex + 1).Take(CryptoHelper.SIGN_KEY_DATA_SIZE).ToArray();
+            var signBytes = data.Skip(readIndex).Take(CryptoHelper.SIGN_KEY_DATA_SIZE).ToArray();
 
             readIndex += CryptoHelper.SIGN_KEY_DATA_SIZE;
 
@@ -971,7 +985,7 @@ namespace EosSharp.Providers
                 Precision = (byte)ReadByte(data, ref readIndex)
             };
 
-            byte[] a = data.Skip(readIndex+1).Take(7).ToArray();
+            byte[] a = data.Skip(readIndex).Take(7).ToArray();
 
             readIndex += 7;
 
@@ -982,16 +996,6 @@ namespace EosSharp.Providers
 
             value.Name = string.Join("", a.Take(len));
 
-            return value;
-        }
-
-        private static object ReadExtension(byte[] data, ref Int32 readIndex)
-        {
-            var value = new Extension
-            {
-                Type = (UInt16)ReadUint16(data, ref readIndex),
-                Data = (byte[])ReadBytes(data, ref readIndex)
-            };
             return value;
         }
 
@@ -1019,7 +1023,7 @@ namespace EosSharp.Providers
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            var size = (int)ReadVarUint32(data, ref readIndex);
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
 
             action.Authorization = new List<PermissionLevel>(size);
             for (var i = 0; i < size ; i++)
@@ -1050,7 +1054,7 @@ namespace EosSharp.Providers
             if (type.EndsWith("[]"))
             {
                 var arrayType = type.Substring(0, type.Length - 2);
-                var size = (int)ReadVarUint32(data, ref readIndex);
+                var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
                 var items = new List<object>(size);
 
                 for (int i = 0; i < size; i++)
@@ -1103,6 +1107,98 @@ namespace EosSharp.Providers
             }
 
             return value;
+        }
+
+        private T ReadType<T>(byte[] data, ref int readIndex)
+        {
+            return (T)ReadType(data, typeof(T), ref readIndex);
+        }
+
+        private object ReadType(byte[] data, Type objectType, ref int readIndex)
+        {
+            var accessor = TypeAccessor.Create(objectType);
+
+            if (IsCollection(objectType))
+            {
+                return ReadCollectionType(data, objectType, ref readIndex);
+            }
+
+            object value = accessor.CreateNew();
+
+            foreach (var member in objectType.GetProperties())
+            {
+                if(IsCollection(member.PropertyType))
+                {
+                    accessor[value, member.Name] = ReadCollectionType(data, member.PropertyType, ref readIndex);
+                }
+                else if(IsOptional(member.PropertyType))
+                {
+                    var opt = (byte)ReadByte(data, ref readIndex);
+                    if (opt == 1)
+                    {
+                        var optionalType = GetFirstGenericType(member.PropertyType);
+                        accessor[value, member.Name] = ReadType(data, optionalType, ref readIndex);
+                    }
+                }
+                else if (IsPrimitive(member.PropertyType))
+                {
+                    var readerName = GetNormalizedReaderName(member.PropertyType);
+                    accessor[value, member.Name] = TypeReaders[readerName](data, ref readIndex);
+                }
+                else
+                {
+                    accessor[value, member.Name] = ReadType(data, member.PropertyType, ref readIndex);
+                }
+            }
+
+            return value;
+        }
+
+        private IList ReadCollectionType(byte[] data, Type objectType, ref int readIndex)
+        {
+            var collectionType = GetFirstGenericType(objectType);
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
+            IList items = (IList)Activator.CreateInstance(objectType);
+
+            for (int i = 0; i < size; i++)
+            {
+                items.Add(ReadType(data, collectionType, ref readIndex));
+            }
+
+            return items;
+        }
+
+        private static bool IsCollection(Type type)
+        {
+            return type.Name.StartsWith("List");
+        }
+
+        private static bool IsOptional(Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        private static Type GetFirstGenericType(Type type)
+        {
+            return type.GetGenericArguments().First();
+        }
+
+        private static bool IsPrimitive(Type type)
+        {
+            return type.IsPrimitive ||                   
+                   type.Name.ToLower() == "string" ||
+                   type.Name.ToLower() == "name" ||
+                   type.Name.ToLower() == "byte[]";
+        }
+
+        private static string GetNormalizedReaderName(Type type)
+        {
+            var typeName = type.Name.ToLower();
+
+            if (typeName == "byte[]")
+                return "bytes";
+
+            return typeName;
         }
         #endregion
     }
