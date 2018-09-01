@@ -195,6 +195,7 @@
 		{ 
 			Module = "chain", 
 			Name = "get_table_rows",
+			ResponseGenericTypes = "<TRowType>",
 			Request = new Field[] 
 			{
 				new Field() { Name = "json", Type = "bool?", Default = "false" },
@@ -212,6 +213,11 @@
 			Response = new Field[] 
 			{
 				new Field() { Name = "rows", Type = "List<object>"},
+				new Field() { Name = "more", Type = "bool?" }
+			},
+			GenericResponse = new Field[] 
+			{
+				new Field() { Name = "rows", Type = "List<TRowType>"},
 				new Field() { Name = "more", Type = "bool?" }
 			}
 		},

@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Reflection;
 using EosSharp.DataAttributes;
+using System.Dynamic;
 
 namespace EosSharp.Providers
 {
@@ -163,7 +164,7 @@ namespace EosSharp.Providers
             for (int i = 0; i < contextFreeActionsSize; i++)
             {
                 var action = (Api.v1.Action)ReadActionHeader(data, ref readIndex);
-                Abi abi = await GetActionAbi(action.Account);
+                Abi abi = await GetAbi(action.Account);
 
                 trx.ContextFreeActions.Add((Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
@@ -174,7 +175,7 @@ namespace EosSharp.Providers
             for (int i = 0; i < actionsSize; i++)
             {
                 var action = (Api.v1.Action)ReadActionHeader(data, ref readIndex);
-                Abi abi = await GetActionAbi(action.Account);
+                Abi abi = await GetAbi(action.Account);
 
                 trx.Actions.Add((Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
@@ -208,20 +209,23 @@ namespace EosSharp.Providers
             {
                 var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
                 var abiStruct = abi.Structs.First(s => s.Name == abiAction.Type);
-                WriteStruct(ms, action.Data, abiStruct, abi);
+                WriteAbiStruct(ms, action.Data, abiStruct, abi);
 
                 return ms.ToArray();
             }
         }
 
-        public object DeserializeActionData(Api.v1.Action action, Abi abi)
+        public object DeserializeStructData(string structType, string dataHex, Abi abi)
         {
-            var data = SerializationHelper.HexStringToByteArray((string)action.Data);
+            return DeserializeStructData<object>(structType, dataHex, abi);
+        }
 
-            var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
-            var abiStruct = abi.Structs.First(s => s.Name == abiAction.Type);
+        public TStructData DeserializeStructData<TStructData>(string structType, string dataHex, Abi abi)
+        {
+            var data = SerializationHelper.HexStringToByteArray(dataHex);
+            var abiStruct = abi.Structs.First(s => s.Name == structType);
             int readIndex = 0;
-            return ReadStruct(data, ref readIndex, abiStruct, abi);
+            return ReadAbiStruct<TStructData>(data, ref readIndex, abiStruct, abi);
         }
 
         public Task<Abi[]> GetTransactionAbis(Transaction trx)
@@ -230,18 +234,18 @@ namespace EosSharp.Providers
 
             foreach (var action in trx.ContextFreeActions)
             {
-                abiTasks.Add(GetActionAbi(action.Account));
+                abiTasks.Add(GetAbi(action.Account));
             }
 
             foreach (var action in trx.Actions)
             {
-                abiTasks.Add(GetActionAbi(action.Account));
+                abiTasks.Add(GetAbi(action.Account));
             }
 
             return Task.WhenAll(abiTasks);
         }
 
-        public async Task<Abi> GetActionAbi(string accountName)
+        public async Task<Abi> GetAbi(string accountName)
         {
             var result = await Api.GetRawCodeAndAbi(new GetRawCodeAndAbiRequest()
             {
@@ -631,7 +635,7 @@ namespace EosSharp.Providers
                 var abiStruct = abi.Structs.FirstOrDefault(s => s.Name == type);
                 if (abiStruct != null)
                 {
-                    WriteStruct(ms, value, abiStruct, abi);
+                    WriteAbiStruct(ms, value, abiStruct, abi);
                 }
                 else
                 {
@@ -640,7 +644,7 @@ namespace EosSharp.Providers
             }
         }
 
-        private void WriteStruct(MemoryStream ms, object value, AbiStruct abiStruct, Abi abi)
+        private void WriteAbiStruct(MemoryStream ms, object value, AbiStruct abiStruct, Abi abi)
         {
             if(!string.IsNullOrWhiteSpace(abiStruct.Base))
             {
@@ -650,7 +654,7 @@ namespace EosSharp.Providers
             var accessor = ObjectAccessor.Create(value);
             foreach (var field in abiStruct.Fields)
             {
-                WriteAbiType(ms, accessor[field.Name], field.Type, abi);
+                WriteAbiType(ms, accessor[SerializationHelper.PascalCaseToSnakeCase(field.Name)], field.Type, abi);
             }
         }
 
@@ -837,10 +841,11 @@ namespace EosSharp.Providers
         private static object ReadAsset(byte[] data, ref Int32 readIndex)
         {
             byte[] amount = data.Skip(readIndex).Take(8).ToArray();
-            var symbol = (Symbol)ReadSymbol(data, ref readIndex);
-            string s = SerializationHelper.SignedBinaryToDecimal(amount, symbol.Precision + 1);
 
             readIndex += 8;
+
+            var symbol = (Symbol)ReadSymbol(data, ref readIndex);
+            string s = SerializationHelper.SignedBinaryToDecimal(amount, symbol.Precision + 1);
 
             if (symbol.Precision > 0)
                 s = s.Substring(0, s.Length - symbol.Precision) + '.' + s.Substring(s.Length - symbol.Precision);
@@ -918,6 +923,10 @@ namespace EosSharp.Providers
 
             readIndex += CryptoHelper.PUB_KEY_DATA_SIZE;
 
+            if(type == (int)KeyType.k1)
+            {
+                return CryptoHelper.PubKeyBytesToString(keyBytes, "K1");
+            }
             if (type == (int)KeyType.r1)
             {
                 return CryptoHelper.PubKeyBytesToString(keyBytes, "R1", "PUB_R1_");
@@ -991,7 +1000,7 @@ namespace EosSharp.Providers
                 if (a[len] == 0)
                     break;
 
-            value.Name = string.Join("", a.Take(len));
+            value.Name = string.Join("", a.Take(len).Select(b => (char)b));
 
             return value;
         }
@@ -1028,7 +1037,9 @@ namespace EosSharp.Providers
                 action.Authorization.Add((PermissionLevel)ReadPermissionLevel(data, ref readIndex));
             }
 
-            action.Data = DeserializeActionData(action, abi);
+            var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
+
+            action.Data = DeserializeStructData(abiAction.Type, (string)action.Data, abi);
             return action;
         }
 
@@ -1073,7 +1084,7 @@ namespace EosSharp.Providers
                 var abiStruct = abi.Structs.FirstOrDefault(s => s.Name == type);
                 if (abiStruct != null)
                 {
-                    value = ReadStruct(data, ref readIndex, abiStruct, abi);
+                    value = ReadAbiStruct(data, ref readIndex, abiStruct, abi);
                 }
                 else
                 {
@@ -1084,26 +1095,43 @@ namespace EosSharp.Providers
             return value;
         }
 
-        private object ReadStruct(byte[] data, ref Int32 readIndex, AbiStruct abiStruct, Abi abi)
+        private object ReadAbiStruct(byte[] data, ref Int32 readIndex, AbiStruct abiStruct, Abi abi)
         {
-            object value = null;
+            return ReadAbiStruct<object>(data, ref readIndex, abiStruct, abi);
+        }
+
+        private T ReadAbiStruct<T>(byte[] data, ref Int32 readIndex, AbiStruct abiStruct, Abi abi)
+        {
+            object value = default(T);
 
             if (!string.IsNullOrWhiteSpace(abiStruct.Base))
             {
-                value = ReadAbiType(data, ref readIndex, abiStruct.Base, abi);
+                value = (T)ReadAbiType(data, ref readIndex, abiStruct.Base, abi);
+            }
+            else if(typeof(T) == typeof(object))
+            {
+                value = new ExpandoObject();
             }
             else
             {
-                value = new object();
+                value = Activator.CreateInstance(typeof(T));
             }
 
             var accessor = TypeAccessor.Create(value.GetType());
             foreach (var field in abiStruct.Fields)
             {
-                accessor[value, field.Name] = ReadAbiType(data, ref readIndex, field.Type, abi);
+                var abiValue = ReadAbiType(data, ref readIndex, field.Type, abi);
+                try
+                {
+                    accessor[value, SerializationHelper.SnakeCaseToPascalCase(field.Name)] = abiValue;
+                }
+                catch(ArgumentOutOfRangeException)
+                {
+                    accessor[value, field.Name] = abiValue;
+                }
             }
 
-            return value;
+            return (T)value;
         }
 
         private T ReadType<T>(byte[] data, ref int readIndex)

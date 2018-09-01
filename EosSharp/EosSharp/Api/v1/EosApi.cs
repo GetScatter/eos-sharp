@@ -68,6 +68,11 @@ namespace EosSharp.Api.v1
             var url = string.Format("{0}/v1/chain/get_block_header_state", Config.HttpEndpoint);
             return await HttpHelper.PostJsonAsync<GetBlockHeaderStateResponse>(url, data, jsonSettings);
         }
+		public async Task<GetTableRowsResponse<TRowType>> GetTableRows<TRowType>(GetTableRowsRequest data, JsonSerializerSettings jsonSettings = null)
+        {
+            var url = string.Format("{0}/v1/chain/get_table_rows", Config.HttpEndpoint);
+            return await HttpHelper.PostJsonAsync<GetTableRowsResponse<TRowType>>(url, data, jsonSettings);
+        }
 		public async Task<GetTableRowsResponse> GetTableRows(GetTableRowsRequest data, JsonSerializerSettings jsonSettings = null)
         {
             var url = string.Format("{0}/v1/chain/get_table_rows", Config.HttpEndpoint);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -115,6 +116,33 @@ namespace EosSharp.Helpers
             return 0;
         }
 
+        public static string SnakeCaseToPascalCase(string s)
+        {
+            var result = s.ToLower().Replace("_", " ");
+            TextInfo info = CultureInfo.CurrentCulture.TextInfo;
+            result = info.ToTitleCase(result).Replace(" ", string.Empty);
+            return result;
+        }
+
+        public static string PascalCaseToSnakeCase(string s)
+        {
+            var builder = new StringBuilder();
+            bool first = true;
+            foreach(var c in s)
+            {
+                if(char.IsUpper(c))
+                {
+                    if (!first)
+                        builder.Append('_');
+                    builder.Append(char.ToLower(c));
+                }
+
+                if (first)
+                    first = false;
+            }
+            return builder.ToString();
+        }
+
         public static byte[] ObjectToByteArray(object obj)
         {
             if (obj == null)
@@ -182,6 +210,5 @@ namespace EosSharp.Helpers
             var span = (value - new DateTime(1970, 1, 1));
             return (UInt32)Math.Round((span.TotalMilliseconds - 946684800000) / 500);
         }
-
     }
 }

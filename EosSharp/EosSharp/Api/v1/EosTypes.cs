@@ -468,7 +468,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("block_net_limit")]   
 		public string BlockNetLimit { get; set; }
     }
-
 	[Serializable]
     public class GetAccountRequest
     {
@@ -513,7 +512,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("voter_info")]   
 		public VoterInfo VoterInfo { get; set; }
     }
-
 	[Serializable]
     public class GetCodeRequest
     {
@@ -536,7 +534,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("abi")]   
 		public Abi Abi { get; set; }
     }
-
 	[Serializable]
     public class GetAbiRequest
     {
@@ -551,7 +548,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("abi")]   
 		public Abi Abi { get; set; }
     }
-
 	[Serializable]
     public class GetRawCodeAndAbiRequest
     {
@@ -568,7 +564,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("abi")]   
 		public string Abi { get; set; }
     }
-
 	[Serializable]
     public class AbiJsonToBinRequest
     {
@@ -585,7 +580,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("binargs")]   
 		public string Binargs { get; set; }
     }
-
 	[Serializable]
     public class AbiBinToJsonRequest
     {
@@ -602,7 +596,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("args")]   
 		public object Args { get; set; }
     }
-
 	[Serializable]
     public class GetRequiredKeysRequest
     {
@@ -617,7 +610,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("required_keys")]   
 		public List<string> RequiredKeys { get; set; }
     }
-
 	[Serializable]
     public class GetBlockRequest
     {
@@ -658,7 +650,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("ref_block_prefix")]   
 		public UInt32 RefBlockPrefix { get; set; }
     }
-
 	[Serializable]
     public class GetBlockHeaderStateRequest
     {
@@ -669,7 +660,6 @@ namespace EosSharp.Api.v1
     public class GetBlockHeaderStateResponse
     {
     }
-
 	[Serializable]
     public class GetTableRowsRequest
     {
@@ -702,7 +692,14 @@ namespace EosSharp.Api.v1
 		[JsonProperty("more")]   
 		public bool? More { get; set; }
     }
-
+	[Serializable]
+    public class GetTableRowsResponse<TRowType>
+    {
+		[JsonProperty("rows")]   
+		public List<TRowType> Rows { get; set; }
+		[JsonProperty("more")]   
+		public bool? More { get; set; }
+    }
 	[Serializable]
     public class GetCurrencyBalanceRequest
     {
@@ -719,7 +716,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("assets")]   
 		public List<string> Assets { get; set; }
     }
-
 	[Serializable]
     public class GetCurrencyStatsRequest
     {
@@ -734,7 +730,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("stats")]   
 		public Dictionary<string, CurrencyStat> Stats { get; set; }
     }
-
 	[Serializable]
     public class GetProducersRequest
     {
@@ -755,7 +750,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("more")]   
 		public string More { get; set; }
     }
-
 	[Serializable]
     public class GetProducerScheduleResponse
     {
@@ -766,7 +760,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("proposed")]   
 		public Schedule Proposed { get; set; }
     }
-
 	[Serializable]
     public class GetScheduledTransactionsRequest
     {
@@ -785,7 +778,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("more")]   
 		public string More { get; set; }
     }
-
 	[Serializable]
     public class PushTransactionRequest
     {
@@ -806,7 +798,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("processed")]   
 		public ProcessedTransaction Processed { get; set; }
     }
-
 	[Serializable]
     public class GetActionsRequest
     {
@@ -827,7 +818,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("time_limit_exceeded_error")]   
 		public bool? TimeLimitExceededError { get; set; }
     }
-
 	[Serializable]
     public class GetTransactionRequest
     {
@@ -852,7 +842,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("traces")]   
 		public List<ActionTrace> Traces { get; set; }
     }
-
 	[Serializable]
     public class GetKeyAccountsRequest
     {
@@ -865,7 +854,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("account_names")]   
 		public List<string> AccountNames { get; set; }
     }
-
 	[Serializable]
     public class GetControlledAccountsRequest
     {
@@ -878,7 +866,6 @@ namespace EosSharp.Api.v1
 		[JsonProperty("controlled_accounts")]   
 		public List<string> ControlledAccounts { get; set; }
     }
-
 	#endregion
 }
 

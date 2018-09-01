@@ -19,11 +19,11 @@ namespace EosSharp.UnitTests
             {
                 SignProvider = new DefaultSignProvider("5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA"),
 
-                //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
-                //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+                HttpEndpoint = "https://api.eossweden.se", //Mainnet
+                ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
 
-                HttpEndpoint = "https://nodeos01.btuga.io",
-                ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
+                //HttpEndpoint = "https://nodeos01.btuga.io",
+                //ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
             });
         }
 
@@ -35,6 +35,63 @@ namespace EosSharp.UnitTests
             try
             {
                 var result = await Eos.GetBlock("13503532");
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        [TestCategory("Eos Tests")]
+        public async Task GetTableRows()
+        {
+            bool success = false;
+            try
+            {
+                var result = await Eos.GetTableRows(new GetTableRowsRequest()
+                {
+                    Json = false,
+                    Code = "eosio",
+                    Scope = "eosio",
+                    Table = "producers"
+                });
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        class Stat
+        {
+            public string Issuer { get; set; }
+            public string MaxSupply { get; set; }
+            public string Supply { get; set; }
+        }
+
+        [TestMethod]
+        [TestCategory("Eos Tests")]
+        public async Task GetTableRowsGeneric()
+        {
+            bool success = false;
+            try
+            {
+                var result = await Eos.GetTableRows<Stat>(new GetTableRowsRequest()
+                {
+                    Json = false,
+                    Code = "eosio.token",
+                    Scope = "EOS",
+                    Table = "stat"
+                });
                 success = true;
             }
             catch (ApiException ex)

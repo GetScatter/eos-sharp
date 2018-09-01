@@ -124,9 +124,55 @@ namespace EosSharp
             });
         }
 
-        public Task<GetTableRowsResponse> GetTableRows(GetTableRowsRequest request)
+        public async Task<GetTableRowsResponse<TRowType>> GetTableRows<TRowType>(GetTableRowsRequest request)
         {
-            return Api.GetTableRows(request);
+            if(request.Json.GetValueOrDefault())
+            {
+                return await Api.GetTableRows<TRowType>(request);
+            }
+            else
+            {
+                var apiResult = await Api.GetTableRows(request);
+                var result = new GetTableRowsResponse<TRowType>()
+                {
+                    More = apiResult.More
+                };
+
+                var unpackedRows = new List<TRowType>();
+
+                var abi = await AbiSerializer.GetAbi(request.Code);
+                var table = abi.Tables.First(t => t.Name == request.Table);
+
+                foreach (var rowData in apiResult.Rows)
+                {
+                    unpackedRows.Add(AbiSerializer.DeserializeStructData<TRowType>(table.Type, (string)rowData, abi));
+                }
+
+                result.Rows = unpackedRows;
+                return result;
+            }
+        }
+
+        public async Task<GetTableRowsResponse> GetTableRows(GetTableRowsRequest request)
+        {
+            var result = await Api.GetTableRows(request);
+
+            if(!request.Json.GetValueOrDefault())
+            {
+                var unpackedRows = new List<object>();
+
+                var abi = await AbiSerializer.GetAbi(request.Code);
+                var table = abi.Tables.First(t => t.Name == request.Table);
+
+                foreach(var rowData in result.Rows)
+                {
+                    unpackedRows.Add(AbiSerializer.DeserializeStructData(table.Type, (string)rowData, abi));
+                }
+
+                result.Rows = unpackedRows;
+            }
+
+            return result;
         }
 
         public async Task<List<string>> GetCurrencyBalance(string code, string account, string symbol)

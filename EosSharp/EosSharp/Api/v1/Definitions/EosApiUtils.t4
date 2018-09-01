@@ -18,13 +18,15 @@
 	{
         public string Module { get; set; }
 		public string Name { get; set; }
+        public string ResponseGenericTypes { get; set; }
         public bool IsResponseCollection { get; set; }
         public bool IsCachable { get; set; }
         public Field[] Request { get; set; }
 		public Field[] Response { get; set; }
+		public Field[] GenericResponse { get; set; }		
 	}
 
-	public string ConvertPascalCase(string s)
+	public string SnakeCaseToPascalCase(string s)
 	{
 		var result = s.ToLower().Replace("_", " ");
 		TextInfo info = CultureInfo.CurrentCulture.TextInfo;

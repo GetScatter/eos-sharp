@@ -23,23 +23,45 @@ namespace EosSharp.Api.v1
 
 <# foreach (var method in apiMethods) { #>
 <#   if(method.Request == null) { #>
-		public async Task<<#= ConvertPascalCase(method.Name) #>Response> <#= ConvertPascalCase(method.Name) #>(JsonSerializerSettings jsonSettings = null)
+<#		if(!string.IsNullOrWhiteSpace(method.ResponseGenericTypes)) {#>
+		public async Task<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>> <#= SnakeCaseToPascalCase(method.Name) #><#= method.ResponseGenericTypes #>(JsonSerializerSettings jsonSettings = null)
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
 <#        if(method.IsResponseCollection) { #>
-			return new <#= ConvertPascalCase(method.Name) #>Response() { <#= ConvertPascalCase(method.Response[0].Name) #> = await HttpHelper.GetJsonAsync<<#= method.Response[0].Type#>>(url, jsonSettings) };
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= SnakeCaseToPascalCase(method.Response[0].Name) #> = await HttpHelper.GetJsonAsync<<#= method.Response[0].Type#>>(url, jsonSettings) };
 <#        } else { #>
-            return await HttpHelper.GetJsonAsync<<#= ConvertPascalCase(method.Name) #>Response>(url, jsonSettings);
+            return await HttpHelper.GetJsonAsync<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>>(url, jsonSettings);
+<#        } #>
+        }
+<#      } #>
+		public async Task<<#= SnakeCaseToPascalCase(method.Name) #>Response> <#= SnakeCaseToPascalCase(method.Name) #>(JsonSerializerSettings jsonSettings = null)
+        {
+            var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
+<#        if(method.IsResponseCollection) { #>
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= SnakeCaseToPascalCase(method.Response[0].Name) #> = await HttpHelper.GetJsonAsync<<#= method.Response[0].Type#>>(url, jsonSettings) };
+<#        } else { #>
+            return await HttpHelper.GetJsonAsync<<#= SnakeCaseToPascalCase(method.Name) #>Response>(url, jsonSettings);
 <#        } #>
         }
 <#   } else { #>
-		public async Task<<#= ConvertPascalCase(method.Name) #>Response> <#= ConvertPascalCase(method.Name) #>(<#= ConvertPascalCase(method.Name) #>Request data<#= method.IsCachable ? ", bool reload = false" : "" #>, JsonSerializerSettings jsonSettings = null)
+<#		if(!string.IsNullOrWhiteSpace(method.ResponseGenericTypes)) {#>
+		public async Task<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>> <#= SnakeCaseToPascalCase(method.Name) #><#= method.ResponseGenericTypes #>(<#= SnakeCaseToPascalCase(method.Name) #>Request data<#= method.IsCachable ? ", bool reload = false" : "" #>, JsonSerializerSettings jsonSettings = null)
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
 <#        if(method.IsResponseCollection) { #>
-			return new <#= ConvertPascalCase(method.Name) #>Response() { <#= ConvertPascalCase(method.Response[0].Name) #> = await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>, jsonSettings) };
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= SnakeCaseToPascalCase(method.Response[0].Name) #> = await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>, jsonSettings) };
 <#        } else { #>
-            return await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= ConvertPascalCase(method.Name) #>Response>(url, data<#= method.IsCachable ? ", reload" : "" #>, jsonSettings);
+            return await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>>(url, data<#= method.IsCachable ? ", reload" : "" #>, jsonSettings);
+<#        } #>
+        }
+<#      } #>
+		public async Task<<#= SnakeCaseToPascalCase(method.Name) #>Response> <#= SnakeCaseToPascalCase(method.Name) #>(<#= SnakeCaseToPascalCase(method.Name) #>Request data<#= method.IsCachable ? ", bool reload = false" : "" #>, JsonSerializerSettings jsonSettings = null)
+        {
+            var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
+<#        if(method.IsResponseCollection) { #>
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= SnakeCaseToPascalCase(method.Response[0].Name) #> = await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>, jsonSettings) };
+<#        } else { #>
+            return await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= SnakeCaseToPascalCase(method.Name) #>Response>(url, data<#= method.IsCachable ? ", reload" : "" #>, jsonSettings);
 <#        } #>
         }
 <#   } #>

@@ -20,7 +20,7 @@ namespace EosSharp.Api.v1
     {
 <#      foreach (var field in type.Fields) { #>
 		[JsonProperty("<#= field.Name #>")]<#= !string.IsNullOrWhiteSpace(field.AbiFieldType) ? "[AbiFieldType(\""+ field.AbiFieldType +"\")]" : "" #>
-		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+		public <#= field.Type #> <#= SnakeCaseToPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
 <#      } #>
     }
 <# } #>
@@ -30,25 +30,34 @@ namespace EosSharp.Api.v1
 <# foreach (var method in apiMethods) { #>
 <#  if (method.Request != null) { #>
 	[Serializable]
-    public class <#= ConvertPascalCase(method.Name) #>Request
+    public class <#= SnakeCaseToPascalCase(method.Name) #>Request
     {
 <#      foreach (var field in method.Request) { #>
 		[JsonProperty("<#= field.Name #>")]   
-		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+		public <#= field.Type #> <#= SnakeCaseToPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
 <#      } #>
     }
 <#   } #>
 <#  if (method.Response != null) { #>
 	[Serializable]
-    public class <#= ConvertPascalCase(method.Name) #>Response
+    public class <#= SnakeCaseToPascalCase(method.Name) #>Response
     {
 <#      foreach (var field in method.Response) { #>
 		[JsonProperty("<#= field.Name #>")]   
-		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+		public <#= field.Type #> <#= SnakeCaseToPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
 <#      } #>
     }
 <#   } #>
-
+<#  if (method.GenericResponse != null && !string.IsNullOrWhiteSpace(method.ResponseGenericTypes)) { #>
+	[Serializable]
+    public class <#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>
+    {
+<#      foreach (var field in method.GenericResponse) { #>
+		[JsonProperty("<#= field.Name #>")]   
+		public <#= field.Type #> <#= SnakeCaseToPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+<#      } #>
+    }
+<#   } #>
 <# } #>
 	#endregion
 }
