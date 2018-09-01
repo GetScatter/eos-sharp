@@ -93,6 +93,7 @@
 		{ 
 			Module = "chain", 
 			Name = "get_raw_code_and_abi",
+			IsCachable = true,
 			Request = new Field[] 
 			{
 				new Field() { Name = "account_name", Type = "string" }

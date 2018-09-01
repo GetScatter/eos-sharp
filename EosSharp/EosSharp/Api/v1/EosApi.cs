@@ -38,10 +38,10 @@ namespace EosSharp.Api.v1
             var url = string.Format("{0}/v1/chain/get_abi", Config.HttpEndpoint);
             return await HttpHelper.PostJsonWithCacheAsync<GetAbiResponse>(url, data, reload, jsonSettings);
         }
-		public async Task<GetRawCodeAndAbiResponse> GetRawCodeAndAbi(GetRawCodeAndAbiRequest data, JsonSerializerSettings jsonSettings = null)
+		public async Task<GetRawCodeAndAbiResponse> GetRawCodeAndAbi(GetRawCodeAndAbiRequest data, bool reload = false, JsonSerializerSettings jsonSettings = null)
         {
             var url = string.Format("{0}/v1/chain/get_raw_code_and_abi", Config.HttpEndpoint);
-            return await HttpHelper.PostJsonAsync<GetRawCodeAndAbiResponse>(url, data, jsonSettings);
+            return await HttpHelper.PostJsonWithCacheAsync<GetRawCodeAndAbiResponse>(url, data, reload, jsonSettings);
         }
 		public async Task<AbiJsonToBinResponse> AbiJsonToBin(AbiJsonToBinRequest data, JsonSerializerSettings jsonSettings = null)
         {

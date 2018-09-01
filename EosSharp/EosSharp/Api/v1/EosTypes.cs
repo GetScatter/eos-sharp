@@ -3,8 +3,8 @@
   
 
 // Auto Generated, do not edit.
+using EosSharp.DataAttributes;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -104,8 +104,8 @@ namespace EosSharp.Api.v1
 	[Serializable]
 	public class AbiAction
     {
-		[JsonProperty("name")]
-		public Name Name { get; set; }
+		[JsonProperty("name")][AbiFieldType("name")]
+		public string Name { get; set; }
 		[JsonProperty("type")]
 		public string Type { get; set; }
 		[JsonProperty("ricardian_contract")]
@@ -114,8 +114,8 @@ namespace EosSharp.Api.v1
 	[Serializable]
 	public class AbiTable
     {
-		[JsonProperty("name")]
-		public Name Name { get; set; }
+		[JsonProperty("name")][AbiFieldType("name")]
+		public string Name { get; set; }
 		[JsonProperty("index_type")]
 		public string IndexType { get; set; }
 		[JsonProperty("key_names")]

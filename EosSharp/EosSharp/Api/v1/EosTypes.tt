@@ -6,8 +6,8 @@
 <#@ include  file=".\Definitions\EosApiMethodDef.t4" #>
 <#@ output   extension=".cs" #>
 // Auto Generated, do not edit.
+using EosSharp.DataAttributes;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -19,7 +19,7 @@ namespace EosSharp.Api.v1
 	public class <#= type.Name #>
     {
 <#      foreach (var field in type.Fields) { #>
-		[JsonProperty("<#= field.Name #>")]
+		[JsonProperty("<#= field.Name #>")]<#= !string.IsNullOrWhiteSpace(field.AbiFieldType) ? "[AbiFieldType(\""+ field.AbiFieldType +"\")]" : "" #>
 		public <#= field.Type #> <#= ConvertPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
 <#      } #>
     }

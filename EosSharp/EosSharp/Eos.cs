@@ -93,12 +93,12 @@ namespace EosSharp
 
             foreach (var action in trx.ContextFreeActions)
             {
-                action.Data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++].Abi));
+                action.Data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
             }
 
             foreach (var action in trx.Actions)
             {
-                action.Data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++].Abi));
+                action.Data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
             }
 
             return (await Api.GetRequiredKeys(new GetRequiredKeysRequest()

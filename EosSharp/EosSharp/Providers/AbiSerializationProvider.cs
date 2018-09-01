@@ -9,6 +9,8 @@ using EosSharp.Helpers;
 using FastMember;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Reflection;
+using EosSharp.DataAttributes;
 
 namespace EosSharp.Providers
 {
@@ -122,13 +124,13 @@ namespace EosSharp.Providers
                 WriteVarUint32(ms, (UInt32)trx.ContextFreeActions.Count);
                 foreach (var action in trx.ContextFreeActions)
                 {
-                    WriteAction(ms, action, abiResponses[actionIndex++].Abi);
+                    WriteAction(ms, action, abiResponses[actionIndex++]);
                 }
 
                 WriteVarUint32(ms, (UInt32)trx.Actions.Count);
                 foreach (var action in trx.Actions)
                 {
-                    WriteAction(ms, action, abiResponses[actionIndex++].Abi);
+                    WriteAction(ms, action, abiResponses[actionIndex++]);
                 }
 
                 WriteVarUint32(ms, (UInt32)trx.TransactionExtensions.Count);
@@ -187,18 +189,17 @@ namespace EosSharp.Providers
             var data = SerializationHelper.Base64FcStringToByteArray(packabi);
             int readIndex = 0;
 
-            var abi = new Abi();
-
-            abi.Version = (string)ReadString(data, ref readIndex);
-            abi.Types = ReadType<List<AbiType>>(data, ref readIndex);
-            abi.Structs = ReadType<List<AbiStruct>>(data, ref readIndex);
-            abi.Actions = ReadType<List<AbiAction>>(data, ref readIndex);
-            abi.Tables = ReadType<List<AbiTable>>(data, ref readIndex);
-            abi.RicardianClauses = ReadType<List<AbiRicardianClause>>(data, ref readIndex);
-            abi.ErrorMessages = ReadType<List<string>>(data, ref readIndex);
-            abi.AbiExtensions = ReadType<List<Extension>>(data, ref readIndex);
-
-            return abi;
+            return new Abi()
+            {
+                Version = (string)ReadString(data, ref readIndex),
+                Types = ReadType<List<AbiType>>(data, ref readIndex),
+                Structs = ReadType<List<AbiStruct>>(data, ref readIndex),
+                Actions = ReadType<List<AbiAction>>(data, ref readIndex),
+                Tables = ReadType<List<AbiTable>>(data, ref readIndex),
+                RicardianClauses = ReadType<List<AbiRicardianClause>>(data, ref readIndex),
+                ErrorMessages = ReadType<List<string>>(data, ref readIndex),
+                AbiExtensions = ReadType<List<Extension>>(data, ref readIndex)
+            };
         }
 
         public byte[] SerializeActionData(Api.v1.Action action, Abi abi)
@@ -223,24 +224,18 @@ namespace EosSharp.Providers
             return ReadStruct(data, ref readIndex, abiStruct, abi);
         }
 
-        public Task<GetAbiResponse[]> GetTransactionAbis(Transaction trx)
+        public Task<Abi[]> GetTransactionAbis(Transaction trx)
         {
-            var abiTasks = new List<Task<GetAbiResponse>>();
+            var abiTasks = new List<Task<Abi>>();
 
             foreach (var action in trx.ContextFreeActions)
             {
-                abiTasks.Add(Api.GetAbi(new GetAbiRequest()
-                {
-                    AccountName = action.Account
-                }));
+                abiTasks.Add(GetActionAbi(action.Account));
             }
 
             foreach (var action in trx.Actions)
             {
-                abiTasks.Add(Api.GetAbi(new GetAbiRequest()
-                {
-                    AccountName = action.Account
-                }));
+                abiTasks.Add(GetActionAbi(action.Account));
             }
 
             return Task.WhenAll(abiTasks);
@@ -248,10 +243,12 @@ namespace EosSharp.Providers
 
         public async Task<Abi> GetActionAbi(string accountName)
         {
-            return (await Api.GetAbi(new GetAbiRequest()
+            var result = await Api.GetRawCodeAndAbi(new GetRawCodeAndAbiRequest()
             {
                 AccountName = accountName
-            })).Abi;
+            });
+
+            return DeserializePackedAbi(result.Abi);
         }
 
         #region Writer Functions
@@ -821,9 +818,9 @@ namespace EosSharp.Providers
                     }
                 }
                 if (c >= 6)
-                    result += c + 'a' - 6;
+                    result += (char)(c + 'a' - 6);
                 else if (c >= 1)
-                    result += c + '1' - 1;
+                    result += (char)(c + '1' - 1);
                 else
                     result += '.';
             }
@@ -1117,10 +1114,24 @@ namespace EosSharp.Providers
         private object ReadType(byte[] data, Type objectType, ref int readIndex)
         {
             var accessor = TypeAccessor.Create(objectType);
-
+            
             if (IsCollection(objectType))
             {
                 return ReadCollectionType(data, objectType, ref readIndex);
+            }
+            else if (IsOptional(objectType))
+            {
+                var opt = (byte)ReadByte(data, ref readIndex);
+                if (opt == 1)
+                {
+                    var optionalType = GetFirstGenericType(objectType);
+                    return ReadType(data, optionalType, ref readIndex);
+                }
+            }
+            else if (IsPrimitive(objectType))
+            {
+                var readerName = GetNormalizedReaderName(objectType);
+                return TypeReaders[readerName](data, ref readIndex);
             }
 
             object value = accessor.CreateNew();
@@ -1142,7 +1153,7 @@ namespace EosSharp.Providers
                 }
                 else if (IsPrimitive(member.PropertyType))
                 {
-                    var readerName = GetNormalizedReaderName(member.PropertyType);
+                    var readerName = GetNormalizedReaderName(member.PropertyType, member.GetCustomAttributes());
                     accessor[value, member.Name] = TypeReaders[readerName](data, ref readIndex);
                 }
                 else
@@ -1187,12 +1198,18 @@ namespace EosSharp.Providers
         {
             return type.IsPrimitive ||                   
                    type.Name.ToLower() == "string" ||
-                   type.Name.ToLower() == "name" ||
                    type.Name.ToLower() == "byte[]";
         }
 
-        private static string GetNormalizedReaderName(Type type)
+        private static string GetNormalizedReaderName(Type type, IEnumerable<Attribute> customAttributes = null)
         {
+            if(customAttributes != null)
+            {
+                var abiFieldAttr = (AbiFieldTypeAttribute)customAttributes.FirstOrDefault(attr => attr.GetType() == typeof(AbiFieldTypeAttribute));
+                if (abiFieldAttr != null)
+                    return abiFieldAttr.AbiType;
+            }
+
             var typeName = type.Name.ToLower();
 
             if (typeName == "byte[]")
