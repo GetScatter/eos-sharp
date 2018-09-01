@@ -117,10 +117,6 @@ class GetBlockResponse
     * KeyType - Type of the index choosen, ex: i64
     * IndexPosition - 1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc
 
-**NOTE:** only Json = true supported.
-
-**NOTE:** no GetTableRowsResponse TRowType template param supported yet.
-
 ```csharp
 var result = await eos.GetTableRows(new GetTableRowsRequest() {
     Json = true,
@@ -137,6 +133,39 @@ class GetTableRowsResponse
 {
     List<object> Rows
     bool?        More
+}
+```
+
+Using generic type
+
+```csharp
+/*JsonProperty helps map the fields from the api*/
+class Stat
+{
+    [JsonProperty("issuer")]
+    public string Issuer { get; set; }
+    [JsonProperty("max_supply")]
+    public string MaxSupply { get; set; }
+    [JsonProperty("supply")]
+    public string Supply { get; set; }
+}
+
+var result = await Eos.GetTableRows<Stat>(new GetTableRowsRequest()
+{
+    Json = true,
+    Code = "eosio.token",
+    Scope = "EOS",
+    Table = "stat"
+});
+```
+
+Returns:
+
+```csharp
+class GetTableRowsResponse<Stat>
+{
+    List<Stat> Rows
+    bool?      More
 }
 ```
 
