@@ -1,6 +1,7 @@
 ﻿using EosSharp.Api.v1;
 using EosSharp.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,8 +74,11 @@ namespace EosSharp.UnitTests
 
         class Stat
         {
+            [JsonProperty("issuer")]
             public string Issuer { get; set; }
+            [JsonProperty("max_supply")]
             public string MaxSupply { get; set; }
+            [JsonProperty("supply")]
             public string Supply { get; set; }
         }
 
@@ -87,7 +91,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.GetTableRows<Stat>(new GetTableRowsRequest()
                 {
-                    Json = false,
+                    Json = true,
                     Code = "eosio.token",
                     Scope = "EOS",
                     Table = "stat"
