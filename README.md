@@ -162,9 +162,9 @@ var result = await Eos.GetTableRows<Stat>(new GetTableRowsRequest()
 Returns:
 
 ```csharp
-class GetTableRowsResponse
+class GetTableRowsResponse<Stat>
 {
-    List<object> Rows
+    List<Stat> Rows
     bool?        More
 }
 ```
