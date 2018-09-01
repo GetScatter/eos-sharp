@@ -165,7 +165,7 @@ Returns:
 class GetTableRowsResponse<Stat>
 {
     List<Stat> Rows
-    bool?        More
+    bool?      More
 }
 ```
 
