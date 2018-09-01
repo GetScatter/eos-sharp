@@ -92,7 +92,7 @@ namespace EosSharp.UnitTests
             var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
             var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
-            Assert.IsTrue(signatures.First() == "SIG_K1_K9atRrkPT67BSEdiEqCDvaokWJKXwFRYXni98zMGosvNM1kb9WpNNn1SQe5S8MaKqe495gUbLVnbAH7oLiEN8LoaMG9i3p");
+            Assert.IsTrue(signatures.First() == "SIG_K1_Jze1PGnAo9MVHkxRxekZQKJebM11AgtK4NhsFtDEZsLujrocvJ5dnhejyr9RQji2K3DWdyUpM9BGyWts7FFr8Wib95hiTj");
         }
     }
 }

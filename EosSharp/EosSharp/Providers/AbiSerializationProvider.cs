@@ -654,7 +654,15 @@ namespace EosSharp.Providers
             var accessor = ObjectAccessor.Create(value);
             foreach (var field in abiStruct.Fields)
             {
-                WriteAbiType(ms, accessor[SerializationHelper.PascalCaseToSnakeCase(field.Name)], field.Type, abi);
+                try
+                {
+                    WriteAbiType(ms, accessor[SerializationHelper.PascalCaseToSnakeCase(field.Name)], field.Type, abi);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    WriteAbiType(ms, accessor[field.Name], field.Type, abi);
+                }
+                
             }
         }
 
