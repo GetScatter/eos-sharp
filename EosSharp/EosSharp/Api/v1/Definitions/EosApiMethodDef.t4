@@ -270,7 +270,7 @@
 			},
 			Response = new Field[] 
 			{
-				new Field() { Name = "rows", Type = "List<Producer>" },
+				new Field() { Name = "rows", Type = "List<object>" },
 				new Field() { Name = "total_producer_vote_weight", Type = "double?" },
 				new Field() { Name = "more", Type = "string" }
 			}

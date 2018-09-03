@@ -255,6 +255,17 @@ namespace EosSharp.Providers
             return DeserializePackedAbi(result.Abi);
         }
 
+        public T DeserializeType<T>(string dataHex)
+        {
+            return DeserializeType<T>(SerializationHelper.HexStringToByteArray(dataHex));
+        }
+
+        public T DeserializeType<T>(byte[] data)
+        {
+            int readIndex = 0;
+            return ReadType<T>(data, ref readIndex);
+        }
+
         #region Writer Functions
 
         private static void WriteByte(MemoryStream ms, object value)
@@ -1046,8 +1057,9 @@ namespace EosSharp.Providers
             }
 
             var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
+            var abiStruct = abi.Structs.First(s => s.Name == abiAction.Type);
 
-            action.Data = DeserializeStructData(abiAction.Type, (string)action.Data, abi);
+            action.Data = ReadAbiStruct(data, ref readIndex, abiStruct, abi);
             return action;
         }
 
@@ -1250,6 +1262,8 @@ namespace EosSharp.Providers
 
             if (typeName == "byte[]")
                 return "bytes";
+            else if (typeName == "boolean")
+                return "bool";
 
             return typeName;
         }

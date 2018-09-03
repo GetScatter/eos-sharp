@@ -173,14 +173,14 @@
 			Name = "Producer",
 			Fields = new Field[]
             {
-				new Field() { Name = "owner", Type = "string" },
-				new Field() { Name = "total_votes", Type = "double?" },
-				new Field() { Name = "producer_key", Type = "string" },
-				new Field() { Name = "is_active", Type = "bool?" },
+				new Field() { Name = "owner", Type = "string", AbiFieldType = "name" },
+				new Field() { Name = "total_votes", Type = "double", AbiFieldType = "float64" },
+				new Field() { Name = "producer_key", Type = "string", AbiFieldType = "public_key" },
+				new Field() { Name = "is_active", Type = "bool" },
 				new Field() { Name = "url", Type = "string" },
-				new Field() { Name = "unpaid_blocks", Type = "UInt32?" },
-				new Field() { Name = "last_claim_time", Type = "UInt64?" },
-				new Field() { Name = "location", Type = "UInt32" }
+				new Field() { Name = "unpaid_blocks", Type = "UInt32" },
+				new Field() { Name = "last_claim_time", Type = "UInt64" },
+				new Field() { Name = "location", Type = "UInt16" }
             }
         },
 
@@ -268,7 +268,7 @@
 				new Field() { Name = "delay_until", Type = "DateTime?" },
 				new Field() { Name = "expiration", Type = "DateTime?" },
 				new Field() { Name = "published", Type = "DateTime?" },
-				new Field() { Name = "transaction", Type = "Transaction" },
+				new Field() { Name = "transaction", Type = "Object" },
             }
         },
 

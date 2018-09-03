@@ -383,7 +383,6 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO check implementation for json/binary
         [TestMethod]
         [TestCategory("Api Tests")]
         public async Task GetProducers()
@@ -393,7 +392,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetProducers(new GetProducersRequest()
                 {
-                    Json = true,                    
+                    Json = false,                    
                 });
                 success = true;
             }
@@ -425,7 +424,6 @@ namespace EosSharp.UnitTests
             Assert.IsTrue(success);
         }
 
-        //TODO check implementation for json/binary
         [TestMethod]
         [TestCategory("Api Tests")]
         public async Task GetScheduledTransactions()
@@ -436,7 +434,6 @@ namespace EosSharp.UnitTests
                 var result = await DefaultApi.GetScheduledTransactions(new GetScheduledTransactionsRequest() {
                     Json = true
                 });
-
                 success = true;
             }
             catch (ApiException ex)

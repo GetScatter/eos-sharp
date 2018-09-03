@@ -166,22 +166,22 @@ namespace EosSharp.Api.v1
 	[Serializable]
 	public class Producer
     {
-		[JsonProperty("owner")]
+		[JsonProperty("owner")][AbiFieldType("name")]
 		public string Owner { get; set; }
-		[JsonProperty("total_votes")]
-		public double? TotalVotes { get; set; }
-		[JsonProperty("producer_key")]
+		[JsonProperty("total_votes")][AbiFieldType("float64")]
+		public double TotalVotes { get; set; }
+		[JsonProperty("producer_key")][AbiFieldType("public_key")]
 		public string ProducerKey { get; set; }
 		[JsonProperty("is_active")]
-		public bool? IsActive { get; set; }
+		public bool IsActive { get; set; }
 		[JsonProperty("url")]
 		public string Url { get; set; }
 		[JsonProperty("unpaid_blocks")]
-		public UInt32? UnpaidBlocks { get; set; }
+		public UInt32 UnpaidBlocks { get; set; }
 		[JsonProperty("last_claim_time")]
-		public UInt64? LastClaimTime { get; set; }
+		public UInt64 LastClaimTime { get; set; }
 		[JsonProperty("location")]
-		public UInt32 Location { get; set; }
+		public UInt16 Location { get; set; }
     }
 	[Serializable]
 	public class ScheduleProducers
@@ -269,7 +269,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("published")]
 		public DateTime? Published { get; set; }
 		[JsonProperty("transaction")]
-		public Transaction Transaction { get; set; }
+		public Object Transaction { get; set; }
     }
 	[Serializable]
 	public class Receipt
@@ -744,7 +744,7 @@ namespace EosSharp.Api.v1
     public class GetProducersResponse
     {
 		[JsonProperty("rows")]   
-		public List<Producer> Rows { get; set; }
+		public List<object> Rows { get; set; }
 		[JsonProperty("total_producer_vote_weight")]   
 		public double? TotalProducerVoteWeight { get; set; }
 		[JsonProperty("more")]   

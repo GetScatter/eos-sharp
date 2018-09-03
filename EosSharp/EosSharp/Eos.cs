@@ -1,14 +1,10 @@
-﻿using EosSharp;
-using EosSharp.Api.v1;
+﻿using EosSharp.Api.v1;
+using EosSharp.Helpers;
 using EosSharp.Providers;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using EosSharp.Helpers;
-using System.Net.Http;
-using System.IO;
-using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace EosSharp
 {
@@ -194,12 +190,23 @@ namespace EosSharp
             })).Stats;
         }
 
-        public Task<GetProducersResponse> GetProducers()
+        public async Task<GetProducersResponse> GetProducers(GetProducersRequest request)
         {
-            return Api.GetProducers(new GetProducersRequest()
+            var result = await Api.GetProducers(request);
+
+            if (!request.Json.GetValueOrDefault())
             {
-                Json = true,
-            });
+                var unpackedRows = new List<object>();
+
+                foreach (var rowData in result.Rows)
+                {
+                    unpackedRows.Add(AbiSerializer.DeserializeType<Producer>((string)rowData));
+                }
+
+                result.Rows = unpackedRows;
+            }
+
+            return result;
         }
 
         public Task<GetProducerScheduleResponse> GetProducerSchedule()
@@ -207,12 +214,25 @@ namespace EosSharp
             return Api.GetProducerSchedule();
         }
 
-        public Task<GetScheduledTransactionsResponse> GetScheduledTransactions()
+        public async Task<GetScheduledTransactionsResponse> GetScheduledTransactions(GetScheduledTransactionsRequest request)
         {
-            return Api.GetScheduledTransactions(new GetScheduledTransactionsRequest()
+            var result = await Api.GetScheduledTransactions(request);
+
+            if (!request.Json.GetValueOrDefault())
             {
-                Json = true
-            });
+                foreach (var trx in result.Transactions)
+                {
+                    try
+                    {
+                        trx.Transaction = await AbiSerializer.DeserializePackedTransaction((string)trx.Transaction);
+                    }
+                    //TODO check contract abi's that does not match packed data
+                    //TODO check for data types
+                    catch (Exception) { }                
+                }
+            }
+
+            return result;
         }
 
         public async Task<string> CreateTransaction(Transaction trx)

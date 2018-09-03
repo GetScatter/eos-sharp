@@ -109,6 +109,50 @@ namespace EosSharp.UnitTests
 
         [TestMethod]
         [TestCategory("Eos Tests")]
+        public async Task GetProducers()
+        {
+            bool success = false;
+            try
+            {
+                var result = await Eos.GetProducers(new GetProducersRequest()
+                {
+                    Json = false,
+                });
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        [TestCategory("Eos Tests")]
+        public async Task GetScheduledTransactions()
+        {
+            bool success = false;
+            try
+            {
+                var result = await Eos.GetScheduledTransactions(new GetScheduledTransactionsRequest()
+                {
+                    Json = false
+                });
+                success = true;
+            }
+            catch (ApiException ex)
+            {
+                Console.WriteLine(ex.StatusCode);
+                Console.WriteLine(ex.Content);
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        [TestCategory("Eos Tests")]
         public async Task CreateTransaction()
         {
             bool success = false;
