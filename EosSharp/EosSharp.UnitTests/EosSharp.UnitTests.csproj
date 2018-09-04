@@ -61,6 +61,7 @@
     <Compile Include="ApiUnitTests.cs" />
     <Compile Include="EosUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SerializationUnitTests.cs" />
     <Compile Include="SignUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
