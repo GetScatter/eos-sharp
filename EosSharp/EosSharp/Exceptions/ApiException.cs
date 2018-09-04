@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace EosSharp.Exceptions
-{
+{    
     public class ApiException : Exception
     {
         public int StatusCode { get; set; }

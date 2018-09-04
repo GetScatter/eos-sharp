@@ -38,10 +38,9 @@ namespace EosSharp.UnitTests
                 var result = await Eos.GetBlock("13503532");
                 success = true;
             }
-            catch (ApiException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.StatusCode);
-                Console.WriteLine(ex.Content);
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
             Assert.IsTrue(success);
@@ -63,10 +62,9 @@ namespace EosSharp.UnitTests
                 });
                 success = true;
             }
-            catch (ApiException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.StatusCode);
-                Console.WriteLine(ex.Content);
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
             Assert.IsTrue(success);
@@ -98,10 +96,9 @@ namespace EosSharp.UnitTests
                 });
                 success = true;
             }
-            catch (ApiException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.StatusCode);
-                Console.WriteLine(ex.Content);
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
             Assert.IsTrue(success);
@@ -120,10 +117,9 @@ namespace EosSharp.UnitTests
                 });
                 success = true;
             }
-            catch (ApiException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.StatusCode);
-                Console.WriteLine(ex.Content);
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
             Assert.IsTrue(success);
@@ -142,10 +138,9 @@ namespace EosSharp.UnitTests
                 });
                 success = true;
             }
-            catch (ApiException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.StatusCode);
-                Console.WriteLine(ex.Content);
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
             Assert.IsTrue(success);
@@ -176,10 +171,9 @@ namespace EosSharp.UnitTests
                 });
                 success = true;
             }
-            catch (ApiException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.StatusCode);
-                Console.WriteLine(ex.Content);
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
             Assert.IsTrue(success);

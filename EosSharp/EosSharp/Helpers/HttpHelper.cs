@@ -148,11 +148,22 @@ namespace EosSharp.Helpers
                 return stream;
 
             var content = await StreamToStringAsync(stream);
-            throw new ApiException
+
+            ApiErrorException apiError = null;
+            try
             {
-                StatusCode = (int)response.StatusCode,
-                Content = content
-            };
+                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content);
+            }
+            catch(Exception)
+            {
+                throw new ApiException
+                {
+                    StatusCode = (int)response.StatusCode,
+                    Content = content
+                };
+            }
+
+            throw apiError;
         }
 
         private static async Task<string> StreamToStringAsync(Stream stream)
