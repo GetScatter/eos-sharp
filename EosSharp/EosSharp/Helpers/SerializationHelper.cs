@@ -29,21 +29,24 @@ namespace EosSharp.Helpers
         public static byte[] DecimalToBinary(uint size, string s)
         {
             byte[] result = new byte[size];
-            for (int i = 0; i < s.Length; ++i)
+
+            switch (size)
             {
-                char srcDigit = s[i];
-                if (srcDigit < '0' || srcDigit > '9')
-                    throw new Exception("invalid number");
-                int carry = srcDigit - '0';
-                for (int j = 0; j < size; ++j)
-                {
-                    int x = result[j] * 10 + carry;
-                    result[j] = (byte)x;
-                    carry = x >> 8;
-                }
-                if (carry != 0)
-                    throw new Exception("number is out of range");
-            }
+                case 8:
+                    result = BitConverter.GetBytes(Convert.ToUInt64(s));
+                    break;
+                case 16:
+                    Int32[] bits = decimal.GetBits(Convert.ToDecimal(s));
+                    List<byte> bytes = new List<byte>();
+                    foreach (Int32 i in bits)
+                    {
+                        bytes.AddRange(BitConverter.GetBytes(i));
+                    }
+                    result = bytes.ToArray();
+                    break;
+                default:
+                    break;
+            };
             return result;
         }
 
