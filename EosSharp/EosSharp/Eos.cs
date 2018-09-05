@@ -226,9 +226,9 @@ namespace EosSharp
                     {
                         trx.Transaction = await AbiSerializer.DeserializePackedTransaction((string)trx.Transaction);
                     }
-                    //TODO check contract abi's that does not match packed data
-                    //TODO check for data types
-                    catch (Exception) { }                
+                    catch (Exception) {
+                        //ignore transactions with invalid abi's
+                    }
                 }
             }
 

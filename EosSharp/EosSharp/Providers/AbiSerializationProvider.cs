@@ -180,8 +180,6 @@ namespace EosSharp.Providers
                 trx.Actions.Add((Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
 
-            trx.TransactionExtensions = ReadType<List<Extension>>(data, ref readIndex);
-
             return trx;
         }
 
@@ -876,19 +874,19 @@ namespace EosSharp.Providers
         {
             var low = (UInt32)ReadUint32(data, ref readIndex);
             var high = (UInt32)ReadUint32(data, ref readIndex);
-            return new DateTime((high >> 0) * 0x10000_0000 + (low >> 0));
+            return SerializationHelper.TimePointToDate((high >> 0) * 0x10000_0000 + (low >> 0));
         }
 
         private static object ReadTimePointSec(byte[] data, ref Int32 readIndex)
         {
             var secs = (UInt32)ReadUint32(data, ref readIndex);
-            return new DateTime(secs*1000);
+            return SerializationHelper.TimePointSecToDate(secs);
         }
 
         private static object ReadBlockTimestampType(byte[] data, ref Int32 readIndex)
         {
             var slot = (UInt32)ReadUint32(data, ref readIndex);
-            return new DateTime(slot * 500 + 946684800000);
+            return SerializationHelper.BlockTimestampToDate(slot);
         }
 
         private static object ReadSymbolString(byte[] data, ref Int32 readIndex)
@@ -1059,7 +1057,12 @@ namespace EosSharp.Providers
             var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
             var abiStruct = abi.Structs.First(s => s.Name == abiAction.Type);
 
+            var dataSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
+
             action.Data = ReadAbiStruct(data, ref readIndex, abiStruct, abi);
+
+            action.HexData = (string)ReadString(data, ref readIndex);
+
             return action;
         }
 
