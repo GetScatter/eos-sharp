@@ -13,7 +13,10 @@ namespace EosSharp
         private EosConfigurator EosConfig { get; set; }
         private EosApi Api { get; set; }
         private AbiSerializationProvider AbiSerializer { get; set; }
-
+        /// <summary>
+        /// Client wrapper to interact with eos blockchains.
+        /// </summary>
+        /// <param name="config">Configures client parameters</param>
         public Eos(EosConfigurator config)
         {
             EosConfig = config ?? throw new ArgumentNullException("config");
@@ -22,12 +25,19 @@ namespace EosSharp
         }
 
         #region Api Methods
-
+        /// <summary>
+        /// Query for blockchain information
+        /// </summary>
+        /// <returns>Blockchain information</returns>
         public Task<GetInfoResponse> GetInfo()
         {
             return Api.GetInfo();
         }
-
+        /// <summary>
+        /// Query for blockchain account information
+        /// </summary>
+        /// <param name="accountName">account to query information</param>
+        /// <returns>account information</returns>
         public Task<GetAccountResponse> GetAccount(string accountName)
         {
             return Api.GetAccount(new GetAccountRequest()
@@ -103,7 +113,11 @@ namespace EosSharp
                 Transaction = trx
             })).RequiredKeys;
         }
-
+        /// <summary>
+        /// Query for blockchain block information
+        /// </summary>
+        /// <param name="blockNumOrId">block number or id to query information</param>
+        /// <returns>block information</returns>
         public Task<GetBlockResponse> GetBlock(string blockNumOrId)
         {
             return Api.GetBlock(new GetBlockRequest()
@@ -119,7 +133,20 @@ namespace EosSharp
                 BlockNumOrId = blockNumOrId
             });
         }
-
+        /// <summary>
+        /// Query for blockchain smart contract table state information
+        /// </summary>
+        /// <typeparam name="TRowType">Type used for each row</typeparam>
+        /// <param name="request.Json">Request rows using json or raw format</param>
+        /// <param name="request.Code">accountName of the contract to search for table rows</param>
+        /// <param name="request.Scope">scope text segmenting the table set</param>
+        /// <param name="request.Table">table name</param>
+        /// <param name="request.TableKey">unused so far?</param>
+        /// <param name="request.LowerBound">lower bound for the selected index value</param>
+        /// <param name="request.UpperBound">upper bound for the selected index value</param>
+        /// <param name="request.KeyType">Type of the index choosen, ex: i64</param>
+        /// <param name="request.IndexPosition">1 - primary(first), 2 - secondary index(in order defined by multi_index), 3 - third index, etc</param>
+        /// <returns>Rows and if is there More rows to be fetched</returns>
         public async Task<GetTableRowsResponse<TRowType>> GetTableRows<TRowType>(GetTableRowsRequest request)
         {
             if(request.Json.GetValueOrDefault())
@@ -148,7 +175,19 @@ namespace EosSharp
                 return result;
             }
         }
-
+        /// <summary>
+        /// Query for blockchain smart contract table state information
+        /// </summary>
+        /// <param name="request.Json">Request rows using json or raw format</param>
+        /// <param name="request.Code">accountName of the contract to search for table rows</param>
+        /// <param name="request.Scope">scope text segmenting the table set</param>
+        /// <param name="request.Table">table name</param>
+        /// <param name="request.TableKey">unused so far?</param>
+        /// <param name="request.LowerBound">lower bound for the selected index value</param>
+        /// <param name="request.UpperBound">upper bound for the selected index value</param>
+        /// <param name="request.KeyType">Type of the index choosen, ex: i64</param>
+        /// <param name="request.IndexPosition">1 - primary(first), 2 - secondary index(in order defined by multi_index), 3 - third index, etc</param>
+        /// <returns>Rows and if is there More rows to be fetched</returns>
         public async Task<GetTableRowsResponse> GetTableRows(GetTableRowsRequest request)
         {
             var result = await Api.GetTableRows(request);
@@ -282,7 +321,13 @@ namespace EosSharp
 
             return result.TransactionId;
         }
-
+        /// <summary>
+        /// Query for account actions log
+        /// </summary>
+        /// <param name="accountName">account to query information</param>
+        /// <param name="pos">Absolute sequence positon -1 is the end/last action</param>
+        /// <param name="offset">Number of actions relative to pos, negative numbers return [pos-offset,pos), positive numbers return [pos,pos+offset)</param>
+        /// <returns></returns>
         public Task<GetActionsResponse> GetActions(string accountName, Int32? pos = null, Int32? offset = null)
         {
             return Api.GetActions(new GetActionsRequest()
