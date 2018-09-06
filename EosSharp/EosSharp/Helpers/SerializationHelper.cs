@@ -136,6 +136,10 @@ namespace EosSharp.Helpers
                         builder.Append('_');
                     builder.Append(char.ToLower(c));
                 }
+                else
+                {
+                    builder.Append(c);
+                }
 
                 if (first)
                     first = false;

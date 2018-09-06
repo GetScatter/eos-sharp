@@ -268,17 +268,18 @@ namespace EosSharp.Providers
 
         private static void WriteByte(MemoryStream ms, object value)
         {
-            ms.Write(new byte[] { (byte)value }, 0, 1);
+            ms.Write(new byte[] { Convert.ToByte(value) }, 0, 1);
         }
         
         private static void WriteUint16(MemoryStream ms, object value)
         {
-            ms.Write(BitConverter.GetBytes((UInt16)value), 0, 2);
+            ms.Write(BitConverter.GetBytes(Convert.ToUInt16(value)), 0, 2);
         }
 
         private static void WriteUint32(MemoryStream ms, object value)
         {
-            ms.Write(BitConverter.GetBytes((UInt32)value), 0, 4);
+
+            ms.Write(BitConverter.GetBytes(Convert.ToUInt32(value)), 0, 4);
         }
 
         private static void WriteInt64(MemoryStream ms, object value)
@@ -307,7 +308,7 @@ namespace EosSharp.Providers
 
         private static void WriteVarUint32(MemoryStream ms, object value)
         {
-            var v = (UInt32)value;
+            var v = Convert.ToUInt32(value);
             while (true)
             {
                 if ((v >> 7) != 0)
@@ -325,7 +326,7 @@ namespace EosSharp.Providers
 
         private static void WriteVarInt32(MemoryStream ms, object value)
         {
-            var n = (Int32)value;
+            var n = Convert.ToInt32(value);
             WriteVarUint32(ms, (UInt32)((n << 1) ^ (n >> 31)));
         }
 
@@ -336,7 +337,7 @@ namespace EosSharp.Providers
 
         private static void WriteFloat64(MemoryStream ms, object value)
         {
-            ms.Write(BitConverter.GetBytes((double)value), 0, 8);
+            ms.Write(BitConverter.GetBytes(Convert.ToDouble(value)), 0, 8);
         }
 
         private static void WriteFloat128(MemoryStream ms, object value)
@@ -669,9 +670,14 @@ namespace EosSharp.Providers
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    WriteAbiType(ms, accessor[field.Name], field.Type, abi);
+                    try
+                    {
+                        WriteAbiType(ms, accessor[field.Name], field.Type, abi);
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                    }
                 }
-                
             }
         }
 
