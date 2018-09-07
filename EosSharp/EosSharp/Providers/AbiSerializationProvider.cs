@@ -521,7 +521,7 @@ namespace EosSharp.Providers
             var keyBytes = CryptoHelper.PubKeyStringToBytes(s);
 
             WriteByte(ms, s.StartsWith("PUB_R1_") ? KeyType.r1 : KeyType.k1);
-            ms.Write(keyBytes, 0, keyBytes.Length);
+            ms.Write(keyBytes, 0, CryptoHelper.PUB_KEY_DATA_SIZE);
         }
 
         private static void WritePrivateKey(MemoryStream ms, object value)
@@ -529,7 +529,7 @@ namespace EosSharp.Providers
             var s = (string)value;
             var keyBytes = CryptoHelper.PrivKeyStringToBytes(s);
             WriteByte(ms, KeyType.r1);
-            ms.Write(keyBytes, 0, keyBytes.Length);
+            ms.Write(keyBytes, 0, CryptoHelper.PRIV_KEY_DATA_SIZE);
         }
 
         private static void WriteSignature(MemoryStream ms, object value)
@@ -542,7 +542,7 @@ namespace EosSharp.Providers
             else if (s.StartsWith("SIG_R1_"))
                 WriteByte(ms, KeyType.r1);
 
-            ms.Write(signBytes, 0, signBytes.Length);
+            ms.Write(signBytes, 0, CryptoHelper.SIGN_KEY_DATA_SIZE);
         }
 
         private static void WriteExtendedAsset(MemoryStream ms, object value)
@@ -670,7 +670,7 @@ namespace EosSharp.Providers
                 var fieldName = FindObjectFieldName(field.Name, value.GetType());
 
                 if (string.IsNullOrWhiteSpace(fieldName))
-                    continue;
+                    throw new Exception("Missing " + abiStruct.Name + "." + field.Name + " (type=" + field.Type + ")");
 
                 WriteAbiType(ms, accessor[fieldName], field.Type, abi);
             }

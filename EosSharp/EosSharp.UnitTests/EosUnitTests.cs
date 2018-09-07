@@ -205,13 +205,17 @@ namespace EosSharp.UnitTests
                                     threshold = 1,
                                     keys = new List<object>() {
                                         new { key = "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr", weight = 1}
-                                    }
+                                    },
+                                    accounts =  new List<object>(),
+                                    waits =  new List<object>()
                                 },
                                 active = new {
                                     threshold = 1,
                                     keys = new List<object>() {
                                         new { key = "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr", weight = 1}
-                                    }
+                                    },
+                                    accounts =  new List<object>(),
+                                    waits =  new List<object>()
                                 }
                             }
                         },
