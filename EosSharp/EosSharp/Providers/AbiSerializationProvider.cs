@@ -656,6 +656,9 @@ namespace EosSharp.Providers
 
         private void WriteAbiStruct(MemoryStream ms, object value, AbiStruct abiStruct, Abi abi)
         {
+            if (value == null)
+                return;
+
             if(!string.IsNullOrWhiteSpace(abiStruct.Base))
             {
                 WriteAbiType(ms, value, abiStruct.Base, abi);
@@ -664,20 +667,12 @@ namespace EosSharp.Providers
             var accessor = ObjectAccessor.Create(value);
             foreach (var field in abiStruct.Fields)
             {
-                try
-                {
-                    WriteAbiType(ms, accessor[SerializationHelper.PascalCaseToSnakeCase(field.Name)], field.Type, abi);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    try
-                    {
-                        WriteAbiType(ms, accessor[field.Name], field.Type, abi);
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
-                }
+                var fieldName = FindObjectFieldName(field.Name, value.GetType());
+
+                if (string.IsNullOrWhiteSpace(fieldName))
+                    continue;
+
+                WriteAbiType(ms, accessor[fieldName], field.Type, abi);
             }
         }
 
@@ -1150,14 +1145,16 @@ namespace EosSharp.Providers
             foreach (var field in abiStruct.Fields)
             {
                 var abiValue = ReadAbiType(data, ref readIndex, field.Type, abi);
-                try
+                var fieldName = FindObjectFieldName(field.Name, value.GetType());
+
+                if(string.IsNullOrWhiteSpace(fieldName))
                 {
-                    accessor[value, SerializationHelper.SnakeCaseToPascalCase(field.Name)] = abiValue;
+                    if(typeof(T) == typeof(object))
+                        accessor[value, field.Name] = abiValue;
+                    continue;
                 }
-                catch(ArgumentOutOfRangeException)
-                {
-                    accessor[value, field.Name] = abiValue;
-                }
+
+                accessor[value, fieldName] = abiValue;
             }
 
             return (T)value;
@@ -1275,6 +1272,24 @@ namespace EosSharp.Providers
                 return "bool";
 
             return typeName;
+        }
+
+        private string FindObjectFieldName(string name, Type objectType)
+        {
+            if (objectType.GetProperties().Any(p => p.Name == name))
+                return name;
+
+            name = SerializationHelper.SnakeCaseToPascalCase(name);
+
+            if (objectType.GetProperties().Any(p => p.Name == name))
+                return name;
+
+            name = SerializationHelper.PascalCaseToSnakeCase(name);
+
+            if (objectType.GetProperties().Any(p => p.Name == name))
+                return name;
+
+            return null;
         }
         #endregion
     }
