@@ -565,6 +565,26 @@ namespace EosSharp.Api.v1
 		public string Abi { get; set; }
     }
 	[Serializable]
+    public class GetRawAbiRequest
+    {
+		[JsonProperty("account_name")]   
+		public string AccountName { get; set; }
+		[JsonProperty("abi_hash")]   
+		public string AbiHash { get; set; }
+    }
+	[Serializable]
+    public class GetRawAbiResponse
+    {
+		[JsonProperty("account_name")]   
+		public string AccountName { get; set; }
+		[JsonProperty("code_hash")]   
+		public string CodeHash { get; set; }
+		[JsonProperty("abi_hash")]   
+		public string AbiHash { get; set; }
+		[JsonProperty("abi")]   
+		public string Abi { get; set; }
+    }
+	[Serializable]
     public class AbiJsonToBinRequest
     {
 		[JsonProperty("code")]   

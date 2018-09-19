@@ -109,6 +109,27 @@
 		new ApiMethod() 
 		{ 
 			Module = "chain", 
+			Name = "get_raw_abi",
+			IsCachable = true,
+			Request = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "abi_hash", Type = "string" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "code_hash",         Type = "string" },
+				new Field() { Name = "abi_hash",          Type = "string" },
+				new Field() { Name = "abi",          Type = "string" }
+			}
+		},
+
+		
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
 			Name = "abi_json_to_bin",
 			Request = new Field[] 
 			{

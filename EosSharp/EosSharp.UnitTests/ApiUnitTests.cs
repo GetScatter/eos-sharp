@@ -131,7 +131,32 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-        Assert.IsTrue(success);
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        [TestCategory("Api Tests")]
+        public async Task GetRawAbi()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.GetRawAbi(new GetRawAbiRequest()
+                {
+                    AccountName = "eosio.token"
+                });
+
+                var abiSerializer = new AbiSerializationProvider(DefaultApi);
+                var abiObject = abiSerializer.DeserializePackedAbi(result.Abi);
+
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            Assert.IsTrue(success);
         }
 
         [TestMethod]
