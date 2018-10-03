@@ -1,9 +1,16 @@
 # eos-sharp
 C# client library for EOS blockchains. The library is based on https://github.com/EOSIO/eosjs2 and MIT licensed.
 
-### Prerequisite
+### Prerequisite to build
 
 Visual Studio 2017 
+
+### Instalation
+eos-sharp is now available throught nuget https://www.nuget.org/packages/eos-sharp/1.0.0
+
+```
+Install-Package eos-sharp
+```
 
 ### Usage
 

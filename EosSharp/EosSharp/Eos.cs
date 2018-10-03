@@ -64,6 +64,15 @@ namespace EosSharp
             })).Abi;
         }
 
+        public Task<GetRawAbiResponse> GetRawAbi(string accountName, string abiHash = null)
+        {
+            return Api.GetRawAbi(new GetRawAbiRequest()
+            {
+                AccountName = accountName,
+                AbiHash = abiHash
+            });
+        }
+
         public Task<GetRawCodeAndAbiResponse> GetRawCodeAndAbi(string accountName)
         {
             return Api.GetRawCodeAndAbi(new GetRawCodeAndAbiRequest()

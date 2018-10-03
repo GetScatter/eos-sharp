@@ -143,7 +143,8 @@
 				new Field() { Name = "tables", Type = "List<AbiTable>" },
 				new Field() { Name = "ricardian_clauses", Type = "List<AbiRicardianClause>" },
 				new Field() { Name = "error_messages", Type = "List<string>" },
-				new Field() { Name = "abi_extensions", Type = "List<Extension>" }
+				new Field() { Name = "abi_extensions", Type = "List<Extension>" },
+				new Field() { Name = "variants", Type = "List<Variant>" }
             }
         },
 
@@ -221,6 +222,16 @@
             {
 				new Field() { Name = "type", Type = "UInt16" },
 				new Field() { Name = "data", Type = "byte[]" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Variant",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "type", Type = "List<string>" }
             }
         },
 
