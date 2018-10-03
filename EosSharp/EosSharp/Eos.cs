@@ -274,7 +274,7 @@ namespace EosSharp
             return result;
         }
 
-        public async Task<string> CreateTransaction(Transaction trx)
+        public async Task<string> CreateTransaction(Transaction trx, bool packTrx = false)
         {
             if (EosConfig.SignProvider == null)
                 throw new ArgumentNullException("SignProvider");
@@ -305,21 +305,38 @@ namespace EosSharp
                 trx.RefBlockPrefix = getBlockResult.RefBlockPrefix;
             }
 
-            var packedTrx = await AbiSerializer.SerializePackedTransaction(trx);
-
             var availableKeys = await EosConfig.SignProvider.GetAvailableKeys();
             var requiredKeys = await GetRequiredKeys(availableKeys.ToList(), trx);
-            var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx);
 
-            var result = await Api.PushTransaction(new PushTransactionRequest()
+            if(packTrx)
             {
-                Signatures = signatures.ToArray(),
-                Compression = 0,
-                PackedContextFreeData = "",
-                PackedTrx = SerializationHelper.ByteArrayToHexString(packedTrx)
-            });
+                var packedTrx = await AbiSerializer.SerializePackedTransaction(trx);
+                var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx);
 
-            return result.TransactionId;
+                var result = await Api.PushTransaction(new PushTransactionRequest()
+                {
+                    Signatures = signatures.ToArray(),
+                    Compression = 0,
+                    PackedContextFreeData = "",
+                    PackedTrx = SerializationHelper.ByteArrayToHexString(packedTrx)
+                });
+
+                return result.TransactionId;
+            }
+            else
+            {
+                var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, trx);
+
+                var result = await Api.PushTransaction(new PushTransactionRequest()
+                {
+                    Signatures = signatures.ToArray(),
+                    Compression = 0,
+                    PackedContextFreeData = "",
+                    Transaction = trx
+                });
+
+                return result.TransactionId;
+            }
         }
         /// <summary>
         /// Query for account actions log

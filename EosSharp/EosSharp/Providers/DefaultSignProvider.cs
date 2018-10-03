@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using EosSharp.Helpers;
 using System;
+using EosSharp.Api.v1;
 
 namespace EosSharp
 {
@@ -67,7 +68,25 @@ namespace EosSharp
                 signBytes,
                 new byte[32]
             };
+            return SignData(requiredKeys, data);
+        }
 
+        public Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, Transaction trx)
+        {
+            var trxStr = JsonConvert.SerializeObject(trx);
+
+            var data = new List<byte[]>()
+            {
+                Hex.HexToBytes(chainId),
+                Encoding.UTF8.GetBytes(trxStr),
+                new byte[32]
+            };
+
+            return SignData(requiredKeys, data);
+        }
+
+        private Task<IEnumerable<string>> SignData(List<string> requiredKeys, List<byte[]> data)
+        {
             var hash = Sha256Manager.GetHash(SerializationHelper.Combine(data));
 
             return Task.FromResult(requiredKeys.Select(key =>

@@ -809,6 +809,8 @@ namespace EosSharp.Api.v1
 		public string PackedContextFreeData { get; set; }
 		[JsonProperty("packed_trx")]   
 		public string PackedTrx { get; set; }
+		[JsonProperty("transaction")]   
+		public Transaction Transaction { get; set; }
     }
 	[Serializable]
     public class PushTransactionResponse

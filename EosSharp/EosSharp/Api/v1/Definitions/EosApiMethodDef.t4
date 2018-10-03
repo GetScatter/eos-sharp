@@ -336,7 +336,8 @@
 				new Field() { Name = "signatures", Type = "string[]" },
 				new Field() { Name = "compression", Type = "UInt32?" },
 				new Field() { Name = "packed_context_free_data", Type = "string" },
-				new Field() { Name = "packed_trx", Type = "string" }
+				new Field() { Name = "packed_trx", Type = "string" },
+				new Field() { Name = "transaction", Type = "Transaction" }
 			},
 			Response = new Field[]
 			{
