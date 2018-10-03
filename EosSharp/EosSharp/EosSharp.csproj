@@ -13,6 +13,9 @@
     <Copyright>Copyright 2018</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
