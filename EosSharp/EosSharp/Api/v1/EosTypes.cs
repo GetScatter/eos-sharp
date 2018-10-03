@@ -144,6 +144,8 @@ namespace EosSharp.Api.v1
 		public List<string> ErrorMessages { get; set; }
 		[JsonProperty("abi_extensions")]
 		public List<Extension> AbiExtensions { get; set; }
+		[JsonProperty("variants")]
+		public List<Variant> Variants { get; set; }
     }
 	[Serializable]
 	public class AbiRicardianClause
@@ -214,6 +216,14 @@ namespace EosSharp.Api.v1
 		public UInt16 Type { get; set; }
 		[JsonProperty("data")]
 		public byte[] Data { get; set; }
+    }
+	[Serializable]
+	public class Variant
+    {
+		[JsonProperty("name")]
+		public string Name { get; set; }
+		[JsonProperty("type")]
+		public List<string> Type { get; set; }
     }
 	[Serializable]
 	public class Action

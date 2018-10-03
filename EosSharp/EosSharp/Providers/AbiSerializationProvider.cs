@@ -245,7 +245,7 @@ namespace EosSharp.Providers
 
         public async Task<Abi> GetAbi(string accountName)
         {
-            var result = await Api.GetRawCodeAndAbi(new GetRawCodeAndAbiRequest()
+            var result = await Api.GetRawAbi(new GetRawAbiRequest()
             {
                 AccountName = accountName
             });
