@@ -284,7 +284,7 @@ namespace EosSharp
             return result;
         }
 
-        public async Task<string> CreateTransaction(Transaction trx, bool packTrx = true)
+        public async Task<string> CreateTransaction(Transaction trx)
         {
             if (EosConfig.SignProvider == null)
                 throw new ArgumentNullException("SignProvider");
@@ -315,42 +315,22 @@ namespace EosSharp
                 trx.RefBlockPrefix = getBlockResult.RefBlockPrefix;
             }
 
-            if(packTrx)
+            var packedTrx = await AbiSerializer.SerializePackedTransaction(trx);
+
+            var availableKeys = await EosConfig.SignProvider.GetAvailableKeys();
+            var requiredKeys = await GetRequiredKeys(availableKeys.ToList(), trx);
+
+            var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx, trx);
+
+            var result = await Api.PushTransaction(new PushTransactionRequest()
             {
-                var packedTrx = await AbiSerializer.SerializePackedTransaction(trx);
+                Signatures = signatures.ToArray(),
+                Compression = 0,
+                PackedContextFreeData = "",
+                PackedTrx = SerializationHelper.ByteArrayToHexString(packedTrx)
+            });
 
-                var availableKeys = await EosConfig.SignProvider.GetAvailableKeys();
-                var requiredKeys = await GetRequiredKeys(availableKeys.ToList(), trx);
-
-                var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx);
-
-                var result = await Api.PushTransaction(new PushTransactionRequest()
-                {
-                    Signatures = signatures.ToArray(),
-                    Compression = 0,
-                    PackedContextFreeData = "",
-                    PackedTrx = SerializationHelper.ByteArrayToHexString(packedTrx)
-                });
-
-                return result.TransactionId;
-            }
-            else
-            {
-                var toSignTrx = JsonConvert.DeserializeObject<Transaction>(JsonConvert.SerializeObject(trx));
-
-                var availableKeys = await EosConfig.SignProvider.GetAvailableKeys();
-                var requiredKeys = await GetRequiredKeys(availableKeys.ToList(), trx);
-
-                var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, toSignTrx);
-
-                var result = await Api.PushTransaction(new PushTransactionRequest()
-                {
-                    Signatures = signatures.ToArray(),
-                    Transaction = trx
-                });
-
-                return result.TransactionId;
-            }
+            return result.TransactionId;
         }
         /// <summary>
         /// Query for account actions log
