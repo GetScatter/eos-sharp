@@ -168,7 +168,7 @@ namespace EosSharp.UnitTests
                             Data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
                         }
                     }
-                });
+                }, false);
                 success = true;
             }
             catch (Exception ex)
@@ -201,7 +201,7 @@ namespace EosSharp.UnitTests
                             Data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
                         }
                     }
-                }, true);
+                });
                 success = true;
             }
             catch (Exception ex)
