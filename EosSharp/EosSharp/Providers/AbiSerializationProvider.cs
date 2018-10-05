@@ -441,7 +441,7 @@ namespace EosSharp.Providers
         {
             var ticks = SerializationHelper.DateToTimePoint((DateTime)value);
             WriteUint32(ms, (UInt32)ticks >> 0);
-            WriteUint32(ms, (UInt32)Math.Floor((double)ticks / 0x10000_0000) >> 0);
+            WriteUint32(ms, (UInt32)Math.Floor((double)ticks / 0x100000000) >> 0);
         }
 
         private static void WriteTimePointSec(MemoryStream ms, object value)
@@ -678,7 +678,8 @@ namespace EosSharp.Providers
 
         private TSerializer GetTypeSerializerAndCache<TSerializer>(string type, Dictionary<string, TSerializer> typeSerializers, Abi abi)
         {
-            if (typeSerializers.TryGetValue(type, out TSerializer nativeSerializer))
+            TSerializer nativeSerializer;
+            if (typeSerializers.TryGetValue(type, out nativeSerializer))
             {
                 return nativeSerializer;
             }
@@ -769,7 +770,7 @@ namespace EosSharp.Providers
             var v = (UInt32)ReadVarUint32(data, ref readIndex);
 
             if ((v & 1) != 0)
-                return ((~v) >> 1) | 0x8000_0000;
+                return ((~v) >> 1) | 0x80000000;
             else
                 return v >> 1;
         }
@@ -875,7 +876,7 @@ namespace EosSharp.Providers
         {
             var low = (UInt32)ReadUint32(data, ref readIndex);
             var high = (UInt32)ReadUint32(data, ref readIndex);
-            return SerializationHelper.TimePointToDate((high >> 0) * 0x10000_0000 + (low >> 0));
+            return SerializationHelper.TimePointToDate((high >> 0) * 0x100000000 + (low >> 0));
         }
 
         private static object ReadTimePointSec(byte[] data, ref Int32 readIndex)

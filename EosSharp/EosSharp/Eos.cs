@@ -20,7 +20,11 @@ namespace EosSharp
         /// <param name="config">Configures client parameters</param>
         public Eos(EosConfigurator config)
         {
-            EosConfig = config ?? throw new ArgumentNullException("config");
+            EosConfig = config;
+            if (EosConfig == null)
+            {
+                throw new ArgumentNullException("config");
+            }
             Api = new EosApi(EosConfig);
             AbiSerializer = new AbiSerializationProvider(Api);
         }
