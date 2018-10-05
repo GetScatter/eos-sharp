@@ -41,7 +41,8 @@ namespace EosSharp.Helpers
 
             if (!reload)
             {
-                if (ResponseCache.TryGetValue(hashKey, out object value))
+                object value;
+                if (ResponseCache.TryGetValue(hashKey, out value))
                     return (TResponseData)value;
             }
 
@@ -59,7 +60,8 @@ namespace EosSharp.Helpers
 
             if (!reload)
             {
-                if (ResponseCache.TryGetValue(hashKey, out object value))
+                object value;
+                if (ResponseCache.TryGetValue(hashKey, out value))
                     return (TResponseData)value;
             }
 

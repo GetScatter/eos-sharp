@@ -678,7 +678,8 @@ namespace EosSharp.Providers
 
         private TSerializer GetTypeSerializerAndCache<TSerializer>(string type, Dictionary<string, TSerializer> typeSerializers, Abi abi)
         {
-            if (typeSerializers.TryGetValue(type, out TSerializer nativeSerializer))
+            TSerializer nativeSerializer;
+            if (typeSerializers.TryGetValue(type, out nativeSerializer))
             {
                 return nativeSerializer;
             }
