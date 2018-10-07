@@ -9,6 +9,6 @@ namespace EosSharp
     public interface ISignProvider
     {
         Task<IEnumerable<string>> GetAvailableKeys();
-        Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, byte[] signBytes = null, Transaction trx = null);
+        Task<IEnumerable<string>> Sign(string chainId, IEnumerable<string> requiredKeys, byte[] signBytes, IEnumerable<string> abiNames = null);
     }
 }

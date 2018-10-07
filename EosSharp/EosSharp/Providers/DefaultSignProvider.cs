@@ -60,7 +60,7 @@ namespace EosSharp
             return Task.FromResult(Keys.Keys.AsEnumerable());
         }
 
-        public Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, byte[] signBytes = null, Transaction trx = null)
+        public Task<IEnumerable<string>> Sign(string chainId, IEnumerable<string> requiredKeys, byte[] signBytes, IEnumerable<string> abiNames = null)
         {
             var data = new List<byte[]>()
             {

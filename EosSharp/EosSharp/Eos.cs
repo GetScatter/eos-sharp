@@ -320,11 +320,15 @@ namespace EosSharp
             }
 
             var packedTrx = await AbiSerializer.SerializePackedTransaction(trx);
-
             var availableKeys = await EosConfig.SignProvider.GetAvailableKeys();
             var requiredKeys = await GetRequiredKeys(availableKeys.ToList(), trx);
 
-            var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx, trx);
+            IEnumerable<string> abis = null;
+
+            if (trx.Actions != null)
+                abis = trx.Actions.Select(a => a.Account);
+
+            var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx, abis);
 
             var result = await Api.PushTransaction(new PushTransactionRequest()
             {

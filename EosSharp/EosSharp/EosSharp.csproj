@@ -13,9 +13,11 @@
     <Copyright>Copyright 2018</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
-    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
+    <Version>1.0.2</Version>
+    <PackageReleaseNotes>- Change ISignProvider to support scatterDesktop eosjs2 version
+- Remove C#7 feactures thanks to znebby</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
