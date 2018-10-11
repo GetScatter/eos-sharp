@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace EosSharp.Helpers
@@ -11,6 +12,24 @@ namespace EosSharp.Helpers
         public static readonly int PUB_KEY_DATA_SIZE = 33;
         public static readonly int PRIV_KEY_DATA_SIZE = 32;
         public static readonly int SIGN_KEY_DATA_SIZE = 64;
+
+        public class KeyPair
+        {
+            public string PrivateKey { get; set; }
+            public string PublicKey { get; set; }
+        }
+
+        public static KeyPair GenerateKeyPair(string keyType = null)
+        {
+            var key = Secp256K1Manager.GenerateRandomKey();
+            var pubKey = Secp256K1Manager.GetPublicKey(key, true);
+
+            return new KeyPair()
+            {
+                PrivateKey = KeyToString(key, keyType, keyType == "R1" ? "PVT_R1_" : null),
+                PublicKey = KeyToString(pubKey, keyType, keyType == "R1" ? "PUB_R1_" : "EOS")
+            };
+        }
 
         public static byte[] GetPrivateKeyBytesWithoutCheckSum(string privateKey)
         {
@@ -122,7 +141,7 @@ namespace EosSharp.Helpers
                 digest = Ripemd160Manager.GetHash(key);
             }
 
-            return prefix + Base58.Encode(SerializationHelper.Combine(new List<byte[]>() {
+            return (prefix ?? "") + Base58.Encode(SerializationHelper.Combine(new List<byte[]>() {
                 key,
                 digest.Take(4).ToArray()
             }));

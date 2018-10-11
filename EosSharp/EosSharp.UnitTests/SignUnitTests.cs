@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace EosSharp.UnitTests
 {
@@ -29,6 +30,14 @@ namespace EosSharp.UnitTests
                 ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
             };
             DefaultApi = new EosApi(EosConfig);
+        }
+
+        [TestMethod]
+        [TestCategory("Signature Tests")]
+        public void GenerateKeyPair()
+        {
+            Console.WriteLine(JsonConvert.SerializeObject(CryptoHelper.GenerateKeyPair("R1")));
+            Console.WriteLine(JsonConvert.SerializeObject(CryptoHelper.GenerateKeyPair()));
         }
 
         [TestMethod]
