@@ -176,6 +176,39 @@ class GetTableRowsResponse<Stat>
 }
 ```
 
+- **GetTableByScope** call
+    * Code - accountName of the contract to search for tables
+    * Table - table name to filter
+    * LowerBound - lower bound of scope, optional
+    * UpperBound - upper bound of scope, optional
+    * Limit
+
+```csharp
+var result = await eos.GetTableByScope(new GetTableByScopeRequest() {
+    Code = "eosio.token",
+    Table = "accounts"
+});
+```
+
+Returns:
+
+```csharp
+class GetTableByScopeResponse
+{
+    List<TableByScopeResultRow> Rows
+    string More
+}
+
+class TableByScopeResultRow
+{
+    string Code
+    string Scope
+    string Table
+    string Payer
+    UInt32? Count
+}
+```
+
 - **GetActions** call
     * accountName - accountName to get actions history
     * pos - a absolute sequence positon -1 is the end/last action
