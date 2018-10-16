@@ -83,6 +83,11 @@ namespace EosSharp.Api.v1
             var url = string.Format("{0}/v1/chain/get_table_rows", Config.HttpEndpoint);
             return await HttpHelper.PostJsonAsync<GetTableRowsResponse>(url, data, jsonSettings);
         }
+		public async Task<GetTableByScopeResponse> GetTableByScope(GetTableByScopeRequest data, JsonSerializerSettings jsonSettings = null)
+        {
+            var url = string.Format("{0}/v1/chain/get_table_by_scope", Config.HttpEndpoint);
+            return await HttpHelper.PostJsonAsync<GetTableByScopeResponse>(url, data, jsonSettings);
+        }
 		public async Task<GetCurrencyBalanceResponse> GetCurrencyBalance(GetCurrencyBalanceRequest data, JsonSerializerSettings jsonSettings = null)
         {
             var url = string.Format("{0}/v1/chain/get_currency_balance", Config.HttpEndpoint);

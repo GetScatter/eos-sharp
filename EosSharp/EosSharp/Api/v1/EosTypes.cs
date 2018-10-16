@@ -447,6 +447,20 @@ namespace EosSharp.Api.v1
 		[JsonProperty("contract")]
 		public string Contract { get; set; }
     }
+	[Serializable]
+	public class TableByScopeResultRow
+    {
+		[JsonProperty("code")]
+		public string Code { get; set; }
+		[JsonProperty("scope")]
+		public string Scope { get; set; }
+		[JsonProperty("table")]
+		public string Table { get; set; }
+		[JsonProperty("payer")]
+		public string Payer { get; set; }
+		[JsonProperty("count")]
+		public UInt32? Count { get; set; }
+    }
 	#endregion
 
 	#region generate api method types
@@ -729,6 +743,28 @@ namespace EosSharp.Api.v1
 		public List<TRowType> Rows { get; set; }
 		[JsonProperty("more")]   
 		public bool? More { get; set; }
+    }
+	[Serializable]
+    public class GetTableByScopeRequest
+    {
+		[JsonProperty("code")]   
+		public string Code { get; set; }
+		[JsonProperty("table")]   
+		public string Table { get; set; }
+		[JsonProperty("lower_bound")]   
+		public string LowerBound { get; set; }
+		[JsonProperty("upper_bound")]   
+		public string UpperBound { get; set; }
+		[JsonProperty("limit")]   
+		public UInt32? Limit { get; set; } = 10;
+    }
+	[Serializable]
+    public class GetTableByScopeResponse
+    {
+		[JsonProperty("rows")]   
+		public List<TableByScopeResultRow> Rows { get; set; }
+		[JsonProperty("more")]   
+		public string More { get; set; }
     }
 	[Serializable]
     public class GetCurrencyBalanceRequest

@@ -351,6 +351,28 @@ namespace EosSharp.UnitTests
 
         [TestMethod]
         [TestCategory("Api Tests")]
+        public async Task GetTableByScope()
+        {
+            bool success = false;
+            try
+            {
+                var result = await DefaultApi.GetTableByScope(new GetTableByScopeRequest()
+                {
+                    Code = "eosio.token",
+                    Table = "accounts"
+                });
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        [TestCategory("Api Tests")]
         public async Task GetCurrencyBalance()
         {
             bool success = false;

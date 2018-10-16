@@ -437,6 +437,19 @@
 				new Field() { Name = "quantity", Type = "string" },
 				new Field() { Name = "contract", Type = "string" }
             }
-        }
+        },
+
+		new ApiType()
+		{
+			Name = "TableByScopeResultRow",
+			Fields = new Field[]
+            {
+				new Field() { Name = "code", Type = "string" },
+				new Field() { Name = "scope", Type = "string" },
+				new Field() { Name = "table", Type = "string" },
+				new Field() { Name = "payer", Type = "string" },
+				new Field() { Name = "count", Type = "UInt32?"}
+            }
+		},
     };
 #>

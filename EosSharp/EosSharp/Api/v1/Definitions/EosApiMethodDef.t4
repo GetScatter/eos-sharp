@@ -246,6 +246,26 @@
 		new ApiMethod() 
 		{ 
 			Module = "chain", 
+			Name = "get_table_by_scope",
+			Request = new Field[] 
+			{
+				new Field() { Name = "code", Type = "string" },
+				new Field() { Name = "table", Type = "string", Default = "" },
+				new Field() { Name = "lower_bound", Type = "string" },
+				new Field() { Name = "upper_bound", Type = "string" },
+				new Field() { Name = "limit", Type = "UInt32?", Default = "10" }
+
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "rows", Type = "List<TableByScopeResultRow>"},
+				new Field() { Name = "more", Type = "string" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
 			Name = "get_currency_balance",
 			IsResponseCollection = true,
 			Request = new Field[] 
