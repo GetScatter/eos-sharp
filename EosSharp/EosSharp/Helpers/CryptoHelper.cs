@@ -142,10 +142,21 @@ namespace EosSharp.Helpers
                 digest = Ripemd160Manager.GetHash(key);
             }
 
-            return (prefix ?? "") + Base58.Encode(SerializationHelper.Combine(new List<byte[]>() {
-                key,
-                digest.Take(4).ToArray()
-            }));
+            if(keyType == "sha256x2")
+            {
+                return (prefix ?? "") + Base58.Encode(SerializationHelper.Combine(new List<byte[]>() {
+                    new byte[] { 128 },
+                    key,
+                    digest.Take(4).ToArray()
+                }));
+            }
+            else
+            {
+                return (prefix ?? "") + Base58.Encode(SerializationHelper.Combine(new List<byte[]>() {
+                    key,
+                    digest.Take(4).ToArray()
+                }));
+            }
         }
 
         public static byte[] AesEncrypt(byte[] keyBytes, string plainText)
