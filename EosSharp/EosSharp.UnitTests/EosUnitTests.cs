@@ -181,6 +181,45 @@ namespace EosSharp.UnitTests
 
         [TestMethod]
         [TestCategory("Eos Tests")]
+        public async Task CreateTransactionDict()
+        {
+            bool success = false;
+            try
+            {
+                var result = await Eos.CreateTransaction(new Transaction()
+                {
+                    Actions = new List<Api.v1.Action>()
+                    {
+                        new Api.v1.Action()
+                        {
+                            Account = "eosio.token",
+                            Authorization = new List<PermissionLevel>()
+                            {
+                                new PermissionLevel() {Actor = "tester112345", Permission = "active" }
+                            },
+                            Name = "transfer",
+                            Data = new Dictionary<string, string>()
+                            {
+                                { "from", "tester112345" },
+                                { "to", "tester212345" },
+                                { "quantity", "0.0001 EOS" },
+                                { "memo", "hello crypto world!" }
+                            }
+                        }
+                    }
+                });
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            Assert.IsTrue(success);
+        }
+
+        [TestMethod]
+        [TestCategory("Eos Tests")]
         public async Task CreateNewAccount()
         {
             bool success = false;

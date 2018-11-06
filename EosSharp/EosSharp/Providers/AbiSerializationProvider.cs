@@ -664,15 +664,31 @@ namespace EosSharp.Providers
                 WriteAbiType(ms, value, abiStruct.Base, abi);
             }
 
-            var accessor = ObjectAccessor.Create(value);
-            foreach (var field in abiStruct.Fields)
+            if(value is System.Collections.IDictionary)
             {
-                var fieldName = FindObjectFieldName(field.Name, value.GetType());
+                var valueDict = value as System.Collections.IDictionary;
+                foreach (var field in abiStruct.Fields)
+                {
+                    var fieldName = FindObjectFieldName(field.Name, valueDict);
 
-                if (string.IsNullOrWhiteSpace(fieldName))
-                    throw new Exception("Missing " + abiStruct.Name + "." + field.Name + " (type=" + field.Type + ")");
+                    if (string.IsNullOrWhiteSpace(fieldName))
+                        throw new Exception("Missing " + abiStruct.Name + "." + field.Name + " (type=" + field.Type + ")");
 
-                WriteAbiType(ms, accessor[fieldName], field.Type, abi);
+                    WriteAbiType(ms, valueDict[fieldName], field.Type, abi);
+                }
+            }
+            else
+            {
+                var accessor = ObjectAccessor.Create(value);
+                foreach (var field in abiStruct.Fields)
+                {
+                    var fieldName = FindObjectFieldName(field.Name, value.GetType());
+
+                    if (string.IsNullOrWhiteSpace(fieldName))
+                        throw new Exception("Missing " + abiStruct.Name + "." + field.Name + " (type=" + field.Type + ")");
+
+                    WriteAbiType(ms, accessor[fieldName], field.Type, abi);
+                }
             }
         }
 
@@ -1273,6 +1289,24 @@ namespace EosSharp.Providers
                 return "bool";
 
             return typeName;
+        }
+
+        private string FindObjectFieldName(string name, System.Collections.IDictionary value)
+        {
+            if (value.Contains(name))
+                return name;
+
+            name = SerializationHelper.SnakeCaseToPascalCase(name);
+
+            if (value.Contains(name))
+                return name;
+
+            name = SerializationHelper.PascalCaseToSnakeCase(name);
+
+            if (value.Contains(name))
+                return name;
+
+            return null;
         }
 
         private string FindObjectFieldName(string name, Type objectType)
