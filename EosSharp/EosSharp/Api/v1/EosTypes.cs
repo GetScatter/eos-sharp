@@ -23,11 +23,11 @@ namespace EosSharp.Api.v1
 	public class Resource
     {
 		[JsonProperty("used")]
-		public Int32 Used { get; set; }
+		public Int64 Used { get; set; }
 		[JsonProperty("available")]
-		public Int32 Available { get; set; }
+		public Int64 Available { get; set; }
 		[JsonProperty("max")]
-		public Int32 Max { get; set; }
+		public Int64 Max { get; set; }
     }
 	[Serializable]
 	public class AuthorityKey
@@ -514,17 +514,17 @@ namespace EosSharp.Api.v1
 		[JsonProperty("created")]   
 		public DateTime? Created { get; set; }
 		[JsonProperty("ram_quota")]   
-		public Int32? RamQuota { get; set; }
+		public Int64? RamQuota { get; set; }
 		[JsonProperty("net_weight")]   
-		public Int32? NetWeight { get; set; }
+		public Int64? NetWeight { get; set; }
 		[JsonProperty("cpu_weight")]   
-		public Int32? CpuWeight { get; set; }
+		public Int64? CpuWeight { get; set; }
 		[JsonProperty("net_limit")]   
 		public Resource NetLimit { get; set; }
 		[JsonProperty("cpu_limit")]   
 		public Resource CpuLimit { get; set; }
 		[JsonProperty("ram_usage")]   
-		public UInt32? RamUsage { get; set; }
+		public UInt64? RamUsage { get; set; }
 		[JsonProperty("permissions")]   
 		public List<Permission> Permissions { get; set; }
 		[JsonProperty("refund_request")]   

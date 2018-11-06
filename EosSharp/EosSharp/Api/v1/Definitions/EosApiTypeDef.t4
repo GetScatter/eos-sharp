@@ -17,9 +17,9 @@
 			Name = "Resource",
 			Fields = new Field[]
             {
-				new Field() { Name = "used", Type = "Int32" },
-				new Field() { Name = "available", Type = "Int32" },
-				new Field() { Name = "max", Type = "Int32" }
+				new Field() { Name = "used", Type = "Int64" },
+				new Field() { Name = "available", Type = "Int64" },
+				new Field() { Name = "max", Type = "Int64" }
             }
         },
 
