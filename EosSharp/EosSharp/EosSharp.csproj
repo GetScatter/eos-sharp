@@ -13,11 +13,15 @@
     <Copyright>Copyright 2018</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
-    <Version>1.0.2</Version>
-    <PackageReleaseNotes>- Change ISignProvider to support scatterDesktop eosjs2 version
-- Remove C#7 feactures thanks to znebby</PackageReleaseNotes>
+    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <FileVersion>1.0.5.0</FileVersion>
+    <Version>1.0.5</Version>
+    <PackageReleaseNotes>- Add support dictionary types into Transaction Data
+- Fix keyToString keyType sha256x2 format (thanks to lookjoil)
+- Fix account resources precision
+- Add Aes encryption functions
+- Add new API getTableByScope
+- Add CryptoHelper.GenerateKeyPair</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
