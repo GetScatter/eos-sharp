@@ -461,7 +461,7 @@ namespace EosSharp.Providers
             if (!m.Success)
                 throw new Exception("Invalid symbol.");
 
-            WriteSymbol(ms, new Symbol() { Name = m.Groups[1].ToString(), Precision = byte.Parse(m.Groups[0].ToString()) });
+            WriteSymbol(ms, new Symbol() { Name = m.Groups[2].ToString(), Precision = byte.Parse(m.Groups[1].ToString()) });
         }
 
         private static void WriteSymbolCode(MemoryStream ms, object value)
