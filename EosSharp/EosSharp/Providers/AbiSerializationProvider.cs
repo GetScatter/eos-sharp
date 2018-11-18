@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using EosSharp.Helpers;
-using FastMember;
 using System.Text.RegularExpressions;
 using System.Collections;
 using System.Reflection;
@@ -462,7 +461,7 @@ namespace EosSharp.Providers
             if (!m.Success)
                 throw new Exception("Invalid symbol.");
 
-            WriteSymbol(ms, new Symbol() { Name = m.Groups[1].ToString(), Precision = byte.Parse(m.Groups[0].ToString()) });
+            WriteSymbol(ms, new Symbol() { Name = m.Groups[2].ToString(), Precision = byte.Parse(m.Groups[1].ToString()) });
         }
 
         private static void WriteSymbolCode(MemoryStream ms, object value)
@@ -679,7 +678,7 @@ namespace EosSharp.Providers
             }
             else
             {
-                var accessor = ObjectAccessor.Create(value);
+                var valueType = value.GetType();
                 foreach (var field in abiStruct.Fields)
                 {
                     var fieldName = FindObjectFieldName(field.Name, value.GetType());
@@ -687,7 +686,7 @@ namespace EosSharp.Providers
                     if (string.IsNullOrWhiteSpace(fieldName))
                         throw new Exception("Missing " + abiStruct.Name + "." + field.Name + " (type=" + field.Type + ")");
 
-                    WriteAbiType(ms, accessor[fieldName], field.Type, abi);
+                    WriteAbiType(ms, valueType.GetProperty(fieldName).GetValue(value, null), field.Type, abi);
                 }
             }
         }
@@ -1158,7 +1157,7 @@ namespace EosSharp.Providers
                 value = Activator.CreateInstance(typeof(T));
             }
 
-            var accessor = TypeAccessor.Create(value.GetType());
+            var valueType = value.GetType();
             foreach (var field in abiStruct.Fields)
             {
                 var abiValue = ReadAbiType(data, ref readIndex, field.Type, abi);
@@ -1166,12 +1165,12 @@ namespace EosSharp.Providers
 
                 if(string.IsNullOrWhiteSpace(fieldName))
                 {
-                    if(typeof(T) == typeof(object))
-                        accessor[value, field.Name] = abiValue;
+                    if (typeof(T) == typeof(object))
+                        valueType.GetProperty(field.Name).SetValue(value, abiValue);
                     continue;
                 }
 
-                accessor[value, fieldName] = abiValue;
+                valueType.GetProperty(fieldName).SetValue(value, abiValue);
             }
 
             return (T)value;
@@ -1184,8 +1183,6 @@ namespace EosSharp.Providers
 
         private object ReadType(byte[] data, Type objectType, ref int readIndex)
         {
-            var accessor = TypeAccessor.Create(objectType);
-            
             if (IsCollection(objectType))
             {
                 return ReadCollectionType(data, objectType, ref readIndex);
@@ -1205,13 +1202,13 @@ namespace EosSharp.Providers
                 return TypeReaders[readerName](data, ref readIndex);
             }
 
-            object value = accessor.CreateNew();
+            var value = Activator.CreateInstance(objectType);
 
             foreach (var member in objectType.GetProperties())
             {
                 if(IsCollection(member.PropertyType))
                 {
-                    accessor[value, member.Name] = ReadCollectionType(data, member.PropertyType, ref readIndex);
+                    objectType.GetProperty(member.Name).SetValue(value, ReadCollectionType(data, member.PropertyType, ref readIndex));
                 }
                 else if(IsOptional(member.PropertyType))
                 {
@@ -1219,17 +1216,17 @@ namespace EosSharp.Providers
                     if (opt == 1)
                     {
                         var optionalType = GetFirstGenericType(member.PropertyType);
-                        accessor[value, member.Name] = ReadType(data, optionalType, ref readIndex);
+                        objectType.GetProperty(member.Name).SetValue(value, ReadType(data, optionalType, ref readIndex));
                     }
                 }
                 else if (IsPrimitive(member.PropertyType))
                 {
                     var readerName = GetNormalizedReaderName(member.PropertyType, member.GetCustomAttributes());
-                    accessor[value, member.Name] = TypeReaders[readerName](data, ref readIndex);
+                    objectType.GetProperty(member.Name).SetValue(value, TypeReaders[readerName](data, ref readIndex));
                 }
                 else
                 {
-                    accessor[value, member.Name] = ReadType(data, member.PropertyType, ref readIndex);
+                    objectType.GetProperty(member.Name).SetValue(value, ReadType(data, member.PropertyType, ref readIndex));
                 }
             }
 

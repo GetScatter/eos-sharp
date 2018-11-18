@@ -250,6 +250,33 @@ var result = await eos.CreateTransaction(new Transaction()
 });
 ```
 
+Data can also be a Dictionary with key as string. The dictionary value can be any object with nested Dictionaries
+
+```csharp
+var result = await eos.CreateTransaction(new Transaction()
+{
+    Actions = new List<Api.v1.Action>()
+    {
+        new Api.v1.Action()
+        {
+            Account = "eosio.token",
+            Authorization = new List<PermissionLevel>()
+            {
+                new PermissionLevel() {Actor = "tester112345", Permission = "active" }
+            },
+            Name = "transfer",
+            Data = new Dictionary<string, string>()
+            {
+                { "from", "tester112345" },
+                { "to", "tester212345" },
+                { "quantity", "0.0001 EOS" },
+                { "memo", "hello crypto world!" }
+            }
+        }
+    }
+});
+```
+
 Returns the transactionId
 #### Custom SignProvider
 
