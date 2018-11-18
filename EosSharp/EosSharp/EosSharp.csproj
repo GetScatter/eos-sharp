@@ -13,15 +13,12 @@
     <Copyright>Copyright 2018</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>1.0.5.0</AssemblyVersion>
-    <FileVersion>1.0.5.0</FileVersion>
-    <Version>1.0.5</Version>
-    <PackageReleaseNotes>- Add support dictionary types into Transaction Data
-- Fix keyToString keyType sha256x2 format (thanks to lookjoil)
-- Fix account resources precision
-- Add Aes encryption functions
-- Add new API getTableByScope
-- Add CryptoHelper.GenerateKeyPair</PackageReleaseNotes>
+    <AssemblyVersion>1.0.7.0</AssemblyVersion>
+    <FileVersion>1.0.7.0</FileVersion>
+    <Version>1.0.7</Version>
+    <PackageReleaseNotes>- Fix bug on writing symbol
+- Remove FastMember support since is does not work on iOS
+</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
