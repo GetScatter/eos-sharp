@@ -1165,8 +1165,13 @@ namespace EosSharp.Providers
 
                 if(string.IsNullOrWhiteSpace(fieldName))
                 {
-                    if (typeof(T) == typeof(object))
+                    if (valueType == typeof(ExpandoObject))
+                    {
+                        (value as IDictionary<string, Object>).Add(field.Name, abiValue);
+                    }                    
+                    else if (typeof(T) == typeof(object))
                         valueType.GetProperty(field.Name).SetValue(value, abiValue);
+
                     continue;
                 }
 

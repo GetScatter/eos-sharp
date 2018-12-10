@@ -722,11 +722,17 @@ namespace EosSharp.Api.v1
 		[JsonProperty("upper_bound")]   
 		public string UpperBound { get; set; } = "-1";
 		[JsonProperty("limit")]   
-		public UInt32? Limit { get; set; } = 10;
+		public Int32? Limit { get; set; } = 10;
 		[JsonProperty("key_type")]   
 		public string KeyType { get; set; }
 		[JsonProperty("index_position")]   
 		public string IndexPosition { get; set; }
+		[JsonProperty("encode_type")]   
+		public string EncodeType { get; set; } = "dec";
+		[JsonProperty("reverse")]   
+		public bool? Reverse { get; set; }
+		[JsonProperty("show_payer")]   
+		public bool? ShowPayer { get; set; }
     }
 	[Serializable]
     public class GetTableRowsResponse
@@ -756,7 +762,9 @@ namespace EosSharp.Api.v1
 		[JsonProperty("upper_bound")]   
 		public string UpperBound { get; set; }
 		[JsonProperty("limit")]   
-		public UInt32? Limit { get; set; } = 10;
+		public Int32? Limit { get; set; } = 10;
+		[JsonProperty("reverse")]   
+		public bool? Reverse { get; set; }
     }
 	[Serializable]
     public class GetTableByScopeResponse
@@ -804,7 +812,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("lower_bound")]   
 		public string LowerBound { get; set; }
 		[JsonProperty("limit")]   
-		public UInt32? Limit { get; set; } = 50;
+		public Int32? Limit { get; set; } = 50;
     }
 	[Serializable]
     public class GetProducersResponse
@@ -834,7 +842,7 @@ namespace EosSharp.Api.v1
 		[JsonProperty("lower_bound")]   
 		public string LowerBound { get; set; }
 		[JsonProperty("limit")]   
-		public UInt32? Limit { get; set; } = 50;
+		public Int32? Limit { get; set; } = 50;
     }
 	[Serializable]
     public class GetScheduledTransactionsResponse

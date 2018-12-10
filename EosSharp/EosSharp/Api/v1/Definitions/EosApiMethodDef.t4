@@ -226,10 +226,12 @@
 				new Field() { Name = "table_key", Type = "string" },
 				new Field() { Name = "lower_bound", Type = "string", Default = "0" },
 				new Field() { Name = "upper_bound", Type = "string", Default = "-1" },
-				new Field() { Name = "limit", Type = "UInt32?", Default = "10" },
+				new Field() { Name = "limit", Type = "Int32?", Default = "10" },
 				new Field() { Name = "key_type", Type = "string" },
-				new Field() { Name = "index_position", Type = "string" }
-
+				new Field() { Name = "index_position", Type = "string" },
+				new Field() { Name = "encode_type", Type = "string", Default = "dec" },
+				new Field() { Name = "reverse", Type = "bool?" },
+				new Field() { Name = "show_payer", Type = "bool?" }
 			},
 			Response = new Field[] 
 			{
@@ -253,8 +255,8 @@
 				new Field() { Name = "table", Type = "string", Default = "" },
 				new Field() { Name = "lower_bound", Type = "string" },
 				new Field() { Name = "upper_bound", Type = "string" },
-				new Field() { Name = "limit", Type = "UInt32?", Default = "10" }
-
+				new Field() { Name = "limit", Type = "Int32?", Default = "10" },
+				new Field() { Name = "reverse", Type = "bool?" }
 			},
 			Response = new Field[] 
 			{
@@ -306,7 +308,7 @@
 			{
 				new Field() { Name = "json", Type = "bool?", Default = "false" },
 				new Field() { Name = "lower_bound", Type = "string" },
-				new Field() { Name = "limit", Type = "UInt32?", Default = "50" }
+				new Field() { Name = "limit", Type = "Int32?", Default = "50" }
 
 			},
 			Response = new Field[] 
@@ -337,7 +339,7 @@
 			{
 				new Field() { Name = "json", Type = "bool?", Default = "false" },
 				new Field() { Name = "lower_bound", Type = "string" },
-				new Field() { Name = "limit", Type = "UInt32?", Default = "50" }
+				new Field() { Name = "limit", Type = "Int32?", Default = "50" }
 
 			},
 			Response = new Field[] 
