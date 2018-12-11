@@ -122,7 +122,11 @@ class GetBlockResponse
     * LowerBound - lower bound for the selected index value
     * UpperBound - upper bound for the selected index value
     * KeyType - Type of the index choosen, ex: i64
+    * Limit
     * IndexPosition - 1 - primary (first), 2 - secondary index (in order defined by multi_index), 3 - third index, etc
+    * EncodeType - dec, hex
+	* Reverse - reverse result order
+	* ShowPayer - show ram payer
 
 ```csharp
 var result = await eos.GetTableRows(new GetTableRowsRequest() {
@@ -182,6 +186,7 @@ class GetTableRowsResponse<Stat>
     * LowerBound - lower bound of scope, optional
     * UpperBound - upper bound of scope, optional
     * Limit
+    * Reverse - reverse result order
 
 ```csharp
 var result = await eos.GetTableByScope(new GetTableByScopeRequest() {
