@@ -1,6 +1,7 @@
 ﻿using Cryptography.ECDSA;
+using EosSharp.Core.Exceptions;
+using EosSharp.Core.Helpers;
 using EosSharp.Core.Interfaces;
-using EosSharp.Exceptions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EosSharp.Helpers
+namespace EosSharp
 {
     public class HttpHelper : IHttpHelper
     {

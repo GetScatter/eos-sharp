@@ -1,6 +1,6 @@
 ﻿using EosSharp.Core.Api.v1;
 using EosSharp.Core.DataAttributes;
-using EosSharp.Helpers;
+using EosSharp.Core.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;

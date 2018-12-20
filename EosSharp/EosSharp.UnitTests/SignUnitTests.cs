@@ -1,6 +1,6 @@
 ﻿using EosSharp.Core;
 using EosSharp.Core.Api.v1;
-using EosSharp.Helpers;
+using EosSharp.Core.Helpers;
 using EosSharp.Providers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;

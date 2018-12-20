@@ -1,6 +1,6 @@
 ﻿using Cryptography.ECDSA;
+using EosSharp.Core.Helpers;
 using EosSharp.Core.Interfaces;
-using EosSharp.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

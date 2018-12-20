@@ -1,4 +1,4 @@
-﻿using EosSharp.Helpers;
+﻿using EosSharp.Core.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

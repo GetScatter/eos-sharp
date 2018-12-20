@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EosSharp.Exceptions
+namespace EosSharp.Core.Exceptions
 {    
     public class ApiException : Exception
     {

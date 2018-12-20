@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EosSharp.Exceptions
+namespace EosSharp.Core.Exceptions
 {
     public class ApiErrorException : Exception
     {
