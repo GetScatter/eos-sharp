@@ -67,6 +67,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EosSharp.Core\EosSharp.Core.csproj">
+      <Project>{7f63bfd8-ac29-419f-a532-cc6ddeef1b46}</Project>
+      <Name>EosSharp.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EosSharp\EosSharp.csproj">
       <Project>{a7498dea-becb-49ce-9e9d-e06fdfa29e5a}</Project>
       <Name>EosSharp</Name>

@@ -27,31 +27,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Api\v1\EosApi.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>EosApi.cs</LastGenOutput>
-    </None>
-    <None Update="Api\v1\EosTypes.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>EosTypes.cs</LastGenOutput>
-    </None>
+    <ProjectReference Include="..\EosSharp.Core\EosSharp.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Api\v1\EosApi.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>EosApi.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Api\v1\EosTypes.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>EosTypes.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
 
 </Project>

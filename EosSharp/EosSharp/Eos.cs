@@ -1,7 +1,7 @@
-﻿using EosSharp.Api.v1;
+﻿using EosSharp.Core;
+using EosSharp.Core.Api.v1;
 using EosSharp.Helpers;
 using EosSharp.Providers;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace EosSharp
             {
                 throw new ArgumentNullException("config");
             }
-            Api = new EosApi(EosConfig);
+            Api = new EosApi(EosConfig, new HttpHelper());
             AbiSerializer = new AbiSerializationProvider(Api);
         }
 

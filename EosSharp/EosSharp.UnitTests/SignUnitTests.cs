@@ -1,6 +1,7 @@
-﻿using EosSharp.Api.v1;
-using EosSharp.Providers;
+﻿using EosSharp.Core;
+using EosSharp.Core.Api.v1;
 using EosSharp.Helpers;
+using EosSharp.Providers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
@@ -8,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 
 namespace EosSharp.UnitTests
 {
@@ -29,7 +29,7 @@ namespace EosSharp.UnitTests
                 HttpEndpoint = "https://nodeos01.btuga.io",
                 ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
             };
-            DefaultApi = new EosApi(EosConfig);
+            DefaultApi = new EosApi(EosConfig, new HttpHelper());
         }
 
         [TestMethod]
@@ -79,11 +79,11 @@ namespace EosSharp.UnitTests
                 MaxNetUsageWords = 0,
                 MaxCpuUsageMs = 0,
                 DelaySec = 0,
-                ContextFreeActions = new List<Api.v1.Action>(),
+                ContextFreeActions = new List<Core.Api.v1.Action>(),
                 TransactionExtensions = new List<Extension>(),
-                Actions = new List<Api.v1.Action>()
+                Actions = new List<Core.Api.v1.Action>()
                 {
-                    new Api.v1.Action()
+                    new Core.Api.v1.Action()
                     {
                         Account = "eosio.token",
                         Authorization = new List<PermissionLevel>()

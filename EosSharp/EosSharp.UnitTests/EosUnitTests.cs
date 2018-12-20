@@ -1,11 +1,9 @@
-﻿using EosSharp.Api.v1;
-using EosSharp.Exceptions;
+﻿using EosSharp.Core;
+using EosSharp.Core.Api.v1;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EosSharp.UnitTests
@@ -155,9 +153,9 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.CreateTransaction(new Transaction()
                 {
-                    Actions = new List<Api.v1.Action>()
+                    Actions = new List<Core.Api.v1.Action>()
                     {
-                        new Api.v1.Action()
+                        new Core.Api.v1.Action()
                         {
                             Account = "eosio.token",
                             Authorization = new List<PermissionLevel>()
@@ -188,9 +186,9 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.CreateTransaction(new Transaction()
                 {
-                    Actions = new List<Api.v1.Action>()
+                    Actions = new List<Core.Api.v1.Action>()
                     {
-                        new Api.v1.Action()
+                        new Core.Api.v1.Action()
                         {
                             Account = "eosio.token",
                             Authorization = new List<PermissionLevel>()
@@ -227,9 +225,9 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.CreateTransaction(new Transaction()
                 {
-                    Actions = new List<Api.v1.Action>()
+                    Actions = new List<Core.Api.v1.Action>()
                     {
-                        new Api.v1.Action()
+                        new Core.Api.v1.Action()
                         {
                             Account = "eosio",
                             Authorization = new List<PermissionLevel>()
@@ -258,7 +256,7 @@ namespace EosSharp.UnitTests
                                 }
                             }
                         },
-                        new Api.v1.Action()
+                        new Core.Api.v1.Action()
                         {
                             Account = "eosio",
                             Authorization = new List<PermissionLevel>()
@@ -272,7 +270,7 @@ namespace EosSharp.UnitTests
                                 bytes = 8192,
                             }
                         },
-                        new Api.v1.Action()
+                        new Core.Api.v1.Action()
                         {
                             Account = "eosio",
                             Authorization = new List<PermissionLevel>()

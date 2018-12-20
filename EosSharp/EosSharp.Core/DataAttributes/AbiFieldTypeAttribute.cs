@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace EosSharp.DataAttributes
+namespace EosSharp.Core.DataAttributes
 {
-    class AbiFieldTypeAttribute : Attribute
+    public class AbiFieldTypeAttribute : Attribute
     {
         public string AbiType { get; set; }
 

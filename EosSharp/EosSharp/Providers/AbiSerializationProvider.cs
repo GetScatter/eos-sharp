@@ -1,16 +1,16 @@
-﻿using EosSharp.Api.v1;
-using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
+﻿using EosSharp.Core.Api.v1;
+using EosSharp.Core.DataAttributes;
 using EosSharp.Helpers;
-using System.Text.RegularExpressions;
+using System;
 using System.Collections;
-using System.Reflection;
-using EosSharp.DataAttributes;
+using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace EosSharp.Providers
 {
@@ -158,25 +158,25 @@ namespace EosSharp.Providers
             };
 
             var contextFreeActionsSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
-            trx.ContextFreeActions = new List<Api.v1.Action>(contextFreeActionsSize);
+            trx.ContextFreeActions = new List<Core.Api.v1.Action>(contextFreeActionsSize);
 
             for (int i = 0; i < contextFreeActionsSize; i++)
             {
-                var action = (Api.v1.Action)ReadActionHeader(data, ref readIndex);
+                var action = (Core.Api.v1.Action)ReadActionHeader(data, ref readIndex);
                 Abi abi = await GetAbi(action.Account);
 
-                trx.ContextFreeActions.Add((Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
+                trx.ContextFreeActions.Add((Core.Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
 
             var actionsSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
-            trx.Actions = new List<Api.v1.Action>(actionsSize);
+            trx.Actions = new List<Core.Api.v1.Action>(actionsSize);
 
             for (int i = 0; i < actionsSize; i++)
             {
-                var action = (Api.v1.Action)ReadActionHeader(data, ref readIndex);
+                var action = (Core.Api.v1.Action)ReadActionHeader(data, ref readIndex);
                 Abi abi = await GetAbi(action.Account);
 
-                trx.Actions.Add((Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
+                trx.Actions.Add((Core.Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
 
             return trx;
@@ -200,7 +200,7 @@ namespace EosSharp.Providers
             };
         }
 
-        public byte[] SerializeActionData(Api.v1.Action action, Abi abi)
+        public byte[] SerializeActionData(Core.Api.v1.Action action, Abi abi)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -573,7 +573,7 @@ namespace EosSharp.Providers
             }
         }
 
-        private static void WriteExtension(MemoryStream ms, Api.v1.Extension extension)
+        private static void WriteExtension(MemoryStream ms, Core.Api.v1.Extension extension)
         {
             if (extension.Data == null)
                 return;
@@ -588,7 +588,7 @@ namespace EosSharp.Providers
             WriteName(ms, perm.Permission);
         }
 
-        private void WriteAction(MemoryStream ms, Api.v1.Action action, Abi abi)
+        private void WriteAction(MemoryStream ms, Core.Api.v1.Action action, Abi abi)
         {
             WriteName(ms, action.Account);
             WriteName(ms, action.Name);
@@ -1051,14 +1051,14 @@ namespace EosSharp.Providers
 
         private static object ReadActionHeader(byte[] data, ref Int32 readIndex)
         {
-            return new Api.v1.Action()
+            return new Core.Api.v1.Action()
             {
                 Account = (string)ReadName(data, ref readIndex),
                 Name = (string)ReadName(data, ref readIndex)
             };
         }
 
-        private object ReadAction(byte[] data, ref Int32 readIndex, Api.v1.Action action, Abi abi)
+        private object ReadAction(byte[] data, ref Int32 readIndex, Core.Api.v1.Action action, Abi abi)
         {
             if (action == null)
                 throw new ArgumentNullException("action");

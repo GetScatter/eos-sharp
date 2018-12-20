@@ -1,12 +1,11 @@
 ﻿using Cryptography.ECDSA;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using System.Linq;
+using EosSharp.Core.Interfaces;
 using EosSharp.Helpers;
 using System;
-using EosSharp.Api.v1;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace EosSharp
 {

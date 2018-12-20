@@ -1,4 +1,5 @@
 ﻿using Cryptography.ECDSA;
+using EosSharp.Core.Interfaces;
 using EosSharp.Exceptions;
 using Newtonsoft.Json;
 using System;
@@ -11,31 +12,31 @@ using System.Threading.Tasks;
 
 namespace EosSharp.Helpers
 {
-    public class HttpHelper
+    public class HttpHelper : IHttpHelper
     {
         private static readonly HttpClient client = new HttpClient();
         private static Dictionary<string, object> ResponseCache { get; set; } = new Dictionary<string, object>();
 
-        public static void ClearResponseCache()
+        public void ClearResponseCache()
         {
             ResponseCache.Clear();
         }
 
-        public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, JsonSerializerSettings jsonSettings = null)
+        public async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data)
         {
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
             var result = await SendAsync(request);
             return DeserializeJsonFromStream<TResponseData>(result);
         }
 
-        public static async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, JsonSerializerSettings jsonSettings = null)
+        public async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, CancellationToken cancellationToken)
         {
             HttpRequestMessage request = BuildJsonRequestMessage(url, data);
             var result = await SendAsync(request, cancellationToken);
             return DeserializeJsonFromStream<TResponseData>(result);
         }
 
-        public static async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, bool reload = false, JsonSerializerSettings jsonSettings = null)
+        public async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, bool reload = false)
         {
             string hashKey = GetRequestHashKey(url, data);
 
@@ -54,7 +55,7 @@ namespace EosSharp.Helpers
             return responseData;
         }
 
-        public static async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, bool reload = false, JsonSerializerSettings jsonSettings = null)
+        public async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, bool reload = false)
         {
             string hashKey = GetRequestHashKey(url, data);
 
@@ -73,33 +74,33 @@ namespace EosSharp.Helpers
             return responseData;
         }
 
-        public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url, JsonSerializerSettings jsonSettings = null)
+        public async Task<TResponseData> GetJsonAsync<TResponseData>(string url)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var result = await SendAsync(request);
-            return DeserializeJsonFromStream<TResponseData>(result, jsonSettings);
+            return DeserializeJsonFromStream<TResponseData>(result);
         }
 
-        public static async Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken, JsonSerializerSettings jsonSettings = null)
+        public async Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var result = await SendAsync(request, cancellationToken);
-            return DeserializeJsonFromStream<TResponseData>(result, jsonSettings);
+            return DeserializeJsonFromStream<TResponseData>(result);
         }
 
-        public static async Task<Stream> SendAsync(HttpRequestMessage request)
+        public async Task<Stream> SendAsync(HttpRequestMessage request)
         {
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
             return await BuildSendResponse(response);
         }
 
-        public static async Task<Stream> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public async Task<Stream> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             return await BuildSendResponse(response);
         }
 
-        public static TData DeserializeJsonFromStream<TData>(Stream stream, JsonSerializerSettings jsonSettings = null)
+        public TData DeserializeJsonFromStream<TData>(Stream stream)
         {
             if (stream == null || stream.CanRead == false)
                 return default(TData);
@@ -107,11 +108,11 @@ namespace EosSharp.Helpers
             using (var sr = new StreamReader(stream))
             using (var jtr = new JsonTextReader(sr))
             {
-                return JsonSerializer.Create(jsonSettings).Deserialize<TData>(jtr);
+                return JsonSerializer.Create().Deserialize<TData>(jtr);
             }
         }
 
-        public static HttpRequestMessage BuildJsonRequestMessage(string url, object data)
+        public HttpRequestMessage BuildJsonRequestMessage(string url, object data)
         {
             return new HttpRequestMessage(HttpMethod.Post, url)
             {
@@ -119,8 +120,7 @@ namespace EosSharp.Helpers
             };
         }
 
-
-        private static void UpdateResponseDataCache<TResponseData>(string hashKey, TResponseData responseData)
+        public void UpdateResponseDataCache<TResponseData>(string hashKey, TResponseData responseData)
         {
             if (ResponseCache.ContainsKey(hashKey))
             {
@@ -132,7 +132,7 @@ namespace EosSharp.Helpers
             }
         }
 
-        private static string GetRequestHashKey(string url, object data)
+        public string GetRequestHashKey(string url, object data)
         {
             var keyBytes = new List<byte[]>()
             {
@@ -142,7 +142,7 @@ namespace EosSharp.Helpers
             return Encoding.Default.GetString(Sha256Manager.GetHash(SerializationHelper.Combine(keyBytes)));
         }
 
-        private static async Task<Stream> BuildSendResponse(HttpResponseMessage response)
+        public async Task<Stream> BuildSendResponse(HttpResponseMessage response)
         {
             var stream = await response.Content.ReadAsStreamAsync();
 
@@ -168,7 +168,7 @@ namespace EosSharp.Helpers
             throw apiError;
         }
 
-        private static async Task<string> StreamToStringAsync(Stream stream)
+        public async Task<string> StreamToStringAsync(Stream stream)
         {
             string content = null;
 

@@ -1,10 +1,7 @@
-﻿using EosSharp.Api.v1;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EosSharp
+namespace EosSharp.Core.Interfaces
 {
     public interface ISignProvider
     {

@@ -1,0 +1,74 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import   namespace="System.Globalization" #>
+<#@ include  file=".\..\..\..\EosSharp.Core\Api\v1\Definitions\EosApiTypeDef.t4" #>
+<#@ include  file=".\..\..\..\EosSharp.Core\Api\v1\Definitions\EosApiMethodDef.t4" #>
+<#@ output   extension=".cs" #>
+// Auto Generated, do not edit.
+using EosSharp.Core;
+using EosSharp.Core.Api.v1;
+using EosSharp.Core.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace EosSharp.Core.Api.v1
+{
+    public class EosApi
+    { 
+        public EosConfigurator Config { get; set; }
+        public IHttpHelper HttpHelper { get; set; }
+
+        public EosApi(EosConfigurator config, IHttpHelper httpHelper)
+        {
+            Config = config;
+            HttpHelper = httpHelper;
+        }
+
+<# foreach (var method in apiMethods) { #>
+<#   if(method.Request == null) { #>
+<#		if(!string.IsNullOrWhiteSpace(method.ResponseGenericTypes)) {#>
+		public async Task<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>> <#= SnakeCaseToPascalCase(method.Name) #><#= method.ResponseGenericTypes #>()
+        {
+            var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
+<#        if(method.IsResponseCollection) { #>
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= SnakeCaseToPascalCase(method.Response[0].Name) #> = await HttpHelper.GetJsonAsync<<#= method.Response[0].Type#>>(url) };
+<#        } else { #>
+            return await HttpHelper.GetJsonAsync<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>>(url);
+<#        } #>
+        }
+<#      } #>
+		public async Task<<#= SnakeCaseToPascalCase(method.Name) #>Response> <#= SnakeCaseToPascalCase(method.Name) #>()
+        {
+            var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
+<#        if(method.IsResponseCollection) { #>
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= SnakeCaseToPascalCase(method.Response[0].Name) #> = await HttpHelper.GetJsonAsync<<#= method.Response[0].Type#>>(url) };
+<#        } else { #>
+            return await HttpHelper.GetJsonAsync<<#= SnakeCaseToPascalCase(method.Name) #>Response>(url);
+<#        } #>
+        }
+<#   } else { #>
+<#		if(!string.IsNullOrWhiteSpace(method.ResponseGenericTypes)) {#>
+		public async Task<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>> <#= SnakeCaseToPascalCase(method.Name) #><#= method.ResponseGenericTypes #>(<#= SnakeCaseToPascalCase(method.Name) #>Request data<#= method.IsCachable ? ", bool reload = false" : "" #>)
+        {
+            var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
+<#        if(method.IsResponseCollection) { #>
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= SnakeCaseToPascalCase(method.Response[0].Name) #> = await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>) };
+<#        } else { #>
+            return await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>>(url, data<#= method.IsCachable ? ", reload" : "" #>);
+<#        } #>
+        }
+<#      } #>
+		public async Task<<#= SnakeCaseToPascalCase(method.Name) #>Response> <#= SnakeCaseToPascalCase(method.Name) #>(<#= SnakeCaseToPascalCase(method.Name) #>Request data<#= method.IsCachable ? ", bool reload = false" : "" #>)
+        {
+            var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
+<#        if(method.IsResponseCollection) { #>
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= SnakeCaseToPascalCase(method.Response[0].Name) #> = await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>) };
+<#        } else { #>
+            return await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= SnakeCaseToPascalCase(method.Name) #>Response>(url, data<#= method.IsCachable ? ", reload" : "" #>);
+<#        } #>
+        }
+<#   } #>
+<# } #>
+    }
+}

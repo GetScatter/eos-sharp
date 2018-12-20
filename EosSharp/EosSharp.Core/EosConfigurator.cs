@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using EosSharp.Core.Interfaces;
 
-namespace EosSharp
+namespace EosSharp.Core
 {
     public class EosConfigurator
     {
