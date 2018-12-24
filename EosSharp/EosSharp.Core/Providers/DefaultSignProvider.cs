@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EosSharp
+namespace EosSharp.Core.Providers
 {
     public class DefaultSignProvider : ISignProvider
     {

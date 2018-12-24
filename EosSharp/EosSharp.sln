@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EosSharp", "EosSharp\EosSha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EosSharp.UnitTests", "EosSharp.UnitTests\EosSharp.UnitTests.csproj", "{969C1A19-C591-4EAE-A8F3-AE39878CA2C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EosSharp.Core", "EosSharp.Core\EosSharp.Core.csproj", "{7F63BFD8-AC29-419F-A532-CC6DDEEF1B46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EosSharp.Core", "EosSharp.Core\EosSharp.Core.csproj", "{7F63BFD8-AC29-419F-A532-CC6DDEEF1B46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EosSharp.Unity3D", "EosSharp.Unity3D\EosSharp.Unity3D.csproj", "{1A2FC066-2DCE-43DC-8E5A-6FE10505DFA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EosSharp.Unity3D", "EosSharp.Unity3D\EosSharp.Unity3D.csproj", "{1A2FC066-2DCE-43DC-8E5A-6FE10505DFA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

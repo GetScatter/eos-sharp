@@ -2,7 +2,7 @@
 using EosSharp.Core.Api.v1;
 using EosSharp.Core.Helpers;
 using EosSharp.Core.Interfaces;
-using EosSharp.Providers;
+using EosSharp.Core.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

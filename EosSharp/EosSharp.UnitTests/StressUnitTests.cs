@@ -1,4 +1,5 @@
 ﻿using EosSharp.Core;
+using EosSharp.Core.Providers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;

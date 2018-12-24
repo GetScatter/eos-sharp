@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine.Networking;
 
 namespace EosSharp.Unity3D
 {
@@ -25,16 +26,28 @@ namespace EosSharp.Unity3D
 
         public async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data)
         {
-            HttpRequestMessage request = BuildJsonRequestMessage(url, data);
-            var result = await SendAsync(request);
-            return DeserializeJsonFromStream<TResponseData>(result);
+            UnityWebRequest uwr = BuildUnityWebRequest(url, "POST", data);
+
+            await uwr.SendWebRequest();
+
+            if (uwr.isNetworkError)
+            {
+                Console.WriteLine("Error While Sending: " + uwr.error);
+            }
+            else
+            {
+                Console.WriteLine("Received: " + uwr.downloadHandler.text);
+            }
+
+            using (var stream = new MemoryStream(uwr.downloadHandler.data))
+            {
+                return DeserializeJsonFromStream<TResponseData>(stream);
+            }
         }
 
-        public async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, CancellationToken cancellationToken)
+        public Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, CancellationToken cancellationToken)
         {
-            HttpRequestMessage request = BuildJsonRequestMessage(url, data);
-            var result = await SendAsync(request, cancellationToken);
-            return DeserializeJsonFromStream<TResponseData>(result);
+            return PostJsonAsync<TResponseData>(url, data);
         }
 
         public async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, bool reload = false)
@@ -48,45 +61,56 @@ namespace EosSharp.Unity3D
                     return (TResponseData)value;
             }
 
-            HttpRequestMessage request = BuildJsonRequestMessage(url, data);
-            var result = await SendAsync(request);
-            var responseData = DeserializeJsonFromStream<TResponseData>(result);
-            UpdateResponseDataCache(hashKey, responseData);
+            UnityWebRequest uwr = BuildUnityWebRequest(url, "POST", data);
 
-            return responseData;
-        }
+            await uwr.SendWebRequest();
 
-        public async Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, bool reload = false)
-        {
-            string hashKey = GetRequestHashKey(url, data);
-
-            if (!reload)
+            if (uwr.isNetworkError)
             {
-                object value;
-                if (ResponseCache.TryGetValue(hashKey, out value))
-                    return (TResponseData)value;
+                Console.WriteLine("Error While Sending: " + uwr.error);
+            }
+            else
+            {
+                Console.WriteLine("Received: " + uwr.downloadHandler.text);
             }
 
-            HttpRequestMessage request = BuildJsonRequestMessage(url, data);
-            var result = await SendAsync(request, cancellationToken);
-            var responseData = DeserializeJsonFromStream<TResponseData>(result);
-            UpdateResponseDataCache(hashKey, responseData);
+            using (var stream = new MemoryStream(uwr.downloadHandler.data))
+            {
+                var responseData = DeserializeJsonFromStream<TResponseData>(stream);
+                UpdateResponseDataCache(hashKey, responseData);
+                return responseData;
+            }
+        }
 
-            return responseData;
+        public Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, bool reload = false)
+        {
+            return PostJsonWithCacheAsync<TResponseData>(url, data, reload);
         }
 
         public async Task<TResponseData> GetJsonAsync<TResponseData>(string url)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-            var result = await SendAsync(request);
-            return DeserializeJsonFromStream<TResponseData>(result);
+            UnityWebRequest uwr = UnityWebRequest.Get(url);
+
+            await uwr.SendWebRequest();
+
+            if (uwr.isNetworkError)
+            {
+                Console.WriteLine("Error While Sending: " + uwr.error);
+            }
+            else
+            {
+                Console.WriteLine("Received: " + uwr.downloadHandler.text);
+            }
+
+            using (var stream = new MemoryStream(uwr.downloadHandler.data))
+            {
+                return DeserializeJsonFromStream<TResponseData>(stream);
+            }
         }
 
-        public async Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken)
+        public Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-            var result = await SendAsync(request, cancellationToken);
-            return DeserializeJsonFromStream<TResponseData>(result);
+            return GetJsonAsync<TResponseData>(url);
         }
 
         public async Task<Stream> SendAsync(HttpRequestMessage request)
@@ -178,6 +202,16 @@ namespace EosSharp.Unity3D
                     content = await sr.ReadToEndAsync();
 
             return content;
+        }
+
+        private static UnityWebRequest BuildUnityWebRequest(string url, string verb, object data)
+        {
+            var uwr = new UnityWebRequest(url, verb);
+            byte[] jsonToSend = new UTF8Encoding().GetBytes(JsonConvert.SerializeObject(data));
+            uwr.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+            uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            uwr.SetRequestHeader("Content-Type", "application/json");
+            return uwr;
         }
     }
 }

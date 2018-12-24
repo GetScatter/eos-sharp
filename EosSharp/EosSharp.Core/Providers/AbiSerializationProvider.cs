@@ -12,7 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace EosSharp.Providers
+namespace EosSharp.Core.Providers
 {
     public class AbiSerializationProvider
     {
