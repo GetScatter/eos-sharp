@@ -126,6 +126,11 @@ namespace EosSharp.Core.Helpers
 
         public static string PascalCaseToSnakeCase(string s)
         {
+            if (string.IsNullOrEmpty(s))
+            {
+                return s;
+            }
+
             var builder = new StringBuilder();
             bool first = true;
             foreach(var c in s)

@@ -25,8 +25,8 @@ namespace EosSharp.UnitTests
                 //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
                 //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
 
-                HttpEndpoint = "https://nodeos01.btuga.io",
-                ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
+                HttpEndpoint = "https://api.jungle.alohaeos.com",
+                ChainId = "038f4b0fc8ff18a4f0842a8f0564611f6e96e8535901dd45e43ac8691a1c4dca"
             };
             DefaultApi = new EosApi(EosConfig, new HttpHelper());
         }
@@ -221,14 +221,14 @@ namespace EosSharp.UnitTests
                 var getInfoResult = await DefaultApi.GetInfo();
                 var getBlockResult = await DefaultApi.GetBlock(new GetBlockRequest()
                 {
-                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.Value.ToString()
+                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
                 });
 
                 var trx = new Transaction()
                 {
                     //trx headers
-                    Expiration = getInfoResult.HeadBlockTime.Value.AddSeconds(60), //expire Seconds
-                    RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.Value & 0xFFFF),
+                    Expiration = getInfoResult.HeadBlockTime.GetValueOrDefault().AddSeconds(60), //expire Seconds
+                    RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault() & 0xFFFF),
                     RefBlockPrefix = getBlockResult.RefBlockPrefix,
                     // trx info
                     MaxNetUsageWords = 0,
@@ -291,7 +291,7 @@ namespace EosSharp.UnitTests
                 var getInfoResult = await DefaultApi.GetInfo();
                 var getBlockResult = await DefaultApi.GetBlock(new GetBlockRequest()
                 {
-                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.Value.ToString()
+                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
                 });
 
                 success = true;
@@ -314,7 +314,7 @@ namespace EosSharp.UnitTests
                 var getInfoResult = await DefaultApi.GetInfo();
                 var result = await DefaultApi.GetBlockHeaderState(new GetBlockHeaderStateRequest()
                 {
-                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.Value.ToString()
+                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
                 });
                 success = true;
             }
@@ -584,15 +584,15 @@ namespace EosSharp.UnitTests
             var getInfoResult = await DefaultApi.GetInfo();
             var getBlockResult = await DefaultApi.GetBlock(new GetBlockRequest()
             {
-                BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.Value.ToString()
+                BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
             });
 
 
             var trx = new Transaction()
             {
                 //trx headers
-                Expiration = getInfoResult.HeadBlockTime.Value.AddSeconds(60), //expire Seconds
-                RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.Value & 0xFFFF),
+                Expiration = getInfoResult.HeadBlockTime.GetValueOrDefault().AddSeconds(60), //expire Seconds
+                RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault() & 0xFFFF),
                 RefBlockPrefix = getBlockResult.RefBlockPrefix,
                 // trx info
                 MaxNetUsageWords = 0,

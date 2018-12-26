@@ -3,6 +3,7 @@ using EosSharp.Core.Exceptions;
 using EosSharp.Core.Helpers;
 using EosSharp.Core.Interfaces;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +19,14 @@ namespace EosSharp.Unity3D
     {
         private static readonly HttpClient client = new HttpClient();
         private static Dictionary<string, object> ResponseCache { get; set; } = new Dictionary<string, object>();
+        private static readonly DefaultContractResolver SnakeCaseContractResolver = new DefaultContractResolver()
+        {
+            NamingStrategy = new PascalToSnakeCaseNamingStrategy()
+        };
+        private static readonly JsonSerializerSettings defaultJsonSettings = new JsonSerializerSettings()
+        {
+            ContractResolver = SnakeCaseContractResolver
+        };
 
         public void ClearResponseCache()
         {
@@ -133,7 +142,7 @@ namespace EosSharp.Unity3D
             using (var sr = new StreamReader(stream))
             using (var jtr = new JsonTextReader(sr))
             {
-                return JsonSerializer.Create().Deserialize<TData>(jtr);
+                return JsonSerializer.Create(defaultJsonSettings).Deserialize<TData>(jtr);
             }
         }
 
@@ -141,7 +150,7 @@ namespace EosSharp.Unity3D
         {
             return new HttpRequestMessage(HttpMethod.Post, url)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(data, defaultJsonSettings), Encoding.UTF8, "application/json")
             };
         }
 
@@ -179,7 +188,7 @@ namespace EosSharp.Unity3D
             ApiErrorException apiError = null;
             try
             {
-                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content);
+                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content, defaultJsonSettings);
             }
             catch(Exception)
             {
@@ -207,7 +216,7 @@ namespace EosSharp.Unity3D
         private static UnityWebRequest BuildUnityWebRequest(string url, string verb, object data)
         {
             var uwr = new UnityWebRequest(url, verb);
-            byte[] jsonToSend = new UTF8Encoding().GetBytes(JsonConvert.SerializeObject(data));
+            byte[] jsonToSend = new UTF8Encoding().GetBytes(JsonConvert.SerializeObject(data, defaultJsonSettings));
             uwr.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
             uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
             uwr.SetRequestHeader("Content-Type", "application/json");

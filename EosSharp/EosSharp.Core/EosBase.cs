@@ -317,8 +317,8 @@ namespace EosSharp.Core
                     BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
                 });
 
-                trx.Expiration = getInfoResult.HeadBlockTime.Value.AddSeconds(EosConfig.ExpireSeconds);
-                trx.RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.Value & 0xFFFF);
+                trx.Expiration = getInfoResult.HeadBlockTime.GetValueOrDefault().AddSeconds(EosConfig.ExpireSeconds);
+                trx.RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault() & 0xFFFF);
                 trx.RefBlockPrefix = getBlockResult.RefBlockPrefix;
             }
 

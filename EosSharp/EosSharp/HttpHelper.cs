@@ -3,6 +3,7 @@ using EosSharp.Core.Exceptions;
 using EosSharp.Core.Helpers;
 using EosSharp.Core.Interfaces;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +18,14 @@ namespace EosSharp
     {
         private static readonly HttpClient client = new HttpClient();
         private static Dictionary<string, object> ResponseCache { get; set; } = new Dictionary<string, object>();
+        private static readonly DefaultContractResolver SnakeCaseContractResolver = new DefaultContractResolver()
+        {
+            NamingStrategy = new SnakeCaseNamingStrategy()
+        };
+        private static readonly JsonSerializerSettings defaultJsonSettings = new JsonSerializerSettings()
+        {
+            ContractResolver = SnakeCaseContractResolver
+        };
 
         public void ClearResponseCache()
         {
@@ -109,7 +118,7 @@ namespace EosSharp
             using (var sr = new StreamReader(stream))
             using (var jtr = new JsonTextReader(sr))
             {
-                return JsonSerializer.Create().Deserialize<TData>(jtr);
+                return JsonSerializer.Create(defaultJsonSettings).Deserialize<TData>(jtr);
             }
         }
 
@@ -117,7 +126,7 @@ namespace EosSharp
         {
             return new HttpRequestMessage(HttpMethod.Post, url)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(data, defaultJsonSettings), Encoding.UTF8, "application/json")
             };
         }
 
@@ -155,7 +164,7 @@ namespace EosSharp
             ApiErrorException apiError = null;
             try
             {
-                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content);
+                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content, defaultJsonSettings);
             }
             catch(Exception)
             {
