@@ -54,10 +54,10 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.GetTableRows(new GetTableRowsRequest()
                 {
-                    Json = false,
-                    Code = "eosio",
-                    Scope = "eosio",
-                    Table = "producers"
+                    json = false,
+                    code = "eosio",
+                    scope = "eosio",
+                    table = "producers"
                 });
                 success = true;
             }
@@ -88,10 +88,10 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.GetTableRows<Stat>(new GetTableRowsRequest()
                 {
-                    Json = true,
-                    Code = "eosio.token",
-                    Scope = "EOS",
-                    Table = "stat"
+                    json = true,
+                    code = "eosio.token",
+                    scope = "EOS",
+                    table = "stat"
                 });
                 success = true;
             }
@@ -112,7 +112,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.GetProducers(new GetProducersRequest()
                 {
-                    Json = false,
+                    json = false,
                 });
                 success = true;
             }
@@ -133,7 +133,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.GetScheduledTransactions(new GetScheduledTransactionsRequest()
                 {
-                    Json = false
+                    json = false
                 });
                 success = true;
             }
@@ -154,17 +154,17 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.CreateTransaction(new Transaction()
                 {
-                    Actions = new List<Core.Api.v1.Action>()
+                    actions = new List<Core.Api.v1.Action>()
                     {
                         new Core.Api.v1.Action()
                         {
-                            Account = "eosio.token",
-                            Authorization = new List<PermissionLevel>()
+                            account = "eosio.token",
+                            authorization = new List<PermissionLevel>()
                             {
-                                new PermissionLevel() {Actor = "tester112345", Permission = "active" }
+                                new PermissionLevel() {actor = "tester112345", permission = "active" }
                             },
-                            Name = "transfer",
-                            Data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
+                            name = "transfer",
+                            data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
                         }
                     }
                 });
@@ -187,17 +187,17 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.CreateTransaction(new Transaction()
                 {
-                    Actions = new List<Core.Api.v1.Action>()
+                    actions = new List<Core.Api.v1.Action>()
                     {
                         new Core.Api.v1.Action()
                         {
-                            Account = "eosio.token",
-                            Authorization = new List<PermissionLevel>()
+                            account = "eosio.token",
+                            authorization = new List<PermissionLevel>()
                             {
-                                new PermissionLevel() {Actor = "tester112345", Permission = "active" }
+                                new PermissionLevel() {actor = "tester112345", permission = "active" }
                             },
-                            Name = "transfer",
-                            Data = new Dictionary<string, string>()
+                            name = "transfer",
+                            data = new Dictionary<string, string>()
                             {
                                 { "from", "tester112345" },
                                 { "to", "tester212345" },
@@ -226,17 +226,17 @@ namespace EosSharp.UnitTests
             {
                 var result = await Eos.CreateTransaction(new Transaction()
                 {
-                    Actions = new List<Core.Api.v1.Action>()
+                    actions = new List<Core.Api.v1.Action>()
                     {
                         new Core.Api.v1.Action()
                         {
-                            Account = "eosio",
-                            Authorization = new List<PermissionLevel>()
+                            account = "eosio",
+                            authorization = new List<PermissionLevel>()
                             {
-                                new PermissionLevel() {Actor = "tester112345", Permission = "active"}
+                                new PermissionLevel() {actor = "tester112345", permission = "active"}
                             },
-                            Name = "newaccount",
-                            Data = new {
+                            name = "newaccount",
+                            data = new {
                                 creator = "tester112345",
                                 name = "mynewaccount",
                                 owner = new {
@@ -259,13 +259,13 @@ namespace EosSharp.UnitTests
                         },
                         new Core.Api.v1.Action()
                         {
-                            Account = "eosio",
-                            Authorization = new List<PermissionLevel>()
+                            account = "eosio",
+                            authorization = new List<PermissionLevel>()
                             {
-                                new PermissionLevel() { Actor = "tester112345", Permission = "active"}
+                                new PermissionLevel() { actor = "tester112345", permission = "active"}
                             },
-                            Name = "buyrambytes",
-                            Data = new {
+                            name = "buyrambytes",
+                            data = new {
                                 payer = "tester112345",
                                 receiver = "mynewaccount",
                                 bytes = 8192,
@@ -273,13 +273,13 @@ namespace EosSharp.UnitTests
                         },
                         new Core.Api.v1.Action()
                         {
-                            Account = "eosio",
-                            Authorization = new List<PermissionLevel>()
+                            account = "eosio",
+                            authorization = new List<PermissionLevel>()
                             {
-                                new PermissionLevel() { Actor = "tester112345", Permission = "active"}
+                                new PermissionLevel() { actor = "tester112345", permission = "active"}
                             },
-                            Name = "delegatebw",
-                            Data = new {
+                            name = "delegatebw",
+                            data = new {
                                 from = "tester112345",
                                 receiver = "mynewaccount",
                                 stake_net_quantity = "1.0000 EOS",

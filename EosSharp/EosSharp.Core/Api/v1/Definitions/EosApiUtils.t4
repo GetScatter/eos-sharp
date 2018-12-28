@@ -36,7 +36,7 @@
 
 	public string RenderFieldDefault(Field field) {
 		if(string.IsNullOrWhiteSpace(field.Default))
-			return "";
+			return ";";
 
 		if(field.Type.ToLower() == "string") {
 			return " = \"" + field.Default + "\";";
@@ -44,5 +44,19 @@
 		else {
 			return " = " + field.Default + ";";
         }
+    }
+
+	public string EscapeKeyWords(string s) {
+
+		switch(s) {
+			case "base":
+				return "@base";
+			case "class":
+				return "@class";
+			case "new":
+				return "@new";
+        }
+
+		return s;
     }
 #>

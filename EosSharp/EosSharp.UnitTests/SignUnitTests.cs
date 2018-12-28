@@ -76,22 +76,22 @@ namespace EosSharp.UnitTests
             var trx = new Transaction()
             {
                 // trx info
-                MaxNetUsageWords = 0,
-                MaxCpuUsageMs = 0,
-                DelaySec = 0,
-                ContextFreeActions = new List<Core.Api.v1.Action>(),
-                TransactionExtensions = new List<Extension>(),
-                Actions = new List<Core.Api.v1.Action>()
+                max_net_usage_words = 0,
+                max_cpu_usage_ms = 0,
+                delay_sec = 0,
+                context_free_actions = new List<Core.Api.v1.Action>(),
+                transaction_extensions = new List<Extension>(),
+                actions = new List<Core.Api.v1.Action>()
                 {
                     new Core.Api.v1.Action()
                     {
-                        Account = "eosio.token",
-                        Authorization = new List<PermissionLevel>()
+                        account = "eosio.token",
+                        authorization = new List<PermissionLevel>()
                         {
-                            new PermissionLevel() {Actor = "tester112345", Permission = "active" }
+                            new PermissionLevel() {actor = "tester112345", permission = "active" }
                         },
-                        Name = "transfer",
-                        Data = new { from = "tester112345", to = "tester212345", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                        name = "transfer",
+                        data = new { from = "tester112345", to = "tester212345", quantity = "1.0000 EOS", memo = "hello crypto world!" }
                     }
                 }
             };

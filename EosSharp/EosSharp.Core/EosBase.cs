@@ -49,7 +49,7 @@ namespace EosSharp.Core
         {
             return Api.GetAccount(new GetAccountRequest()
             {
-                AccountName = accountName
+                account_name = accountName
             });
         }
 
@@ -57,8 +57,8 @@ namespace EosSharp.Core
         {
             return Api.GetCode(new GetCodeRequest()
             {
-                AccountName = accountName,
-                CodeAsWasm = codeAsWasm
+                account_name = accountName,
+                code_as_wasm = codeAsWasm
             });
         }
 
@@ -66,16 +66,16 @@ namespace EosSharp.Core
         {
             return (await Api.GetAbi(new GetAbiRequest()
             {
-                AccountName = accountName
-            })).Abi;
+                account_name = accountName
+            })).abi;
         }
 
         public Task<GetRawAbiResponse> GetRawAbi(string accountName, string abiHash = null)
         {
             return Api.GetRawAbi(new GetRawAbiRequest()
             {
-                AccountName = accountName,
-                AbiHash = abiHash
+                account_name = accountName,
+                abi_hash = abiHash
             });
         }
 
@@ -83,7 +83,7 @@ namespace EosSharp.Core
         {
             return Api.GetRawCodeAndAbi(new GetRawCodeAndAbiRequest()
             {
-                AccountName = accountName
+                account_name = accountName
             });
         }
 
@@ -91,20 +91,20 @@ namespace EosSharp.Core
         {
             return (await Api.AbiJsonToBin(new AbiJsonToBinRequest()
             {
-                Code = code,
-                Action = action,
-                Args = data
-            })).Binargs;
+                code = code,
+                action = action,
+                args = data
+            })).binargs;
         }
 
         public async Task<object> AbiBinToJson(string code, string action, string data)
         {
             return (await Api.AbiBinToJson(new AbiBinToJsonRequest()
             {
-                Code = code,
-                Action = action,
-                Binargs = data
-            })).Args;
+                code = code,
+                action = action,
+                binargs = data
+            })).args;
         }
 
         public async Task<List<string>> GetRequiredKeys(List<string> availableKeys, Transaction trx)
@@ -113,21 +113,21 @@ namespace EosSharp.Core
             var abiSerializer = new AbiSerializationProvider(Api);
             var abiResponses = await abiSerializer.GetTransactionAbis(trx);
 
-            foreach (var action in trx.ContextFreeActions)
+            foreach (var action in trx.context_free_actions)
             {
-                action.Data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
+                action.data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
             }
 
-            foreach (var action in trx.Actions)
+            foreach (var action in trx.actions)
             {
-                action.Data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
+                action.data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
             }
 
             return (await Api.GetRequiredKeys(new GetRequiredKeysRequest()
             {
-                AvailableKeys = availableKeys,
-                Transaction = trx
-            })).RequiredKeys;
+                available_keys = availableKeys,
+                transaction = trx
+            })).required_keys;
         }
         /// <summary>
         /// Query for blockchain block information
@@ -138,7 +138,7 @@ namespace EosSharp.Core
         {
             return Api.GetBlock(new GetBlockRequest()
             {
-                BlockNumOrId = blockNumOrId
+                block_num_or_id = blockNumOrId
             });
         }
 
@@ -146,7 +146,7 @@ namespace EosSharp.Core
         {
             return Api.GetBlockHeaderState(new GetBlockHeaderStateRequest()
             {
-                BlockNumOrId = blockNumOrId
+                block_num_or_id = blockNumOrId
             });
         }
         /// <summary>
@@ -165,7 +165,7 @@ namespace EosSharp.Core
         /// <returns>Rows and if is there More rows to be fetched</returns>
         public async Task<GetTableRowsResponse<TRowType>> GetTableRows<TRowType>(GetTableRowsRequest request)
         {
-            if (request.Json.GetValueOrDefault())
+            if (request.json.GetValueOrDefault())
             {
                 return await Api.GetTableRows<TRowType>(request);
             }
@@ -174,20 +174,20 @@ namespace EosSharp.Core
                 var apiResult = await Api.GetTableRows(request);
                 var result = new GetTableRowsResponse<TRowType>()
                 {
-                    More = apiResult.More
+                    more = apiResult.more
                 };
 
                 var unpackedRows = new List<TRowType>();
 
-                var abi = await AbiSerializer.GetAbi(request.Code);
-                var table = abi.Tables.First(t => t.Name == request.Table);
+                var abi = await AbiSerializer.GetAbi(request.code);
+                var table = abi.tables.First(t => t.name == request.table);
 
-                foreach (var rowData in apiResult.Rows)
+                foreach (var rowData in apiResult.rows)
                 {
-                    unpackedRows.Add(AbiSerializer.DeserializeStructData<TRowType>(table.Type, (string)rowData, abi));
+                    unpackedRows.Add(AbiSerializer.DeserializeStructData<TRowType>(table.type, (string)rowData, abi));
                 }
 
-                result.Rows = unpackedRows;
+                result.rows = unpackedRows;
                 return result;
             }
         }
@@ -208,19 +208,19 @@ namespace EosSharp.Core
         {
             var result = await Api.GetTableRows(request);
 
-            if (!request.Json.GetValueOrDefault())
+            if (!request.json.GetValueOrDefault())
             {
                 var unpackedRows = new List<object>();
 
-                var abi = await AbiSerializer.GetAbi(request.Code);
-                var table = abi.Tables.First(t => t.Name == request.Table);
+                var abi = await AbiSerializer.GetAbi(request.code);
+                var table = abi.tables.First(t => t.name == request.table);
 
-                foreach (var rowData in result.Rows)
+                foreach (var rowData in result.rows)
                 {
-                    unpackedRows.Add(AbiSerializer.DeserializeStructData(table.Type, (string)rowData, abi));
+                    unpackedRows.Add(AbiSerializer.DeserializeStructData(table.type, (string)rowData, abi));
                 }
 
-                result.Rows = unpackedRows;
+                result.rows = unpackedRows;
             }
 
             return result;
@@ -230,35 +230,35 @@ namespace EosSharp.Core
         {
             return (await Api.GetCurrencyBalance(new GetCurrencyBalanceRequest()
             {
-                Code = code,
-                Account = account,
-                Symbol = symbol
-            })).Assets;
+                code = code,
+                account = account,
+                symbol = symbol
+            })).assets;
         }
 
         public async Task<Dictionary<string, CurrencyStat>> GetCurrencyStats(string code, string symbol)
         {
             return (await Api.GetCurrencyStats(new GetCurrencyStatsRequest()
             {
-                Code = code,
-                Symbol = symbol
-            })).Stats;
+                code = code,
+                symbol = symbol
+            })).stats;
         }
 
         public async Task<GetProducersResponse> GetProducers(GetProducersRequest request)
         {
             var result = await Api.GetProducers(request);
 
-            if (!request.Json.GetValueOrDefault())
+            if (!request.json.GetValueOrDefault())
             {
                 var unpackedRows = new List<object>();
 
-                foreach (var rowData in result.Rows)
+                foreach (var rowData in result.rows)
                 {
                     unpackedRows.Add(AbiSerializer.DeserializeType<Producer>((string)rowData));
                 }
 
-                result.Rows = unpackedRows;
+                result.rows = unpackedRows;
             }
 
             return result;
@@ -273,13 +273,13 @@ namespace EosSharp.Core
         {
             var result = await Api.GetScheduledTransactions(request);
 
-            if (!request.Json.GetValueOrDefault())
+            if (!request.json.GetValueOrDefault())
             {
-                foreach (var trx in result.Transactions)
+                foreach (var trx in result.transactions)
                 {
                     try
                     {
-                        trx.Transaction = await AbiSerializer.DeserializePackedTransaction((string)trx.Transaction);
+                        trx.transaction = await AbiSerializer.DeserializePackedTransaction((string)trx.transaction);
                     }
                     catch (Exception)
                     {
@@ -302,24 +302,24 @@ namespace EosSharp.Core
             if (string.IsNullOrWhiteSpace(chainId))
             {
                 getInfoResult = await Api.GetInfo();
-                chainId = getInfoResult.ChainId;
+                chainId = getInfoResult.chain_id;
             }
 
-            if (trx.Expiration == DateTime.MinValue ||
-               trx.RefBlockNum == 0 ||
-               trx.RefBlockPrefix == 0)
+            if (trx.expiration == DateTime.MinValue ||
+               trx.ref_block_num == 0 ||
+               trx.ref_block_prefix == 0)
             {
                 if (getInfoResult == null)
                     getInfoResult = await Api.GetInfo();
 
                 var getBlockResult = await Api.GetBlock(new GetBlockRequest()
                 {
-                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
+                    block_num_or_id = getInfoResult.last_irreversible_block_num.ToString()
                 });
 
-                trx.Expiration = getInfoResult.HeadBlockTime.GetValueOrDefault().AddSeconds(EosConfig.ExpireSeconds);
-                trx.RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault() & 0xFFFF);
-                trx.RefBlockPrefix = getBlockResult.RefBlockPrefix;
+                trx.expiration = getInfoResult.head_block_time.AddSeconds(EosConfig.ExpireSeconds);
+                trx.ref_block_num = (UInt16)(getInfoResult.last_irreversible_block_num & 0xFFFF);
+                trx.ref_block_prefix = getBlockResult.ref_block_prefix;
             }
 
             var packedTrx = await AbiSerializer.SerializePackedTransaction(trx);
@@ -328,20 +328,20 @@ namespace EosSharp.Core
 
             IEnumerable<string> abis = null;
 
-            if (trx.Actions != null)
-                abis = trx.Actions.Select(a => a.Account);
+            if (trx.actions != null)
+                abis = trx.actions.Select(a => a.account);
 
             var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx, abis);
 
             var result = await Api.PushTransaction(new PushTransactionRequest()
             {
-                Signatures = signatures.ToArray(),
-                Compression = 0,
-                PackedContextFreeData = "",
-                PackedTrx = SerializationHelper.ByteArrayToHexString(packedTrx)
+                signatures = signatures.ToArray(),
+                compression = 0,
+                packed_context_free_data = "",
+                packed_trx = SerializationHelper.ByteArrayToHexString(packedTrx)
             });
 
-            return result.TransactionId;
+            return result.transaction_id;
         }
         /// <summary>
         /// Query for account actions log
@@ -354,9 +354,9 @@ namespace EosSharp.Core
         {
             return Api.GetActions(new GetActionsRequest()
             {
-                AccountName = accountName,
-                Pos = pos,
-                Offset = offset
+                account_name = accountName,
+                pos = pos,
+                offset = offset
             });
         }
 
@@ -364,7 +364,7 @@ namespace EosSharp.Core
         {
             return Api.GetTransaction(new GetTransactionRequest()
             {
-                Id = transactionId
+                id = transactionId
             });
         }
 
@@ -372,16 +372,16 @@ namespace EosSharp.Core
         {
             return (await Api.GetKeyAccounts(new GetKeyAccountsRequest()
             {
-                PublicKey = publicKey
-            })).AccountNames;
+                public_key = publicKey
+            })).account_names;
         }
 
         public async Task<List<string>> GetControlledAccounts(string accountName)
         {
             return (await Api.GetControlledAccounts(new GetControlledAccountsRequest()
             {
-                ControllingAccount = accountName
-            })).ControlledAccounts;
+                controlling_account = accountName
+            })).controlled_accounts;
         }
 
         #endregion

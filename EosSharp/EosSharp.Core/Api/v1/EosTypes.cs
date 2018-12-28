@@ -14,451 +14,451 @@ namespace EosSharp.Core.Api.v1
 	public class Symbol
     {
 		
-		public string Name { get; set; }
+		public string name;
 		
-		public byte Precision { get; set; }
+		public byte precision;
     }
 	[Serializable]
 	public class Resource
     {
 		
-		public Int64 Used { get; set; }
+		public Int64 used;
 		
-		public Int64 Available { get; set; }
+		public Int64 available;
 		
-		public Int64 Max { get; set; }
+		public Int64 max;
     }
 	[Serializable]
 	public class AuthorityKey
     {
 		
-		public string Key { get; set; }
+		public string key;
 		
-		public Int32 Weight { get; set; }
+		public Int32 weight;
     }
 	[Serializable]
 	public class AuthorityAccount
     {
 		
-		public string Account { get; set; }
+		public string account;
 		
-		public Int32 Weight { get; set; }
+		public Int32 weight;
     }
 	[Serializable]
 	public class AuthorityWait
     {
 		
-		public string WaitSec { get; set; }
+		public string wait_sec;
 		
-		public Int32 Weight { get; set; }
+		public Int32 weight;
     }
 	[Serializable]
 	public class Authority
     {
 		
-		public UInt32 Threshold { get; set; }
+		public UInt32 threshold;
 		
-		public List<AuthorityKey> Keys { get; set; }
+		public List<AuthorityKey> keys;
 		
-		public List<AuthorityAccount> Accounts { get; set; }
+		public List<AuthorityAccount> accounts;
 		
-		public List<AuthorityWait> Waits { get; set; }
+		public List<AuthorityWait> waits;
     }
 	[Serializable]
 	public class Permission
     {
 		
-		public string PermName { get; set; }
+		public string perm_name;
 		
-		public string Parent { get; set; }
+		public string parent;
 		
-		public Authority RequiredAuth { get; set; }
+		public Authority required_auth;
     }
 	[Serializable]
 	public class AbiType
     {
 		
-		public string NewTypeName { get; set; }
+		public string new_type_name;
 		
-		public string Type { get; set; }
+		public string type;
     }
 	[Serializable]
 	public class AbiField
     {
 		
-		public string Name { get; set; }
+		public string name;
 		
-		public string Type { get; set; }
+		public string type;
     }
 	[Serializable]
 	public class AbiStruct
     {
 		
-		public string Name { get; set; }
+		public string name;
 		
-		public string Base { get; set; }
+		public string @base;
 		
-		public List<AbiField> Fields { get; set; }
+		public List<AbiField> fields;
     }
 	[Serializable]
 	public class AbiAction
     {
 		[AbiFieldType("name")]
-		public string Name { get; set; }
+		public string name;
 		
-		public string Type { get; set; }
+		public string type;
 		
-		public string RicardianContract { get; set; }
+		public string ricardian_contract;
     }
 	[Serializable]
 	public class AbiTable
     {
 		[AbiFieldType("name")]
-		public string Name { get; set; }
+		public string name;
 		
-		public string IndexType { get; set; }
+		public string index_type;
 		
-		public List<string> KeyNames { get; set; }
+		public List<string> key_names;
 		
-		public List<string> KeyTypes { get; set; }
+		public List<string> key_types;
 		
-		public string Type { get; set; }
+		public string type;
     }
 	[Serializable]
 	public class Abi
     {
 		
-		public string Version { get; set; }
+		public string version;
 		
-		public List<AbiType> Types { get; set; }
+		public List<AbiType> types;
 		
-		public List<AbiStruct> Structs { get; set; }
+		public List<AbiStruct> structs;
 		
-		public List<AbiAction> Actions { get; set; }
+		public List<AbiAction> actions;
 		
-		public List<AbiTable> Tables { get; set; }
+		public List<AbiTable> tables;
 		
-		public List<AbiRicardianClause> RicardianClauses { get; set; }
+		public List<AbiRicardianClause> ricardian_clauses;
 		
-		public List<string> ErrorMessages { get; set; }
+		public List<string> error_messages;
 		
-		public List<Extension> AbiExtensions { get; set; }
+		public List<Extension> abi_extensions;
 		
-		public List<Variant> Variants { get; set; }
+		public List<Variant> variants;
     }
 	[Serializable]
 	public class AbiRicardianClause
     {
 		
-		public string Id { get; set; }
+		public string id;
 		
-		public string Body { get; set; }
+		public string body;
     }
 	[Serializable]
 	public class CurrencyStat
     {
 		
-		public string Supply { get; set; }
+		public string supply;
 		
-		public string MaxSupply { get; set; }
+		public string max_supply;
 		
-		public string Issuer { get; set; }
+		public string issuer;
     }
 	[Serializable]
 	public class Producer
     {
 		[AbiFieldType("name")]
-		public string Owner { get; set; }
+		public string owner;
 		[AbiFieldType("float64")]
-		public double TotalVotes { get; set; }
+		public double total_votes;
 		[AbiFieldType("public_key")]
-		public string ProducerKey { get; set; }
+		public string producer_key;
 		
-		public bool IsActive { get; set; }
+		public bool is_active;
 		
-		public string Url { get; set; }
+		public string url;
 		
-		public UInt32 UnpaidBlocks { get; set; }
+		public UInt32 unpaid_blocks;
 		
-		public UInt64 LastClaimTime { get; set; }
+		public UInt64 last_claim_time;
 		
-		public UInt16 Location { get; set; }
+		public UInt16 location;
     }
 	[Serializable]
 	public class ScheduleProducers
     {
 		
-		public string ProducerName { get; set; }
+		public string producer_name;
 		
-		public string BlockSigningKey { get; set; }
+		public string block_signing_key;
     }
 	[Serializable]
 	public class Schedule
     {
 		
-		public UInt32? Version { get; set; }
+		public UInt32? version;
 		
-		public List<ScheduleProducers> Producers { get; set; }
+		public List<ScheduleProducers> producers;
     }
 	[Serializable]
 	public class PermissionLevel
     {
 		
-		public string Actor { get; set; }
+		public string actor;
 		
-		public string Permission { get; set; }
+		public string permission;
     }
 	[Serializable]
 	public class Extension
     {
 		
-		public UInt16 Type { get; set; }
+		public UInt16 type;
 		
-		public byte[] Data { get; set; }
+		public byte[] data;
     }
 	[Serializable]
 	public class Variant
     {
 		
-		public string Name { get; set; }
+		public string name;
 		
-		public List<string> Type { get; set; }
+		public List<string> type;
     }
 	[Serializable]
 	public class Action
     {
 		
-		public string Account { get; set; }
+		public string account;
 		
-		public string Name { get; set; }
+		public string name;
 		
-		public List<PermissionLevel> Authorization { get; set; }
+		public List<PermissionLevel> authorization;
 		
-		public object Data { get; set; }
+		public object data;
 		
-		public string HexData { get; set; }
+		public string hex_data;
     }
 	[Serializable]
 	public class Transaction
     {
 		
-		public DateTime Expiration { get; set; }
+		public DateTime expiration;
 		
-		public UInt16 RefBlockNum { get; set; }
+		public UInt16 ref_block_num;
 		
-		public UInt32 RefBlockPrefix { get; set; }
+		public UInt32 ref_block_prefix;
 		
-		public UInt32 MaxNetUsageWords { get; set; }
+		public UInt32 max_net_usage_words;
 		
-		public byte MaxCpuUsageMs { get; set; }
+		public byte max_cpu_usage_ms;
 		
-		public UInt32 DelaySec { get; set; }
+		public UInt32 delay_sec;
 		
-		public List<Action> ContextFreeActions { get; set; } = new List<Action>();
+		public List<Action> context_free_actions = new List<Action>();
 		
-		public List<Action> Actions { get; set; } = new List<Action>();
+		public List<Action> actions = new List<Action>();
 		
-		public List<Extension> TransactionExtensions { get; set; } = new List<Extension>();
+		public List<Extension> transaction_extensions = new List<Extension>();
     }
 	[Serializable]
 	public class ScheduledTransaction
     {
 		
-		public string TrxId { get; set; }
+		public string trx_id;
 		
-		public string Sender { get; set; }
+		public string sender;
 		
-		public string SenderId { get; set; }
+		public string sender_id;
 		
-		public string Payer { get; set; }
+		public string payer;
 		
-		public DateTime? DelayUntil { get; set; }
+		public DateTime? delay_until;
 		
-		public DateTime? Expiration { get; set; }
+		public DateTime? expiration;
 		
-		public DateTime? Published { get; set; }
+		public DateTime? published;
 		
-		public Object Transaction { get; set; }
+		public Object transaction;
     }
 	[Serializable]
 	public class Receipt
     {
 		
-		public string Receiver { get; set; }
+		public string receiver;
 		
-		public string ActDigest { get; set; }
+		public string act_digest;
 		
-		public UInt64? GlobalSequence { get; set; }
+		public UInt64? global_sequence;
 		
-		public UInt64? RecvSequence { get; set; }
+		public UInt64? recv_sequence;
 		
-		public List<List<object>> AuthSequence { get; set; }
+		public List<List<object>> auth_sequence;
 		
-		public UInt64? CodeSequence { get; set; }
+		public UInt64? code_sequence;
 		
-		public UInt64? AbiSequence { get; set; }
+		public UInt64? abi_sequence;
     }
 	[Serializable]
 	public class ActionTrace
     {
 		
-		public Receipt Receipt { get; set; }
+		public Receipt receipt;
 		
-		public Action Act { get; set; }
+		public Action act;
 		
-		public UInt32? Elapsed { get; set; }
+		public UInt32? elapsed;
 		
-		public UInt32? CpuUsage { get; set; }
+		public UInt32? cpu_usage;
 		
-		public string Console { get; set; }
+		public string console;
 		
-		public UInt32? TotalCpuUsage { get; set; }
+		public UInt32? total_cpu_usage;
 		
-		public string TrxId { get; set; }
+		public string trx_id;
 		
-		public List<ActionTrace> InlineTraces { get; set; }
+		public List<ActionTrace> inline_traces;
     }
 	[Serializable]
 	public class GlobalAction
     {
 		
-		public UInt64? GlobalActionSeq { get; set; }
+		public UInt64? global_action_seq;
 		
-		public UInt64? AccountActionSeq { get; set; }
+		public UInt64? account_action_seq;
 		
-		public UInt32? BlockNum { get; set; }
+		public UInt32? block_num;
 		
-		public DateTime? BlockTime { get; set; }
+		public DateTime? block_time;
 		
-		public ActionTrace ActionTrace { get; set; }
+		public ActionTrace action_trace;
     }
 	[Serializable]
 	public class TransactionReceipt
     {
 		
-		public string Status { get; set; }
+		public string status;
 		
-		public UInt32? CpuUsageUs { get; set; }
+		public UInt32? cpu_usage_us;
 		
-		public UInt32? NetUsageWords { get; set; }
+		public UInt32? net_usage_words;
 		
-		public object Trx { get; set; }
+		public object trx;
     }
 	[Serializable]
 	public class ProcessedTransaction
     {
 		
-		public string Id { get; set; }
+		public string id;
 		
-		public TransactionReceipt Receipt { get; set; }
+		public TransactionReceipt receipt;
 		
-		public UInt32 Elapsed { get; set; }
+		public UInt32 elapsed;
 		
-		public UInt32 NetUsage { get; set; }
+		public UInt32 net_usage;
 		
-		public bool Scheduled { get; set; }
+		public bool scheduled;
 		
-		public string Except { get; set; }
+		public string except;
 		
-		public List<ActionTrace> ActionTraces { get; set; }
+		public List<ActionTrace> action_traces;
     }
 	[Serializable]
 	public class DetailedTransaction
     {
 		
-		public TransactionReceipt Receipt { get; set; }
+		public TransactionReceipt receipt;
 		
-		public Transaction Trx { get; set; }
+		public Transaction trx;
     }
 	[Serializable]
 	public class PackedTransaction
     {
 		
-		public string Compression { get; set; }
+		public string compression;
 		
-		public List<object> ContextFreeData { get; set; }
+		public List<object> context_free_data;
 		
-		public string Id { get; set; }
+		public string id;
 		
-		public string PackedContextFreeData { get; set; }
+		public string packed_context_free_data;
 		
-		public string PackedTrx { get; set; }
+		public string packed_trx;
 		
-		public List<string> Signatures { get; set; }
+		public List<string> signatures;
 		
-		public Transaction Transaction { get; set; }
+		public Transaction transaction;
     }
 	[Serializable]
 	public class RefundRequest
     {
 		
-		public string CpuAmount { get; set; }
+		public string cpu_amount;
 		
-		public string NetAmount { get; set; }
+		public string net_amount;
     }
 	[Serializable]
 	public class SelfDelegatedBandwidth
     {
 		
-		public string CpuWeight { get; set; }
+		public string cpu_weight;
 		
-		public string From { get; set; }
+		public string from;
 		
-		public string NetWeight { get; set; }
+		public string net_weight;
 		
-		public string To { get; set; }
+		public string to;
     }
 	[Serializable]
 	public class TotalResources
     {
 		
-		public string CpuWeight { get; set; }
+		public string cpu_weight;
 		
-		public string NetWeight { get; set; }
+		public string net_weight;
 		
-		public string Owner { get; set; }
+		public string owner;
 		
-		public UInt64? RamBytes { get; set; }
+		public UInt64? ram_bytes;
     }
 	[Serializable]
 	public class VoterInfo
     {
 		
-		public bool? IsProxy { get; set; }
+		public bool? is_proxy;
 		
-		public double? LastVoteWeight { get; set; }
+		public double? last_vote_weight;
 		
-		public string Owner { get; set; }
+		public string owner;
 		
-		public List<string> Producers { get; set; }
+		public List<string> producers;
 		
-		public double? ProxiedVoteWeight { get; set; }
+		public double? proxied_vote_weight;
 		
-		public string Proxy { get; set; }
+		public string proxy;
 		
-		public UInt64? Staked { get; set; }
+		public UInt64? staked;
     }
 	[Serializable]
 	public class ExtendedAsset
     {
 		
-		public string Quantity { get; set; }
+		public string quantity;
 		
-		public string Contract { get; set; }
+		public string contract;
     }
 	[Serializable]
 	public class TableByScopeResultRow
     {
 		
-		public string Code { get; set; }
+		public string code;
 		
-		public string Scope { get; set; }
+		public string scope;
 		
-		public string Table { get; set; }
+		public string table;
 		
-		public string Payer { get; set; }
+		public string payer;
 		
-		public UInt32? Count { get; set; }
+		public UInt32? count;
     }
 	#endregion
 
@@ -467,220 +467,220 @@ namespace EosSharp.Core.Api.v1
     public class GetInfoResponse
     {
  
-		public string ServerVersion { get; set; }
+		public string server_version;
  
-		public string ChainId { get; set; }
+		public string chain_id;
  
-		public UInt32? HeadBlockNum { get; set; }
+		public UInt32 head_block_num;
  
-		public UInt32? LastIrreversibleBlockNum { get; set; }
+		public UInt32 last_irreversible_block_num;
  
-		public string LastIrreversibleBlockId { get; set; }
+		public string last_irreversible_block_id;
  
-		public string HeadBlockId { get; set; }
+		public string head_block_id;
  
-		public DateTime? HeadBlockTime { get; set; }
+		public DateTime head_block_time;
  
-		public string HeadBlockProducer { get; set; }
+		public string head_block_producer;
  
-		public string VirtualBlockCpuLimit { get; set; }
+		public string virtual_block_cpu_limit;
  
-		public string VirtualBlockNetLimit { get; set; }
+		public string virtual_block_net_limit;
  
-		public string BlockCpuLimit { get; set; }
+		public string block_cpu_limit;
  
-		public string BlockNetLimit { get; set; }
+		public string block_net_limit;
     }
 	[Serializable]
     public class GetAccountRequest
     {
-		public string AccountName { get; set; }
+		public string account_name;
     }
 	[Serializable]
     public class GetAccountResponse
     {
  
-		public string AccountName { get; set; }
+		public string account_name;
  
-		public UInt32? HeadBlockNum { get; set; }
+		public UInt32? head_block_num;
  
-		public DateTime? HeadBlockTime { get; set; }
+		public DateTime? head_block_time;
  
-		public bool? Privileged { get; set; }
+		public bool? privileged;
  
-		public DateTime? LastCodeUpdate { get; set; }
+		public DateTime? last_code_update;
  
-		public DateTime? Created { get; set; }
+		public DateTime? created;
  
-		public Int64? RamQuota { get; set; }
+		public Int64? ram_quota;
  
-		public Int64? NetWeight { get; set; }
+		public Int64? net_weight;
  
-		public Int64? CpuWeight { get; set; }
+		public Int64? cpu_weight;
  
-		public Resource NetLimit { get; set; }
+		public Resource net_limit;
  
-		public Resource CpuLimit { get; set; }
+		public Resource cpu_limit;
  
-		public UInt64? RamUsage { get; set; }
+		public UInt64? ram_usage;
  
-		public List<Permission> Permissions { get; set; }
+		public List<Permission> permissions;
  
-		public RefundRequest RefundRequest { get; set; }
+		public RefundRequest refund_request;
  
-		public SelfDelegatedBandwidth SelfDelegatedBandwidth { get; set; }
+		public SelfDelegatedBandwidth self_delegated_bandwidth;
  
-		public TotalResources TotalResources { get; set; }
+		public TotalResources total_resources;
  
-		public VoterInfo VoterInfo { get; set; }
+		public VoterInfo voter_info;
     }
 	[Serializable]
     public class GetCodeRequest
     {
-		public string AccountName { get; set; }
-		public bool? CodeAsWasm { get; set; }
+		public string account_name;
+		public bool? code_as_wasm;
     }
 	[Serializable]
     public class GetCodeResponse
     {
  
-		public string AccountName { get; set; }
+		public string account_name;
  
-		public string Wast { get; set; }
+		public string wast;
  
-		public string Wasm { get; set; }
+		public string wasm;
  
-		public string CodeHash { get; set; }
+		public string code_hash;
  
-		public Abi Abi { get; set; }
+		public Abi abi;
     }
 	[Serializable]
     public class GetAbiRequest
     {
-		public string AccountName { get; set; }
+		public string account_name;
     }
 	[Serializable]
     public class GetAbiResponse
     {
  
-		public string AccountName { get; set; }
+		public string account_name;
  
-		public Abi Abi { get; set; }
+		public Abi abi;
     }
 	[Serializable]
     public class GetRawCodeAndAbiRequest
     {
-		public string AccountName { get; set; }
+		public string account_name;
     }
 	[Serializable]
     public class GetRawCodeAndAbiResponse
     {
  
-		public string AccountName { get; set; }
+		public string account_name;
  
-		public string Wasm { get; set; }
+		public string wasm;
  
-		public string Abi { get; set; }
+		public string abi;
     }
 	[Serializable]
     public class GetRawAbiRequest
     {
-		public string AccountName { get; set; }
-		public string AbiHash { get; set; }
+		public string account_name;
+		public string abi_hash;
     }
 	[Serializable]
     public class GetRawAbiResponse
     {
  
-		public string AccountName { get; set; }
+		public string account_name;
  
-		public string CodeHash { get; set; }
+		public string code_hash;
  
-		public string AbiHash { get; set; }
+		public string abi_hash;
  
-		public string Abi { get; set; }
+		public string abi;
     }
 	[Serializable]
     public class AbiJsonToBinRequest
     {
-		public string Code { get; set; }
-		public string Action { get; set; }
-		public object Args { get; set; }
+		public string code;
+		public string action;
+		public object args;
     }
 	[Serializable]
     public class AbiJsonToBinResponse
     {
  
-		public string Binargs { get; set; }
+		public string binargs;
     }
 	[Serializable]
     public class AbiBinToJsonRequest
     {
-		public string Code { get; set; }
-		public string Action { get; set; }
-		public string Binargs { get; set; }
+		public string code;
+		public string action;
+		public string binargs;
     }
 	[Serializable]
     public class AbiBinToJsonResponse
     {
  
-		public object Args { get; set; }
+		public object args;
     }
 	[Serializable]
     public class GetRequiredKeysRequest
     {
-		public Transaction Transaction { get; set; }
-		public List<string> AvailableKeys { get; set; }
+		public Transaction transaction;
+		public List<string> available_keys;
     }
 	[Serializable]
     public class GetRequiredKeysResponse
     {
  
-		public List<string> RequiredKeys { get; set; }
+		public List<string> required_keys;
     }
 	[Serializable]
     public class GetBlockRequest
     {
-		public string BlockNumOrId { get; set; }
+		public string block_num_or_id;
     }
 	[Serializable]
     public class GetBlockResponse
     {
  
-		public DateTime? Timestamp { get; set; }
+		public DateTime? timestamp;
  
-		public string Producer { get; set; }
+		public string producer;
  
-		public UInt32 Confirmed { get; set; }
+		public UInt32 confirmed;
  
-		public string Previous { get; set; }
+		public string previous;
  
-		public string TransactionMroot { get; set; }
+		public string transaction_mroot;
  
-		public string ActionMroot { get; set; }
+		public string action_mroot;
  
-		public UInt32 ScheduleVersion { get; set; }
+		public UInt32 schedule_version;
  
-		public string NewProducers { get; set; }
+		public string new_producers;
  
-		public List<Extension> BlockExtensions { get; set; }
+		public List<Extension> block_extensions;
  
-		public List<Extension> HeaderExtensions { get; set; }
+		public List<Extension> header_extensions;
  
-		public string ProducerSignature { get; set; }
+		public string producer_signature;
  
-		public List<TransactionReceipt> Transactions { get; set; }
+		public List<TransactionReceipt> transactions;
  
-		public string Id { get; set; }
+		public string id;
  
-		public UInt32 BlockNum { get; set; }
+		public UInt32 block_num;
  
-		public UInt32 RefBlockPrefix { get; set; }
+		public UInt32 ref_block_prefix;
     }
 	[Serializable]
     public class GetBlockHeaderStateRequest
     {
-		public string BlockNumOrId { get; set; }
+		public string block_num_or_id;
     }
 	[Serializable]
     public class GetBlockHeaderStateResponse
@@ -689,198 +689,198 @@ namespace EosSharp.Core.Api.v1
 	[Serializable]
     public class GetTableRowsRequest
     {
-		public bool? Json { get; set; } = false;
-		public string Code { get; set; }
-		public string Scope { get; set; }
-		public string Table { get; set; }
-		public string TableKey { get; set; }
-		public string LowerBound { get; set; } = "0";
-		public string UpperBound { get; set; } = "-1";
-		public Int32? Limit { get; set; } = 10;
-		public string KeyType { get; set; }
-		public string IndexPosition { get; set; }
-		public string EncodeType { get; set; } = "dec";
-		public bool? Reverse { get; set; }
-		public bool? ShowPayer { get; set; }
+		public bool? json = false;
+		public string code;
+		public string scope;
+		public string table;
+		public string table_key;
+		public string lower_bound = "0";
+		public string upper_bound = "-1";
+		public Int32? limit = 10;
+		public string key_type;
+		public string index_position;
+		public string encode_type = "dec";
+		public bool? reverse;
+		public bool? show_payer;
     }
 	[Serializable]
     public class GetTableRowsResponse
     {
  
-		public List<object> Rows { get; set; }
+		public List<object> rows;
  
-		public bool? More { get; set; }
+		public bool? more;
     }
 	[Serializable]
     public class GetTableRowsResponse<TRowType>
     {
    
-		public List<TRowType> Rows { get; set; }
+		public List<TRowType> rows;
    
-		public bool? More { get; set; }
+		public bool? more;
     }
 	[Serializable]
     public class GetTableByScopeRequest
     {
-		public string Code { get; set; }
-		public string Table { get; set; }
-		public string LowerBound { get; set; }
-		public string UpperBound { get; set; }
-		public Int32? Limit { get; set; } = 10;
-		public bool? Reverse { get; set; }
+		public string code;
+		public string table;
+		public string lower_bound;
+		public string upper_bound;
+		public Int32? limit = 10;
+		public bool? reverse;
     }
 	[Serializable]
     public class GetTableByScopeResponse
     {
  
-		public List<TableByScopeResultRow> Rows { get; set; }
+		public List<TableByScopeResultRow> rows;
  
-		public string More { get; set; }
+		public string more;
     }
 	[Serializable]
     public class GetCurrencyBalanceRequest
     {
-		public string Code { get; set; }
-		public string Account { get; set; }
-		public string Symbol { get; set; }
+		public string code;
+		public string account;
+		public string symbol;
     }
 	[Serializable]
     public class GetCurrencyBalanceResponse
     {
  
-		public List<string> Assets { get; set; }
+		public List<string> assets;
     }
 	[Serializable]
     public class GetCurrencyStatsRequest
     {
-		public string Code { get; set; }
-		public string Symbol { get; set; }
+		public string code;
+		public string symbol;
     }
 	[Serializable]
     public class GetCurrencyStatsResponse
     {
  
-		public Dictionary<string, CurrencyStat> Stats { get; set; }
+		public Dictionary<string, CurrencyStat> stats;
     }
 	[Serializable]
     public class GetProducersRequest
     {
-		public bool? Json { get; set; } = false;
-		public string LowerBound { get; set; }
-		public Int32? Limit { get; set; } = 50;
+		public bool? json = false;
+		public string lower_bound;
+		public Int32? limit = 50;
     }
 	[Serializable]
     public class GetProducersResponse
     {
  
-		public List<object> Rows { get; set; }
+		public List<object> rows;
  
-		public double? TotalProducerVoteWeight { get; set; }
+		public double? total_producer_vote_weight;
  
-		public string More { get; set; }
+		public string more;
     }
 	[Serializable]
     public class GetProducerScheduleResponse
     {
  
-		public Schedule Active { get; set; }
+		public Schedule active;
  
-		public Schedule Pending { get; set; }
+		public Schedule pending;
  
-		public Schedule Proposed { get; set; }
+		public Schedule proposed;
     }
 	[Serializable]
     public class GetScheduledTransactionsRequest
     {
-		public bool? Json { get; set; } = false;
-		public string LowerBound { get; set; }
-		public Int32? Limit { get; set; } = 50;
+		public bool? json = false;
+		public string lower_bound;
+		public Int32? limit = 50;
     }
 	[Serializable]
     public class GetScheduledTransactionsResponse
     {
  
-		public List<ScheduledTransaction> Transactions { get; set; }
+		public List<ScheduledTransaction> transactions;
  
-		public string More { get; set; }
+		public string more;
     }
 	[Serializable]
     public class PushTransactionRequest
     {
-		public string[] Signatures { get; set; }
-		public UInt32? Compression { get; set; }
-		public string PackedContextFreeData { get; set; }
-		public string PackedTrx { get; set; }
-		public Transaction Transaction { get; set; }
+		public string[] signatures;
+		public UInt32? compression;
+		public string packed_context_free_data;
+		public string packed_trx;
+		public Transaction transaction;
     }
 	[Serializable]
     public class PushTransactionResponse
     {
  
-		public string TransactionId { get; set; }
+		public string transaction_id;
  
-		public ProcessedTransaction Processed { get; set; }
+		public ProcessedTransaction processed;
     }
 	[Serializable]
     public class GetActionsRequest
     {
-		public string AccountName { get; set; }
-		public Int32? Pos { get; set; }
-		public Int32? Offset { get; set; }
+		public string account_name;
+		public Int32? pos;
+		public Int32? offset;
     }
 	[Serializable]
     public class GetActionsResponse
     {
  
-		public List<GlobalAction> Actions { get; set; }
+		public List<GlobalAction> actions;
  
-		public UInt32? LastIrreversibleBlock { get; set; }
+		public UInt32? last_irreversible_block;
  
-		public bool? TimeLimitExceededError { get; set; }
+		public bool? time_limit_exceeded_error;
     }
 	[Serializable]
     public class GetTransactionRequest
     {
-		public string Id { get; set; }
-		public string BlockNumHint { get; set; }
+		public string id;
+		public string block_num_hint;
     }
 	[Serializable]
     public class GetTransactionResponse
     {
  
-		public string Id { get; set; }
+		public string id;
  
-		public DetailedTransaction Trx { get; set; }
+		public DetailedTransaction trx;
  
-		public DateTime? BlockTime { get; set; }
+		public DateTime? block_time;
  
-		public UInt32? BlockNum { get; set; }
+		public UInt32? block_num;
  
-		public UInt32? LastIrreversibleBlock { get; set; }
+		public UInt32? last_irreversible_block;
  
-		public List<ActionTrace> Traces { get; set; }
+		public List<ActionTrace> traces;
     }
 	[Serializable]
     public class GetKeyAccountsRequest
     {
-		public string PublicKey { get; set; }
+		public string public_key;
     }
 	[Serializable]
     public class GetKeyAccountsResponse
     {
  
-		public List<string> AccountNames { get; set; }
+		public List<string> account_names;
     }
 	[Serializable]
     public class GetControlledAccountsRequest
     {
-		public string ControllingAccount { get; set; }
+		public string controlling_account;
     }
 	[Serializable]
     public class GetControlledAccountsResponse
     {
  
-		public List<string> ControlledAccounts { get; set; }
+		public List<string> controlled_accounts;
     }
 	#endregion
 }

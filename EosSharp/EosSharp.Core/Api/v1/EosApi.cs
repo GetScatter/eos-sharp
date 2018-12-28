@@ -95,12 +95,12 @@ namespace EosSharp.Core.Api.v1
 		public async Task<GetCurrencyBalanceResponse> GetCurrencyBalance(GetCurrencyBalanceRequest data)
         {
             var url = string.Format("{0}/v1/chain/get_currency_balance", Config.HttpEndpoint);
-			return new GetCurrencyBalanceResponse() { Assets = await HttpHelper.PostJsonAsync<List<string>>(url, data) };
+			return new GetCurrencyBalanceResponse() { assets = await HttpHelper.PostJsonAsync<List<string>>(url, data) };
         }
 		public async Task<GetCurrencyStatsResponse> GetCurrencyStats(GetCurrencyStatsRequest data)
         {
             var url = string.Format("{0}/v1/chain/get_currency_stats", Config.HttpEndpoint);
-			return new GetCurrencyStatsResponse() { Stats = await HttpHelper.PostJsonAsync<Dictionary<string, CurrencyStat>>(url, data) };
+			return new GetCurrencyStatsResponse() { stats = await HttpHelper.PostJsonAsync<Dictionary<string, CurrencyStat>>(url, data) };
         }
 		public async Task<GetProducersResponse> GetProducers(GetProducersRequest data)
         {

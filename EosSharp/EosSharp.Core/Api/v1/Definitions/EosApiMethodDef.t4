@@ -11,11 +11,11 @@
 			{
 				new Field() { Name = "server_version",              Type = "string" },
 				new Field() { Name = "chain_id",                    Type = "string" },
-				new Field() { Name = "head_block_num",              Type = "UInt32?" },
-				new Field() { Name = "last_irreversible_block_num", Type = "UInt32?" },
+				new Field() { Name = "head_block_num",              Type = "UInt32" },
+				new Field() { Name = "last_irreversible_block_num", Type = "UInt32" },
 				new Field() { Name = "last_irreversible_block_id",  Type = "string" },
 				new Field() { Name = "head_block_id",               Type = "string" },
-				new Field() { Name = "head_block_time",             Type = "DateTime?" },
+				new Field() { Name = "head_block_time",             Type = "DateTime" },
 				new Field() { Name = "head_block_producer",         Type = "string" },
 				new Field() { Name = "virtual_block_cpu_limit",     Type = "string" },
 				new Field() { Name = "virtual_block_net_limit",     Type = "string" },
@@ -34,17 +34,17 @@
 			},
 			Response = new Field[] {
 				new Field() { Name = "account_name",   Type = "string" },
-				new Field() { Name = "head_block_num", Type = "UInt32?" },
-				new Field() { Name = "head_block_time", Type = "DateTime?" },
-				new Field() { Name = "privileged", Type = "bool?" },
-				new Field() { Name = "last_code_update", Type = "DateTime?" },
-				new Field() { Name = "created", Type = "DateTime?" },
-				new Field() { Name = "ram_quota", Type = "Int64?" },
-				new Field() { Name = "net_weight", Type = "Int64?" },
-				new Field() { Name = "cpu_weight", Type = "Int64?" },
+				new Field() { Name = "head_block_num", Type = "UInt32" },
+				new Field() { Name = "head_block_time", Type = "DateTime" },
+				new Field() { Name = "privileged", Type = "bool" },
+				new Field() { Name = "last_code_update", Type = "DateTime" },
+				new Field() { Name = "created", Type = "DateTime" },
+				new Field() { Name = "ram_quota", Type = "Int64" },
+				new Field() { Name = "net_weight", Type = "Int64" },
+				new Field() { Name = "cpu_weight", Type = "Int64" },
 				new Field() { Name = "net_limit", Type = "Resource" },
 				new Field() { Name = "cpu_limit", Type = "Resource" }, 
-				new Field() { Name = "ram_usage", Type = "UInt64?" },
+				new Field() { Name = "ram_usage", Type = "UInt64" },
 				new Field() { Name = "permissions", Type = "List<Permission>" },
 				new Field() { Name = "refund_request", Type = "RefundRequest" },
 				new Field() { Name = "self_delegated_bandwidth", Type = "SelfDelegatedBandwidth" },
@@ -61,7 +61,7 @@
 			Request = new Field[] 
 			{
 				new Field() { Name = "account_name", Type = "string" },
-				new Field() { Name = "code_as_wasm", Type = "bool?" }
+				new Field() { Name = "code_as_wasm", Type = "bool" }
 			},
 			Response = new Field[] 
 			{
@@ -183,7 +183,7 @@
 			},
 			Response = new Field[] 
 			{
-				new Field() { Name = "timestamp", Type = "DateTime?" },
+				new Field() { Name = "timestamp", Type = "DateTime" },
 				new Field() { Name = "producer", Type = "string" },
 				new Field() { Name = "confirmed", Type = "UInt32" },
 				new Field() { Name = "previous", Type = "string" },
@@ -219,29 +219,29 @@
 			ResponseGenericTypes = "<TRowType>",
 			Request = new Field[] 
 			{
-				new Field() { Name = "json", Type = "bool?", Default = "false" },
+				new Field() { Name = "json", Type = "bool", Default = "false" },
 				new Field() { Name = "code", Type = "string" },
 				new Field() { Name = "scope", Type = "string" },
 				new Field() { Name = "table", Type = "string" },
 				new Field() { Name = "table_key", Type = "string" },
 				new Field() { Name = "lower_bound", Type = "string", Default = "0" },
 				new Field() { Name = "upper_bound", Type = "string", Default = "-1" },
-				new Field() { Name = "limit", Type = "Int32?", Default = "10" },
+				new Field() { Name = "limit", Type = "Int32", Default = "10" },
 				new Field() { Name = "key_type", Type = "string" },
 				new Field() { Name = "index_position", Type = "string" },
 				new Field() { Name = "encode_type", Type = "string", Default = "dec" },
-				new Field() { Name = "reverse", Type = "bool?" },
-				new Field() { Name = "show_payer", Type = "bool?" }
+				new Field() { Name = "reverse", Type = "bool" },
+				new Field() { Name = "show_payer", Type = "bool" }
 			},
 			Response = new Field[] 
 			{
 				new Field() { Name = "rows", Type = "List<object>"},
-				new Field() { Name = "more", Type = "bool?" }
+				new Field() { Name = "more", Type = "bool" }
 			},
 			GenericResponse = new Field[] 
 			{
 				new Field() { Name = "rows", Type = "List<TRowType>"},
-				new Field() { Name = "more", Type = "bool?" }
+				new Field() { Name = "more", Type = "bool" }
 			}
 		},
 
@@ -255,8 +255,8 @@
 				new Field() { Name = "table", Type = "string", Default = "" },
 				new Field() { Name = "lower_bound", Type = "string" },
 				new Field() { Name = "upper_bound", Type = "string" },
-				new Field() { Name = "limit", Type = "Int32?", Default = "10" },
-				new Field() { Name = "reverse", Type = "bool?" }
+				new Field() { Name = "limit", Type = "Int32", Default = "10" },
+				new Field() { Name = "reverse", Type = "bool" }
 			},
 			Response = new Field[] 
 			{
@@ -306,15 +306,15 @@
 			Name = "get_producers",
 			Request = new Field[] 
 			{
-				new Field() { Name = "json", Type = "bool?", Default = "false" },
+				new Field() { Name = "json", Type = "bool", Default = "false" },
 				new Field() { Name = "lower_bound", Type = "string" },
-				new Field() { Name = "limit", Type = "Int32?", Default = "50" }
+				new Field() { Name = "limit", Type = "Int32", Default = "50" }
 
 			},
 			Response = new Field[] 
 			{
 				new Field() { Name = "rows", Type = "List<object>" },
-				new Field() { Name = "total_producer_vote_weight", Type = "double?" },
+				new Field() { Name = "total_producer_vote_weight", Type = "double" },
 				new Field() { Name = "more", Type = "string" }
 			}
 		},
@@ -337,9 +337,9 @@
 			Name = "get_scheduled_transactions",
 			Request = new Field[] 
 			{
-				new Field() { Name = "json", Type = "bool?", Default = "false" },
+				new Field() { Name = "json", Type = "bool", Default = "false" },
 				new Field() { Name = "lower_bound", Type = "string" },
-				new Field() { Name = "limit", Type = "Int32?", Default = "50" }
+				new Field() { Name = "limit", Type = "Int32", Default = "50" }
 
 			},
 			Response = new Field[] 
@@ -356,7 +356,7 @@
 			Request = new Field[] 
 			{
 				new Field() { Name = "signatures", Type = "string[]" },
-				new Field() { Name = "compression", Type = "UInt32?" },
+				new Field() { Name = "compression", Type = "UInt32" },
 				new Field() { Name = "packed_context_free_data", Type = "string" },
 				new Field() { Name = "packed_trx", Type = "string" },
 				new Field() { Name = "transaction", Type = "Transaction" }
@@ -376,14 +376,14 @@
 			Request = new Field[] 
 			{
 				new Field() { Name = "account_name", Type = "string" },
-				new Field() { Name = "pos", Type = "Int32?" },
-				new Field() { Name = "offset", Type = "Int32?" },
+				new Field() { Name = "pos", Type = "Int32" },
+				new Field() { Name = "offset", Type = "Int32" },
 			},
 			Response = new Field[]
 			{
 				new Field() { Name = "actions", Type = "List<GlobalAction>" },
-				new Field() { Name = "last_irreversible_block", Type = "UInt32?" },
-				new Field() { Name = "time_limit_exceeded_error", Type = "bool?" },
+				new Field() { Name = "last_irreversible_block", Type = "UInt32" },
+				new Field() { Name = "time_limit_exceeded_error", Type = "bool" },
 			}
 		},
 
@@ -400,9 +400,9 @@
 			{
 				new Field() { Name = "id", Type = "string" },
 				new Field() { Name = "trx", Type = "DetailedTransaction" },
-				new Field() { Name = "block_time", Type = "DateTime?" },
-				new Field() { Name = "block_num", Type = "UInt32?" },
-				new Field() { Name = "last_irreversible_block", Type = "UInt32?" },
+				new Field() { Name = "block_time", Type = "DateTime" },
+				new Field() { Name = "block_num", Type = "UInt32" },
+				new Field() { Name = "last_irreversible_block", Type = "UInt32" },
 				new Field() { Name = "traces", Type = "List<ActionTrace>" }
 			}
 		},

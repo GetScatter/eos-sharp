@@ -112,29 +112,29 @@ namespace EosSharp.Core.Providers
             using (MemoryStream ms = new MemoryStream())
             {
                 //trx headers
-                WriteUint32(ms, SerializationHelper.DateToTimePointSec(trx.Expiration));
-                WriteUint16(ms, trx.RefBlockNum);
-                WriteUint32(ms, trx.RefBlockPrefix);
+                WriteUint32(ms, SerializationHelper.DateToTimePointSec(trx.expiration));
+                WriteUint16(ms, trx.ref_block_num);
+                WriteUint32(ms, trx.ref_block_prefix);
 
                 //trx info
-                WriteVarUint32(ms, trx.MaxNetUsageWords);
-                WriteByte(ms, trx.MaxCpuUsageMs);
-                WriteVarUint32(ms, trx.DelaySec);
+                WriteVarUint32(ms, trx.max_net_usage_words);
+                WriteByte(ms, trx.max_cpu_usage_ms);
+                WriteVarUint32(ms, trx.delay_sec);
 
-                WriteVarUint32(ms, (UInt32)trx.ContextFreeActions.Count);
-                foreach (var action in trx.ContextFreeActions)
+                WriteVarUint32(ms, (UInt32)trx.context_free_actions.Count);
+                foreach (var action in trx.context_free_actions)
                 {
                     WriteAction(ms, action, abiResponses[actionIndex++]);
                 }
 
-                WriteVarUint32(ms, (UInt32)trx.Actions.Count);
-                foreach (var action in trx.Actions)
+                WriteVarUint32(ms, (UInt32)trx.actions.Count);
+                foreach (var action in trx.actions)
                 {
                     WriteAction(ms, action, abiResponses[actionIndex++]);
                 }
 
-                WriteVarUint32(ms, (UInt32)trx.TransactionExtensions.Count);
-                foreach (var extension in trx.TransactionExtensions)
+                WriteVarUint32(ms, (UInt32)trx.transaction_extensions.Count);
+                foreach (var extension in trx.transaction_extensions)
                 {
                     WriteExtension(ms, extension);
                 }
@@ -149,34 +149,34 @@ namespace EosSharp.Core.Providers
             int readIndex = 0;
             var trx = new Transaction()
             {
-                Expiration = (DateTime)ReadTimePointSec(data, ref readIndex),
-                RefBlockNum = (UInt16)ReadUint16(data, ref readIndex),
-                RefBlockPrefix = (UInt32)ReadUint32(data, ref readIndex),
-                MaxNetUsageWords = (UInt32)ReadVarUint32(data, ref readIndex),
-                MaxCpuUsageMs = (byte)ReadByte(data, ref readIndex),
-                DelaySec = (UInt32)ReadVarUint32(data, ref readIndex),
+                expiration = (DateTime)ReadTimePointSec(data, ref readIndex),
+                ref_block_num = (UInt16)ReadUint16(data, ref readIndex),
+                ref_block_prefix = (UInt32)ReadUint32(data, ref readIndex),
+                max_net_usage_words = (UInt32)ReadVarUint32(data, ref readIndex),
+                max_cpu_usage_ms = (byte)ReadByte(data, ref readIndex),
+                delay_sec = (UInt32)ReadVarUint32(data, ref readIndex),
             };
 
             var contextFreeActionsSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
-            trx.ContextFreeActions = new List<Core.Api.v1.Action>(contextFreeActionsSize);
+            trx.context_free_actions = new List<Core.Api.v1.Action>(contextFreeActionsSize);
 
             for (int i = 0; i < contextFreeActionsSize; i++)
             {
                 var action = (Core.Api.v1.Action)ReadActionHeader(data, ref readIndex);
-                Abi abi = await GetAbi(action.Account);
+                Abi abi = await GetAbi(action.account);
 
-                trx.ContextFreeActions.Add((Core.Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
+                trx.context_free_actions.Add((Core.Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
 
             var actionsSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
-            trx.Actions = new List<Core.Api.v1.Action>(actionsSize);
+            trx.actions = new List<Core.Api.v1.Action>(actionsSize);
 
             for (int i = 0; i < actionsSize; i++)
             {
                 var action = (Core.Api.v1.Action)ReadActionHeader(data, ref readIndex);
-                Abi abi = await GetAbi(action.Account);
+                Abi abi = await GetAbi(action.account);
 
-                trx.Actions.Add((Core.Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
+                trx.actions.Add((Core.Api.v1.Action)ReadAction(data, ref readIndex, action, abi));
             }
 
             return trx;
@@ -189,14 +189,14 @@ namespace EosSharp.Core.Providers
 
             return new Abi()
             {
-                Version = (string)ReadString(data, ref readIndex),
-                Types = ReadType<List<AbiType>>(data, ref readIndex),
-                Structs = ReadType<List<AbiStruct>>(data, ref readIndex),
-                Actions = ReadType<List<AbiAction>>(data, ref readIndex),
-                Tables = ReadType<List<AbiTable>>(data, ref readIndex),
-                RicardianClauses = ReadType<List<AbiRicardianClause>>(data, ref readIndex),
-                ErrorMessages = ReadType<List<string>>(data, ref readIndex),
-                AbiExtensions = ReadType<List<Extension>>(data, ref readIndex)
+                version = (string)ReadString(data, ref readIndex),
+                types = ReadType<List<AbiType>>(data, ref readIndex),
+                structs = ReadType<List<AbiStruct>>(data, ref readIndex),
+                actions = ReadType<List<AbiAction>>(data, ref readIndex),
+                tables = ReadType<List<AbiTable>>(data, ref readIndex),
+                ricardian_clauses = ReadType<List<AbiRicardianClause>>(data, ref readIndex),
+                error_messages = ReadType<List<string>>(data, ref readIndex),
+                abi_extensions = ReadType<List<Extension>>(data, ref readIndex)
             };
         }
 
@@ -204,9 +204,9 @@ namespace EosSharp.Core.Providers
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
-                var abiStruct = abi.Structs.First(s => s.Name == abiAction.Type);
-                WriteAbiStruct(ms, action.Data, abiStruct, abi);
+                var abiAction = abi.actions.First(aa => aa.name == action.name);
+                var abiStruct = abi.structs.First(s => s.name == abiAction.type);
+                WriteAbiStruct(ms, action.data, abiStruct, abi);
 
                 return ms.ToArray();
             }
@@ -220,7 +220,7 @@ namespace EosSharp.Core.Providers
         public TStructData DeserializeStructData<TStructData>(string structType, string dataHex, Abi abi)
         {
             var data = SerializationHelper.HexStringToByteArray(dataHex);
-            var abiStruct = abi.Structs.First(s => s.Name == structType);
+            var abiStruct = abi.structs.First(s => s.name == structType);
             int readIndex = 0;
             return ReadAbiStruct<TStructData>(data, ref readIndex, abiStruct, abi);
         }
@@ -229,14 +229,14 @@ namespace EosSharp.Core.Providers
         {
             var abiTasks = new List<Task<Abi>>();
 
-            foreach (var action in trx.ContextFreeActions)
+            foreach (var action in trx.context_free_actions)
             {
-                abiTasks.Add(GetAbi(action.Account));
+                abiTasks.Add(GetAbi(action.account));
             }
 
-            foreach (var action in trx.Actions)
+            foreach (var action in trx.actions)
             {
-                abiTasks.Add(GetAbi(action.Account));
+                abiTasks.Add(GetAbi(action.account));
             }
 
             return Task.WhenAll(abiTasks);
@@ -246,10 +246,10 @@ namespace EosSharp.Core.Providers
         {
             var result = await Api.GetRawAbi(new GetRawAbiRequest()
             {
-                AccountName = accountName
+                account_name = accountName
             });
 
-            return DeserializePackedAbi(result.Abi);
+            return DeserializePackedAbi(result.abi);
         }
 
         public T DeserializeType<T>(string dataHex)
@@ -433,7 +433,7 @@ namespace EosSharp.Core.Providers
 
             var decimalBytes = SerializationHelper.SignedDecimalToBinary(8, amount);
             ms.Write(decimalBytes, 0, decimalBytes.Length);
-            WriteSymbol(ms, new Symbol() { Name = name, Precision = precision });
+            WriteSymbol(ms, new Symbol() { name = name, precision = precision });
         }
 
         private static void WriteTimePoint(MemoryStream ms, object value)
@@ -461,7 +461,7 @@ namespace EosSharp.Core.Providers
             if (!m.Success)
                 throw new Exception("Invalid symbol.");
 
-            WriteSymbol(ms, new Symbol() { Name = m.Groups[2].ToString(), Precision = byte.Parse(m.Groups[1].ToString()) });
+            WriteSymbol(ms, new Symbol() { name = m.Groups[2].ToString(), precision = byte.Parse(m.Groups[1].ToString()) });
         }
 
         private static void WriteSymbolCode(MemoryStream ms, object value)
@@ -547,25 +547,25 @@ namespace EosSharp.Core.Providers
         private static void WriteExtendedAsset(MemoryStream ms, object value)
         {
             var extAsset = (ExtendedAsset)value;
-            WriteAsset(ms, extAsset.Quantity);
-            WriteName(ms, extAsset.Contract);
+            WriteAsset(ms, extAsset.quantity);
+            WriteName(ms, extAsset.contract);
         }
 
         private static void WriteSymbol(MemoryStream ms, object value)
         {
             var symbol = (Symbol)value;
 
-            WriteByte(ms, symbol.Precision);
+            WriteByte(ms, symbol.precision);
 
-            if (symbol.Name.Length > 7)
-                ms.Write(Encoding.UTF8.GetBytes(symbol.Name.Substring(0, 7)), 0, 7);
+            if (symbol.name.Length > 7)
+                ms.Write(Encoding.UTF8.GetBytes(symbol.name.Substring(0, 7)), 0, 7);
             else
             {
-                ms.Write(Encoding.UTF8.GetBytes(symbol.Name), 0, symbol.Name.Length);
+                ms.Write(Encoding.UTF8.GetBytes(symbol.name), 0, symbol.name.Length);
 
-                if (symbol.Name.Length < 7)
+                if (symbol.name.Length < 7)
                 {
-                    var fill = new byte[7 - symbol.Name.Length];
+                    var fill = new byte[7 - symbol.name.Length];
                     for (int i = 0; i < fill.Length; i++)
                         fill[i] = 0;
                     ms.Write(fill, 0, fill.Length);
@@ -575,26 +575,26 @@ namespace EosSharp.Core.Providers
 
         private static void WriteExtension(MemoryStream ms, Core.Api.v1.Extension extension)
         {
-            if (extension.Data == null)
+            if (extension.data == null)
                 return;
 
-            WriteUint16(ms, extension.Type);
-            WriteBytes(ms, extension.Data);
+            WriteUint16(ms, extension.type);
+            WriteBytes(ms, extension.data);
         }
 
         private static void WritePermissionLevel(MemoryStream ms, PermissionLevel perm)
         {
-            WriteName(ms, perm.Actor);
-            WriteName(ms, perm.Permission);
+            WriteName(ms, perm.actor);
+            WriteName(ms, perm.permission);
         }
 
         private void WriteAction(MemoryStream ms, Core.Api.v1.Action action, Abi abi)
         {
-            WriteName(ms, action.Account);
-            WriteName(ms, action.Name);
+            WriteName(ms, action.account);
+            WriteName(ms, action.name);
 
-            WriteVarUint32(ms, (UInt32)action.Authorization.Count);
-            foreach (var perm in action.Authorization)
+            WriteVarUint32(ms, (UInt32)action.authorization.Count);
+            foreach (var perm in action.authorization)
             {
                 WritePermissionLevel(ms, perm);
             }
@@ -641,7 +641,7 @@ namespace EosSharp.Core.Providers
             }
             else
             {
-                var abiStruct = abi.Structs.FirstOrDefault(s => s.Name == type);
+                var abiStruct = abi.structs.FirstOrDefault(s => s.name == type);
                 if (abiStruct != null)
                 {
                     WriteAbiStruct(ms, value, abiStruct, abi);
@@ -658,35 +658,35 @@ namespace EosSharp.Core.Providers
             if (value == null)
                 return;
 
-            if(!string.IsNullOrWhiteSpace(abiStruct.Base))
+            if(!string.IsNullOrWhiteSpace(abiStruct.@base))
             {
-                WriteAbiType(ms, value, abiStruct.Base, abi);
+                WriteAbiType(ms, value, abiStruct.@base, abi);
             }
 
             if(value is System.Collections.IDictionary)
             {
                 var valueDict = value as System.Collections.IDictionary;
-                foreach (var field in abiStruct.Fields)
+                foreach (var field in abiStruct.fields)
                 {
-                    var fieldName = FindObjectFieldName(field.Name, valueDict);
+                    var fieldName = FindObjectFieldName(field.name, valueDict);
 
                     if (string.IsNullOrWhiteSpace(fieldName))
-                        throw new Exception("Missing " + abiStruct.Name + "." + field.Name + " (type=" + field.Type + ")");
+                        throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
 
-                    WriteAbiType(ms, valueDict[fieldName], field.Type, abi);
+                    WriteAbiType(ms, valueDict[fieldName], field.type, abi);
                 }
             }
             else
             {
                 var valueType = value.GetType();
-                foreach (var field in abiStruct.Fields)
+                foreach (var field in abiStruct.fields)
                 {
-                    var fieldName = FindObjectFieldName(field.Name, value.GetType());
+                    var fieldName = FindObjectFieldName(field.name, value.GetType());
 
                     if (string.IsNullOrWhiteSpace(fieldName))
-                        throw new Exception("Missing " + abiStruct.Name + "." + field.Name + " (type=" + field.Type + ")");
+                        throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
 
-                    WriteAbiType(ms, valueType.GetProperty(fieldName).GetValue(value, null), field.Type, abi);
+                    WriteAbiType(ms, valueType.GetProperty(fieldName).GetValue(value, null), field.type, abi);
                 }
             }
         }
@@ -699,11 +699,11 @@ namespace EosSharp.Core.Providers
                 return nativeSerializer;
             }
 
-            var abiType = abi.Types.FirstOrDefault(t => t.NewTypeName == type);
+            var abiType = abi.types.FirstOrDefault(t => t.new_type_name == type);
 
             if(abiType != null)
             {
-                var serializer = GetTypeSerializerAndCache(abiType.Type, typeSerializers, abi);
+                var serializer = GetTypeSerializerAndCache(abiType.type, typeSerializers, abi);
 
                 if(serializer != null)
                 {
@@ -879,12 +879,12 @@ namespace EosSharp.Core.Providers
             readIndex += 8;
 
             var symbol = (Symbol)ReadSymbol(data, ref readIndex);
-            string s = SerializationHelper.SignedBinaryToDecimal(amount, symbol.Precision + 1);
+            string s = SerializationHelper.SignedBinaryToDecimal(amount, symbol.precision + 1);
 
-            if (symbol.Precision > 0)
-                s = s.Substring(0, s.Length - symbol.Precision) + '.' + s.Substring(s.Length - symbol.Precision);
+            if (symbol.precision > 0)
+                s = s.Substring(0, s.Length - symbol.precision) + '.' + s.Substring(s.Length - symbol.precision);
 
-            return s + ' ' + symbol.Name;
+            return s + ' ' + symbol.name;
         }
 
         private static object ReadTimePoint(byte[] data, ref Int32 readIndex)
@@ -909,7 +909,7 @@ namespace EosSharp.Core.Providers
         private static object ReadSymbolString(byte[] data, ref Int32 readIndex)
         {
             var value = (Symbol)ReadSymbol(data, ref readIndex);
-            return value.Precision + ',' + value.Name;
+            return value.precision + ',' + value.name;
         }
 
         private static object ReadSymbolCode(byte[] data, ref Int32 readIndex)
@@ -1013,8 +1013,8 @@ namespace EosSharp.Core.Providers
         {
             return new ExtendedAsset()
             {
-                Quantity = (string)ReadAsset(data, ref readIndex),
-                Contract = (string)ReadName(data, ref readIndex)
+                quantity = (string)ReadAsset(data, ref readIndex),
+                contract = (string)ReadName(data, ref readIndex)
             };
         }
 
@@ -1022,7 +1022,7 @@ namespace EosSharp.Core.Providers
         {
             var value = new Symbol
             {
-                Precision = (byte)ReadByte(data, ref readIndex)
+                precision = (byte)ReadByte(data, ref readIndex)
             };
 
             byte[] a = data.Skip(readIndex).Take(7).ToArray();
@@ -1034,7 +1034,7 @@ namespace EosSharp.Core.Providers
                 if (a[len] == 0)
                     break;
 
-            value.Name = string.Join("", a.Take(len).Select(b => (char)b));
+            value.name = string.Join("", a.Take(len).Select(b => (char)b));
 
             return value;
         }
@@ -1043,8 +1043,8 @@ namespace EosSharp.Core.Providers
         {
             var value = new PermissionLevel()
             {
-                Actor = (string)ReadName(data, ref readIndex),
-                Permission = (string)ReadName(data, ref readIndex),
+                actor = (string)ReadName(data, ref readIndex),
+                permission = (string)ReadName(data, ref readIndex),
             };
             return value;
         }
@@ -1053,8 +1053,8 @@ namespace EosSharp.Core.Providers
         {
             return new Core.Api.v1.Action()
             {
-                Account = (string)ReadName(data, ref readIndex),
-                Name = (string)ReadName(data, ref readIndex)
+                account = (string)ReadName(data, ref readIndex),
+                name = (string)ReadName(data, ref readIndex)
             };
         }
 
@@ -1065,20 +1065,20 @@ namespace EosSharp.Core.Providers
 
             var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
 
-            action.Authorization = new List<PermissionLevel>(size);
+            action.authorization = new List<PermissionLevel>(size);
             for (var i = 0; i < size ; i++)
             {
-                action.Authorization.Add((PermissionLevel)ReadPermissionLevel(data, ref readIndex));
+                action.authorization.Add((PermissionLevel)ReadPermissionLevel(data, ref readIndex));
             }
 
-            var abiAction = abi.Actions.First(aa => aa.Name == action.Name);
-            var abiStruct = abi.Structs.First(s => s.Name == abiAction.Type);
+            var abiAction = abi.actions.First(aa => aa.name == action.name);
+            var abiStruct = abi.structs.First(s => s.name == abiAction.type);
 
             var dataSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
 
-            action.Data = ReadAbiStruct(data, ref readIndex, abiStruct, abi);
+            action.data = ReadAbiStruct(data, ref readIndex, abiStruct, abi);
 
-            action.HexData = (string)ReadString(data, ref readIndex);
+            action.hex_data = (string)ReadString(data, ref readIndex);
 
             return action;
         }
@@ -1121,7 +1121,7 @@ namespace EosSharp.Core.Providers
             }
             else
             {
-                var abiStruct = abi.Structs.FirstOrDefault(s => s.Name == type);
+                var abiStruct = abi.structs.FirstOrDefault(s => s.name == type);
                 if (abiStruct != null)
                 {
                     value = ReadAbiStruct(data, ref readIndex, abiStruct, abi);
@@ -1144,9 +1144,9 @@ namespace EosSharp.Core.Providers
         {
             object value = default(T);
 
-            if (!string.IsNullOrWhiteSpace(abiStruct.Base))
+            if (!string.IsNullOrWhiteSpace(abiStruct.@base))
             {
-                value = (T)ReadAbiType(data, ref readIndex, abiStruct.Base, abi);
+                value = (T)ReadAbiType(data, ref readIndex, abiStruct.@base, abi);
             }
             else if(typeof(T) == typeof(object))
             {
@@ -1158,19 +1158,19 @@ namespace EosSharp.Core.Providers
             }
 
             var valueType = value.GetType();
-            foreach (var field in abiStruct.Fields)
+            foreach (var field in abiStruct.fields)
             {
-                var abiValue = ReadAbiType(data, ref readIndex, field.Type, abi);
-                var fieldName = FindObjectFieldName(field.Name, value.GetType());
+                var abiValue = ReadAbiType(data, ref readIndex, field.type, abi);
+                var fieldName = FindObjectFieldName(field.name, value.GetType());
 
                 if(string.IsNullOrWhiteSpace(fieldName))
                 {
                     if (valueType == typeof(ExpandoObject))
                     {
-                        (value as IDictionary<string, Object>).Add(field.Name, abiValue);
+                        (value as IDictionary<string, Object>).Add(field.name, abiValue);
                     }                    
                     else if (typeof(T) == typeof(object))
-                        valueType.GetProperty(field.Name).SetValue(value, abiValue);
+                        valueType.GetProperty(field.name).SetValue(value, abiValue);
 
                     continue;
                 }
@@ -1209,29 +1209,29 @@ namespace EosSharp.Core.Providers
 
             var value = Activator.CreateInstance(objectType);
 
-            foreach (var member in objectType.GetProperties())
+            foreach (var member in objectType.GetFields())
             {
-                if(IsCollection(member.PropertyType))
+                if(IsCollection(member.FieldType))
                 {
-                    objectType.GetProperty(member.Name).SetValue(value, ReadCollectionType(data, member.PropertyType, ref readIndex));
+                    objectType.GetField(member.Name).SetValue(value, ReadCollectionType(data, member.FieldType, ref readIndex));
                 }
-                else if(IsOptional(member.PropertyType))
+                else if(IsOptional(member.FieldType))
                 {
                     var opt = (byte)ReadByte(data, ref readIndex);
                     if (opt == 1)
                     {
-                        var optionalType = GetFirstGenericType(member.PropertyType);
-                        objectType.GetProperty(member.Name).SetValue(value, ReadType(data, optionalType, ref readIndex));
+                        var optionalType = GetFirstGenericType(member.FieldType);
+                        objectType.GetField(member.Name).SetValue(value, ReadType(data, optionalType, ref readIndex));
                     }
                 }
-                else if (IsPrimitive(member.PropertyType))
+                else if (IsPrimitive(member.FieldType))
                 {
-                    var readerName = GetNormalizedReaderName(member.PropertyType, member.GetCustomAttributes());
-                    objectType.GetProperty(member.Name).SetValue(value, TypeReaders[readerName](data, ref readIndex));
+                    var readerName = GetNormalizedReaderName(member.FieldType, member.GetCustomAttributes());
+                    objectType.GetField(member.Name).SetValue(value, TypeReaders[readerName](data, ref readIndex));
                 }
                 else
                 {
-                    objectType.GetProperty(member.Name).SetValue(value, ReadType(data, member.PropertyType, ref readIndex));
+                    objectType.GetField(member.Name).SetValue(value, ReadType(data, member.FieldType, ref readIndex));
                 }
             }
 

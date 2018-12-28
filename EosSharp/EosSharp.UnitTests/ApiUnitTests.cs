@@ -57,7 +57,7 @@ namespace EosSharp.UnitTests
             try
             {
                 var result = await DefaultApi.GetAccount(new GetAccountRequest() {
-                    AccountName = "eosio"
+                    account_name = "eosio"
                 });
                 success = true;
             }
@@ -78,8 +78,8 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetCode(new GetCodeRequest()
                 {
-                    AccountName = "eosio.token",
-                    CodeAsWasm = true
+                    account_name = "eosio.token",
+                    code_as_wasm = true
                 });
                 success = true;
             }
@@ -99,7 +99,7 @@ namespace EosSharp.UnitTests
             try
             {
                 var result = await DefaultApi.GetAbi(new GetAbiRequest() {
-                    AccountName = "eosio.token"
+                    account_name = "eosio.token"
                 });
                 success = true;
             }
@@ -118,11 +118,11 @@ namespace EosSharp.UnitTests
             try
             {
                 var result = await DefaultApi.GetRawCodeAndAbi(new GetRawCodeAndAbiRequest() {
-                    AccountName = "eosio.token"
+                    account_name = "eosio.token"
                 });
 
                 var abiSerializer = new AbiSerializationProvider(DefaultApi);
-                var abiObject = abiSerializer.DeserializePackedAbi(result.Abi);
+                var abiObject = abiSerializer.DeserializePackedAbi(result.abi);
 
                 success = true;
             }
@@ -143,11 +143,11 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetRawAbi(new GetRawAbiRequest()
                 {
-                    AccountName = "eosio.token"
+                    account_name = "eosio.token"
                 });
 
                 var abiSerializer = new AbiSerializationProvider(DefaultApi);
-                var abiObject = abiSerializer.DeserializePackedAbi(result.Abi);
+                var abiObject = abiSerializer.DeserializePackedAbi(result.abi);
 
                 success = true;
             }
@@ -167,9 +167,9 @@ namespace EosSharp.UnitTests
             try
             {
                 var result = await DefaultApi.AbiJsonToBin(new AbiJsonToBinRequest() {
-                    Code = "eosio.token",
-                    Action = "transfer",
-                    Args = new { from = "eosio", to = "eosio.names", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                    code = "eosio.token",
+                    action = "transfer",
+                    args = new { from = "eosio", to = "eosio.names", quantity = "1.0000 EOS", memo = "hello crypto world!" }
                 });
                 success = true;
             }
@@ -190,16 +190,16 @@ namespace EosSharp.UnitTests
             {
                 var binArgsResult = await DefaultApi.AbiJsonToBin(new AbiJsonToBinRequest()
                 {
-                    Code = "eosio.token",
-                    Action = "transfer",
-                    Args = new { from = "eosio", to = "eosio.names", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                    code = "eosio.token",
+                    action = "transfer",
+                    args = new { from = "eosio", to = "eosio.names", quantity = "1.0000 EOS", memo = "hello crypto world!" }
                 });
 
                 var result = await DefaultApi.AbiBinToJson(new AbiBinToJsonRequest()
                 {
-                    Code = "eosio.token",
-                    Action = "transfer",
-                    Binargs = binArgsResult.Binargs
+                    code = "eosio.token",
+                    action = "transfer",
+                    binargs = binArgsResult.binargs
                 });
                 success = true;
             }
@@ -221,55 +221,54 @@ namespace EosSharp.UnitTests
                 var getInfoResult = await DefaultApi.GetInfo();
                 var getBlockResult = await DefaultApi.GetBlock(new GetBlockRequest()
                 {
-                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
+                    block_num_or_id = getInfoResult.last_irreversible_block_num.ToString()
                 });
 
                 var trx = new Transaction()
                 {
                     //trx headers
-                    Expiration = getInfoResult.HeadBlockTime.GetValueOrDefault().AddSeconds(60), //expire Seconds
-                    RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault() & 0xFFFF),
-                    RefBlockPrefix = getBlockResult.RefBlockPrefix,
+                    expiration = getInfoResult.head_block_time.AddSeconds(60), //expire Seconds
+                    ref_block_num = (UInt16)(getInfoResult.last_irreversible_block_num & 0xFFFF),
+                    ref_block_prefix = getBlockResult.ref_block_prefix,
                     // trx info
-                    MaxNetUsageWords = 0,
-                    MaxCpuUsageMs = 0,
-                    DelaySec = 0,
-                    ContextFreeActions = new List<Core.Api.v1.Action>(),
-                    
-                    Actions = new List<Core.Api.v1.Action>()
+                    max_net_usage_words = 0,
+                    max_cpu_usage_ms = 0,
+                    delay_sec = 0,
+                    context_free_actions = new List<Core.Api.v1.Action>(),                    
+                    actions = new List<Core.Api.v1.Action>()
                     {
                         new Core.Api.v1.Action()
                         {
-                            Account = "eosio.token",
-                            Authorization = new List<PermissionLevel>()
+                            account = "eosio.token",
+                            authorization = new List<PermissionLevel>()
                             {
-                                new PermissionLevel() {Actor = "tester112345", Permission = "active" }
+                                new PermissionLevel() {actor = "tester112345", permission = "active" }
                             },
-                            Name = "transfer",
-                            Data = new { from = "tester112345", to = "tester212345", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                            name = "transfer",
+                            data = new { from = "tester112345", to = "tester212345", quantity = "1.0000 EOS", memo = "hello crypto world!" }
                         }
                     },
-                    TransactionExtensions = new List<Extension>()
+                    transaction_extensions = new List<Extension>()
                 };
 
                 int actionIndex = 0;
                 var abiSerializer = new AbiSerializationProvider(DefaultApi);
                 var abiResponses = await abiSerializer.GetTransactionAbis(trx);
 
-                foreach (var action in trx.ContextFreeActions)
+                foreach (var action in trx.context_free_actions)
                 {
-                    action.Data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
+                    action.data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
                 }
 
-                foreach (var action in trx.Actions)
+                foreach (var action in trx.actions)
                 {
-                    action.Data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
+                    action.data = SerializationHelper.ByteArrayToHexString(abiSerializer.SerializeActionData(action, abiResponses[actionIndex++]));
                 }
 
                 var getRequiredResult = await DefaultApi.GetRequiredKeys(new GetRequiredKeysRequest()
                 {
-                    AvailableKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" },
-                    Transaction = trx
+                    available_keys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" },
+                    transaction = trx
                 });
                 success = true;
             }
@@ -291,7 +290,7 @@ namespace EosSharp.UnitTests
                 var getInfoResult = await DefaultApi.GetInfo();
                 var getBlockResult = await DefaultApi.GetBlock(new GetBlockRequest()
                 {
-                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
+                    block_num_or_id = getInfoResult.last_irreversible_block_num.ToString()
                 });
 
                 success = true;
@@ -301,7 +300,7 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-        Assert.IsTrue(success);
+            Assert.IsTrue(success);
         }
 
         [TestMethod]
@@ -314,7 +313,7 @@ namespace EosSharp.UnitTests
                 var getInfoResult = await DefaultApi.GetInfo();
                 var result = await DefaultApi.GetBlockHeaderState(new GetBlockHeaderStateRequest()
                 {
-                    BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
+                    block_num_or_id = getInfoResult.last_irreversible_block_num.ToString()
                 });
                 success = true;
             }
@@ -334,10 +333,10 @@ namespace EosSharp.UnitTests
             try
             {
                 var result = await DefaultApi.GetTableRows(new GetTableRowsRequest() {
-                    Json = true,
-                    Code = "eosio",
-                    Scope = "eosio",
-                    Table = "producers"
+                    json = true,
+                    code = "eosio",
+                    scope = "eosio",
+                    table = "producers"
                 });
                 success = true;
             }
@@ -358,8 +357,8 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetTableByScope(new GetTableByScopeRequest()
                 {
-                    Code = "eosio.token",
-                    Table = "accounts"
+                    code = "eosio.token",
+                    table = "accounts"
                 });
                 success = true;
             }
@@ -380,9 +379,9 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetCurrencyBalance(new GetCurrencyBalanceRequest()
                 {
-                     Code = "eosio.token",
-                     Account = "tester112345",
-                     Symbol = "EOS"
+                     code = "eosio.token",
+                     account = "tester112345",
+                     symbol = "EOS"
                 });
                 success = true;
             }
@@ -403,8 +402,8 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetCurrencyStats(new GetCurrencyStatsRequest()
                 {
-                    Code = "eosio.token",
-                    Symbol = "EOS"
+                    code = "eosio.token",
+                    symbol = "EOS"
                 });
                 success = true;
             }
@@ -425,7 +424,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetProducers(new GetProducersRequest()
                 {
-                    Json = false,                    
+                    json = false,                    
                 });
                 success = true;
             }
@@ -463,7 +462,7 @@ namespace EosSharp.UnitTests
             try
             {
                 var result = await DefaultApi.GetScheduledTransactions(new GetScheduledTransactionsRequest() {
-                    Json = true
+                    json = true
                 });
                 success = true;
             }
@@ -502,7 +501,7 @@ namespace EosSharp.UnitTests
             try
             {
                 var result = await DefaultApi.GetActions(new GetActionsRequest() {
-                    AccountName = "eosio"
+                    account_name = "eosio"
                 });
                 success = true;
             }
@@ -525,7 +524,7 @@ namespace EosSharp.UnitTests
 
                 var result = await DefaultApi.GetTransaction(new GetTransactionRequest()
                 {
-                    Id = trxResult.TransactionId
+                    id = trxResult.transaction_id
                 });
                 success = true;
             }
@@ -546,7 +545,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetKeyAccounts(new GetKeyAccountsRequest()
                 {
-                    PublicKey = "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
+                    public_key = "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV"
                 });
                 success = true;
             }
@@ -567,7 +566,7 @@ namespace EosSharp.UnitTests
             {
                 var result = await DefaultApi.GetControlledAccounts(new GetControlledAccountsRequest()
                 {
-                    ControllingAccount = "eosio"
+                    controlling_account = "eosio"
                 });
                 success = true;
             }
@@ -584,35 +583,35 @@ namespace EosSharp.UnitTests
             var getInfoResult = await DefaultApi.GetInfo();
             var getBlockResult = await DefaultApi.GetBlock(new GetBlockRequest()
             {
-                BlockNumOrId = getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault().ToString()
+                block_num_or_id = getInfoResult.last_irreversible_block_num.ToString()
             });
 
 
             var trx = new Transaction()
             {
                 //trx headers
-                Expiration = getInfoResult.HeadBlockTime.GetValueOrDefault().AddSeconds(60), //expire Seconds
-                RefBlockNum = (UInt16)(getInfoResult.LastIrreversibleBlockNum.GetValueOrDefault() & 0xFFFF),
-                RefBlockPrefix = getBlockResult.RefBlockPrefix,
+                expiration = getInfoResult.head_block_time.AddSeconds(60), //expire Seconds
+                ref_block_num = (UInt16)(getInfoResult.last_irreversible_block_num & 0xFFFF),
+                ref_block_prefix = getBlockResult.ref_block_prefix,
                 // trx info
-                MaxNetUsageWords = 0,
-                MaxCpuUsageMs = 0,
-                DelaySec = 0,
-                ContextFreeActions = new List<Core.Api.v1.Action>(),
-                TransactionExtensions = new List<Extension>(),
-                Actions = new List<Core.Api.v1.Action>()
+                max_net_usage_words = 0,
+                max_cpu_usage_ms = 0,
+                delay_sec = 0,
+                context_free_actions = new List<Core.Api.v1.Action>(),
+                transaction_extensions = new List<Extension>(),
+                actions = new List<Core.Api.v1.Action>()
+                {
+                    new Core.Api.v1.Action()
                     {
-                        new Core.Api.v1.Action()
+                        account = "eosio.token",
+                        authorization = new List<PermissionLevel>()
                         {
-                            Account = "eosio.token",
-                            Authorization = new List<PermissionLevel>()
-                            {
-                                new PermissionLevel() {Actor = "tester112345", Permission = "active" }
-                            },
-                            Name = "transfer",
-                            Data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
-                        }
+                            new PermissionLevel() {actor = "tester112345", permission = "active" }
+                        },
+                        name = "transfer",
+                        data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
                     }
+                }
             };
 
             var abiSerializer = new AbiSerializationProvider(DefaultApi);
@@ -622,10 +621,10 @@ namespace EosSharp.UnitTests
 
             return await DefaultApi.PushTransaction(new PushTransactionRequest()
             {
-                Signatures = signatures.ToArray(),
-                Compression = 0,
-                PackedContextFreeData = "",
-                PackedTrx = SerializationHelper.ByteArrayToHexString(packedTrx)
+                signatures = signatures.ToArray(),
+                compression = 0,
+                packed_context_free_data = "",
+                packed_trx = SerializationHelper.ByteArrayToHexString(packedTrx)
             });
         }
     }

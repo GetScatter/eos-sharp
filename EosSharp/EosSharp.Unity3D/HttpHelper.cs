@@ -3,7 +3,6 @@ using EosSharp.Core.Exceptions;
 using EosSharp.Core.Helpers;
 using EosSharp.Core.Interfaces;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,14 +18,6 @@ namespace EosSharp.Unity3D
     {
         private static readonly HttpClient client = new HttpClient();
         private static Dictionary<string, object> ResponseCache { get; set; } = new Dictionary<string, object>();
-        private static readonly DefaultContractResolver SnakeCaseContractResolver = new DefaultContractResolver()
-        {
-            NamingStrategy = new PascalToSnakeCaseNamingStrategy()
-        };
-        private static readonly JsonSerializerSettings defaultJsonSettings = new JsonSerializerSettings()
-        {
-            ContractResolver = SnakeCaseContractResolver
-        };
 
         public void ClearResponseCache()
         {
@@ -35,7 +26,7 @@ namespace EosSharp.Unity3D
 
         public async Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data)
         {
-            UnityWebRequest uwr = BuildUnityWebRequest(url, "POST", data);
+            UnityWebRequest uwr = BuildUnityWebRequest(url, UnityWebRequest.kHttpVerbPOST, data);
 
             await uwr.SendWebRequest();
 
@@ -48,10 +39,7 @@ namespace EosSharp.Unity3D
                 Console.WriteLine("Received: " + uwr.downloadHandler.text);
             }
 
-            using (var stream = new MemoryStream(uwr.downloadHandler.data))
-            {
-                return DeserializeJsonFromStream<TResponseData>(stream);
-            }
+            return JsonConvert.DeserializeObject<TResponseData>(uwr.downloadHandler.text);
         }
 
         public Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data, CancellationToken cancellationToken)
@@ -70,7 +58,7 @@ namespace EosSharp.Unity3D
                     return (TResponseData)value;
             }
 
-            UnityWebRequest uwr = BuildUnityWebRequest(url, "POST", data);
+            UnityWebRequest uwr = BuildUnityWebRequest(url, UnityWebRequest.kHttpVerbPOST, data);
 
             await uwr.SendWebRequest();
 
@@ -83,12 +71,7 @@ namespace EosSharp.Unity3D
                 Console.WriteLine("Received: " + uwr.downloadHandler.text);
             }
 
-            using (var stream = new MemoryStream(uwr.downloadHandler.data))
-            {
-                var responseData = DeserializeJsonFromStream<TResponseData>(stream);
-                UpdateResponseDataCache(hashKey, responseData);
-                return responseData;
-            }
+            return JsonConvert.DeserializeObject<TResponseData>(uwr.downloadHandler.text);
         }
 
         public Task<TResponseData> PostJsonWithCacheAsync<TResponseData>(string url, object data, CancellationToken cancellationToken, bool reload = false)
@@ -111,10 +94,7 @@ namespace EosSharp.Unity3D
                 Console.WriteLine("Received: " + uwr.downloadHandler.text);
             }
 
-            using (var stream = new MemoryStream(uwr.downloadHandler.data))
-            {
-                return DeserializeJsonFromStream<TResponseData>(stream);
-            }
+            return JsonConvert.DeserializeObject<TResponseData>(uwr.downloadHandler.text);
         }
 
         public Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken)
@@ -132,26 +112,6 @@ namespace EosSharp.Unity3D
         {
             var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             return await BuildSendResponse(response);
-        }
-
-        public TData DeserializeJsonFromStream<TData>(Stream stream)
-        {
-            if (stream == null || stream.CanRead == false)
-                return default(TData);
-
-            using (var sr = new StreamReader(stream))
-            using (var jtr = new JsonTextReader(sr))
-            {
-                return JsonSerializer.Create(defaultJsonSettings).Deserialize<TData>(jtr);
-            }
-        }
-
-        public HttpRequestMessage BuildJsonRequestMessage(string url, object data)
-        {
-            return new HttpRequestMessage(HttpMethod.Post, url)
-            {
-                Content = new StringContent(JsonConvert.SerializeObject(data, defaultJsonSettings), Encoding.UTF8, "application/json")
-            };
         }
 
         public void UpdateResponseDataCache<TResponseData>(string hashKey, TResponseData responseData)
@@ -188,7 +148,7 @@ namespace EosSharp.Unity3D
             ApiErrorException apiError = null;
             try
             {
-                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content, defaultJsonSettings);
+                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content);
             }
             catch(Exception)
             {
@@ -215,10 +175,12 @@ namespace EosSharp.Unity3D
 
         private static UnityWebRequest BuildUnityWebRequest(string url, string verb, object data)
         {
-            var uwr = new UnityWebRequest(url, verb);
-            byte[] jsonToSend = new UTF8Encoding().GetBytes(JsonConvert.SerializeObject(data, defaultJsonSettings));
-            uwr.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
-            uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+            var uwr = new UnityWebRequest(url, verb)
+            {
+                uploadHandler = (UploadHandler)new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data))),
+                downloadHandler = (DownloadHandler)new DownloadHandlerBuffer()
+            };
+
             uwr.SetRequestHeader("Content-Type", "application/json");
             return uwr;
         }

@@ -19,7 +19,7 @@ namespace EosSharp.Core.Api.v1
     {
 <#      foreach (var field in type.Fields) { #>
 		<#= !string.IsNullOrWhiteSpace(field.AbiFieldType) ? "[AbiFieldType(\""+ field.AbiFieldType +"\")]" : "" #>
-		public <#= field.Type #> <#= SnakeCaseToPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+		public <#= field.Type #> <#= EscapeKeyWords(field.Name) #><#= RenderFieldDefault(field)  #>
 <#      } #>
     }
 <# } #>
@@ -32,7 +32,7 @@ namespace EosSharp.Core.Api.v1
     public class <#= SnakeCaseToPascalCase(method.Name) #>Request
     {
 <#      foreach (var field in method.Request) { #>
-		public <#= field.Type #> <#= SnakeCaseToPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+		public <#= field.Type #> <#= EscapeKeyWords(field.Name) #><#= RenderFieldDefault(field)  #>
 <#      } #>
     }
 <#   } #>
@@ -41,7 +41,7 @@ namespace EosSharp.Core.Api.v1
     public class <#= SnakeCaseToPascalCase(method.Name) #>Response
     {
 <#      foreach (var field in method.Response) { #> 
-		public <#= field.Type #> <#= SnakeCaseToPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+		public <#= field.Type #> <#= EscapeKeyWords(field.Name) #><#= RenderFieldDefault(field)  #>
 <#      } #>
     }
 <#   } #>
@@ -50,7 +50,7 @@ namespace EosSharp.Core.Api.v1
     public class <#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>
     {
 <#      foreach (var field in method.GenericResponse) { #>   
-		public <#= field.Type #> <#= SnakeCaseToPascalCase(field.Name) #> { get; set; }<#= RenderFieldDefault(field)  #>
+		public <#= field.Type #> <#= EscapeKeyWords(field.Name) #><#= RenderFieldDefault(field)  #>
 <#      } #>
     }
 <#   } #>

@@ -16,8 +16,6 @@ namespace EosSharp.Core.Interfaces
         Task<TResponseData> GetJsonAsync<TResponseData>(string url, CancellationToken cancellationToken);
         Task<Stream> SendAsync(HttpRequestMessage request);
         Task<Stream> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken);
-        TData DeserializeJsonFromStream<TData>(Stream stream);
-        HttpRequestMessage BuildJsonRequestMessage(string url, object data);
         void UpdateResponseDataCache<TResponseData>(string hashKey, TResponseData responseData);
         string GetRequestHashKey(string url, object data);
         Task<Stream> BuildSendResponse(HttpResponseMessage response);
