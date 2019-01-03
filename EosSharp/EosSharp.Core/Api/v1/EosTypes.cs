@@ -502,27 +502,27 @@ namespace EosSharp.Core.Api.v1
  
 		public string account_name;
  
-		public UInt32? head_block_num;
+		public UInt32 head_block_num;
  
-		public DateTime? head_block_time;
+		public DateTime head_block_time;
  
-		public bool? privileged;
+		public bool privileged;
  
-		public DateTime? last_code_update;
+		public DateTime last_code_update;
  
-		public DateTime? created;
+		public DateTime created;
  
-		public Int64? ram_quota;
+		public Int64 ram_quota;
  
-		public Int64? net_weight;
+		public Int64 net_weight;
  
-		public Int64? cpu_weight;
+		public Int64 cpu_weight;
  
 		public Resource net_limit;
  
 		public Resource cpu_limit;
  
-		public UInt64? ram_usage;
+		public UInt64 ram_usage;
  
 		public List<Permission> permissions;
  
@@ -538,7 +538,7 @@ namespace EosSharp.Core.Api.v1
     public class GetCodeRequest
     {
 		public string account_name;
-		public bool? code_as_wasm;
+		public bool code_as_wasm;
     }
 	[Serializable]
     public class GetCodeResponse
@@ -647,7 +647,7 @@ namespace EosSharp.Core.Api.v1
     public class GetBlockResponse
     {
  
-		public DateTime? timestamp;
+		public DateTime timestamp;
  
 		public string producer;
  
@@ -689,19 +689,19 @@ namespace EosSharp.Core.Api.v1
 	[Serializable]
     public class GetTableRowsRequest
     {
-		public bool? json = false;
+		public bool json = false;
 		public string code;
 		public string scope;
 		public string table;
 		public string table_key;
 		public string lower_bound = "0";
 		public string upper_bound = "-1";
-		public Int32? limit = 10;
+		public Int32 limit = 10;
 		public string key_type;
 		public string index_position;
 		public string encode_type = "dec";
-		public bool? reverse;
-		public bool? show_payer;
+		public bool reverse;
+		public bool show_payer;
     }
 	[Serializable]
     public class GetTableRowsResponse
@@ -709,7 +709,7 @@ namespace EosSharp.Core.Api.v1
  
 		public List<object> rows;
  
-		public bool? more;
+		public bool more;
     }
 	[Serializable]
     public class GetTableRowsResponse<TRowType>
@@ -717,7 +717,7 @@ namespace EosSharp.Core.Api.v1
    
 		public List<TRowType> rows;
    
-		public bool? more;
+		public bool more;
     }
 	[Serializable]
     public class GetTableByScopeRequest
@@ -726,8 +726,8 @@ namespace EosSharp.Core.Api.v1
 		public string table;
 		public string lower_bound;
 		public string upper_bound;
-		public Int32? limit = 10;
-		public bool? reverse;
+		public Int32 limit = 10;
+		public bool reverse;
     }
 	[Serializable]
     public class GetTableByScopeResponse
@@ -765,9 +765,9 @@ namespace EosSharp.Core.Api.v1
 	[Serializable]
     public class GetProducersRequest
     {
-		public bool? json = false;
+		public bool json = false;
 		public string lower_bound;
-		public Int32? limit = 50;
+		public Int32 limit = 50;
     }
 	[Serializable]
     public class GetProducersResponse
@@ -775,7 +775,7 @@ namespace EosSharp.Core.Api.v1
  
 		public List<object> rows;
  
-		public double? total_producer_vote_weight;
+		public double total_producer_vote_weight;
  
 		public string more;
     }
@@ -792,9 +792,9 @@ namespace EosSharp.Core.Api.v1
 	[Serializable]
     public class GetScheduledTransactionsRequest
     {
-		public bool? json = false;
+		public bool json = false;
 		public string lower_bound;
-		public Int32? limit = 50;
+		public Int32 limit = 50;
     }
 	[Serializable]
     public class GetScheduledTransactionsResponse
@@ -808,7 +808,7 @@ namespace EosSharp.Core.Api.v1
     public class PushTransactionRequest
     {
 		public string[] signatures;
-		public UInt32? compression;
+		public UInt32 compression;
 		public string packed_context_free_data;
 		public string packed_trx;
 		public Transaction transaction;
@@ -825,8 +825,8 @@ namespace EosSharp.Core.Api.v1
     public class GetActionsRequest
     {
 		public string account_name;
-		public Int32? pos;
-		public Int32? offset;
+		public Int32 pos;
+		public Int32 offset;
     }
 	[Serializable]
     public class GetActionsResponse
@@ -834,9 +834,9 @@ namespace EosSharp.Core.Api.v1
  
 		public List<GlobalAction> actions;
  
-		public UInt32? last_irreversible_block;
+		public UInt32 last_irreversible_block;
  
-		public bool? time_limit_exceeded_error;
+		public bool time_limit_exceeded_error;
     }
 	[Serializable]
     public class GetTransactionRequest
@@ -852,11 +852,11 @@ namespace EosSharp.Core.Api.v1
  
 		public DetailedTransaction trx;
  
-		public DateTime? block_time;
+		public DateTime block_time;
  
-		public UInt32? block_num;
+		public UInt32 block_num;
  
-		public UInt32? last_irreversible_block;
+		public UInt32 last_irreversible_block;
  
 		public List<ActionTrace> traces;
     }

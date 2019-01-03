@@ -112,7 +112,7 @@
 			Name = "AbiAction",
 			Fields = new Field[]
             {
-				new Field() { Name = "name", Type = "string", AbiFieldType = "name" },
+				new Field() { Name = "name", Type = "string", AbiFieldType = "name" },				
 				new Field() { Name = "type", Type = "string" },
 				new Field() { Name = "ricardian_contract", Type = "string" }
             }

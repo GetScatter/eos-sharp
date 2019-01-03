@@ -165,7 +165,7 @@ namespace EosSharp.Core
         /// <returns>Rows and if is there More rows to be fetched</returns>
         public async Task<GetTableRowsResponse<TRowType>> GetTableRows<TRowType>(GetTableRowsRequest request)
         {
-            if (request.json.GetValueOrDefault())
+            if (request.json)
             {
                 return await Api.GetTableRows<TRowType>(request);
             }
@@ -208,7 +208,7 @@ namespace EosSharp.Core
         {
             var result = await Api.GetTableRows(request);
 
-            if (!request.json.GetValueOrDefault())
+            if (!request.json)
             {
                 var unpackedRows = new List<object>();
 
@@ -249,7 +249,7 @@ namespace EosSharp.Core
         {
             var result = await Api.GetProducers(request);
 
-            if (!request.json.GetValueOrDefault())
+            if (!request.json)
             {
                 var unpackedRows = new List<object>();
 
@@ -273,7 +273,7 @@ namespace EosSharp.Core
         {
             var result = await Api.GetScheduledTransactions(request);
 
-            if (!request.json.GetValueOrDefault())
+            if (!request.json)
             {
                 foreach (var trx in result.transactions)
                 {
@@ -350,7 +350,7 @@ namespace EosSharp.Core
         /// <param name="pos">Absolute sequence positon -1 is the end/last action</param>
         /// <param name="offset">Number of actions relative to pos, negative numbers return [pos-offset,pos), positive numbers return [pos,pos+offset)</param>
         /// <returns></returns>
-        public Task<GetActionsResponse> GetActions(string accountName, Int32? pos = null, Int32? offset = null)
+        public Task<GetActionsResponse> GetActions(string accountName, Int32 pos, Int32 offset)
         {
             return Api.GetActions(new GetActionsRequest()
             {
