@@ -186,59 +186,19 @@ namespace EosSharp.Core.Providers
         public Abi DeserializePackedAbi(string packabi)
         {
             var data = SerializationHelper.Base64FcStringToByteArray(packabi);
-
-            ConsoleWriteByteArray(data);
-
             ReadIndex = 0;
-
-            var version = (string)ReadString(data);
-            Console.WriteLine("version:" + version);
-
-            var types = ReadType<List<AbiType>>(data);
-            Console.WriteLine("types:" + types.Count);
-
-            var structs = ReadType<List<AbiStruct>>(data);
-            Console.WriteLine("structs:" + structs.Count);
-
-            Console.WriteLine("ReadIndex:" + ReadIndex);
-
-            var actions = ReadType<List<AbiAction>>(data);
-            Console.WriteLine("actions:" + actions.Count);
-
-            var tables = ReadType<List<AbiTable>>(data);
-            Console.WriteLine("tables:" + tables.Count);
-
-            var ricardian_clauses = ReadType<List<AbiRicardianClause>>(data);
-            Console.WriteLine("ricardian_clauses:" + ricardian_clauses);
-
-            var error_messages = ReadType<List<string>>(data);
-            Console.WriteLine("error_messages:" + error_messages);
-
-            var abi_extensions = ReadType<List<Extension>>(data);
-            Console.WriteLine("abi_extensions:" + abi_extensions);
 
             return new Abi()
             {
-                version = version,
-                types = types,
-                structs = structs,
-                actions = actions,
-                tables = tables,
-                ricardian_clauses = ricardian_clauses,
-                error_messages = error_messages,
-                abi_extensions = abi_extensions
+                version = (string)ReadString(data),
+                types = ReadType<List<AbiType>>(data),
+                structs = ReadType<List<AbiStruct>>(data),
+                actions = ReadAbiActionList(data),
+                tables = ReadType<List<AbiTable>>(data),
+                ricardian_clauses = ReadType<List<AbiRicardianClause>>(data),
+                error_messages = ReadType<List<string>>(data),
+                abi_extensions = ReadType<List<Extension>>(data)
             };
-        }
-
-        private static void ConsoleWriteByteArray(byte[] data)
-        {
-            Console.Write("Size:" + data.Length);
-            Console.Write("[");
-
-            foreach (var b in data)
-                Console.Write(b + ", ");
-
-            Console.WriteLine("]");
         }
 
         public byte[] SerializeActionData(Core.Api.v1.Action action, Abi abi)
@@ -888,14 +848,10 @@ namespace EosSharp.Core.Providers
 
         private object ReadName(byte[] data)
         {
-            Console.WriteLine("ReadName - ReadIndex:" + ReadIndex);
-
             byte[] a = data.Skip(ReadIndex).Take(8).ToArray();
             string result = "";
 
             ReadIndex += 8;
-
-
 
             for (int bit = 63; bit >= 0;)
             {
@@ -1136,6 +1092,23 @@ namespace EosSharp.Core.Providers
             return action;
         }
 
+        private List<AbiAction> ReadAbiActionList(byte[] data)
+        {
+            var size = Convert.ToInt32(ReadVarUint32(data));
+            List<AbiAction> items = new List<AbiAction>();
+
+            for (int i = 0; i < size; i++)
+            {
+                items.Add(new AbiAction() {
+                    name = (string)TypeReaders["name"](data),
+                    type = (string)TypeReaders["string"](data),
+                    ricardian_contract = (string)TypeReaders["string"](data)
+                });
+            }
+
+            return items;
+        }
+
         private object ReadAbiType(byte[] data, string type, Abi abi)
         {
             object value = null;
@@ -1262,28 +1235,8 @@ namespace EosSharp.Core.Providers
 
             var value = Activator.CreateInstance(objectType);
 
-            Console.WriteLine("Object type:" + objectType.Name);
-
-            //TODO hack fix for WEBGL
-            if (objectType.Name == "AbiAction")
-            {
-                objectType.GetField("name").SetValue(value, TypeReaders["name"](data));
-                objectType.GetField("type").SetValue(value, TypeReaders["string"](data));
-                //objectType.GetField("ricardian_contract").SetValue(value, TypeReaders["string"](data));
-
-                var x = objectType.GetField("ricardian_contract");
-
-                Console.WriteLine("ricardian_contract prop:" + x != null);
-
-                TypeReaders["string"](data);
-
-                return value;
-            }
-
             foreach (var member in objectType.GetFields())
             {
-                Console.WriteLine("Reading field type:" + member.Name);
-
                 if(IsCollection(member.FieldType))
                 {
                     objectType.GetField(member.Name).SetValue(value, ReadCollectionType(data, member.FieldType));
