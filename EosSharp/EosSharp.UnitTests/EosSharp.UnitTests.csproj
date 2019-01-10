@@ -55,10 +55,22 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiUnitTests.cs" />
-    <Compile Include="EosUnitTests.cs" />
+    <Compile Include="SerializationUnitTests.cs">
+      <DependentUpon>SerializationUnitTests.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="EosUnitTests.cs">
+      <DependentUpon>EosUnitTests.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="ApiUnitTests.cs">
+      <DependentUpon>ApiUnitTests.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SerializationUnitTests.cs" />
     <Compile Include="SignUnitTests.cs" />
     <Compile Include="StressUnitTests.cs" />
   </ItemGroup>
@@ -71,10 +83,35 @@
       <Project>{7f63bfd8-ac29-419f-a532-cc6ddeef1b46}</Project>
       <Name>EosSharp.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EosSharp.UnitTests.Core\EosSharp.UnitTests.Core.csproj">
+      <Project>{fe13b07e-bbc9-4142-b653-affbd567c4f6}</Project>
+      <Name>EosSharp.UnitTests.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EosSharp\EosSharp.csproj">
       <Project>{a7498dea-becb-49ce-9e9d-e06fdfa29e5a}</Project>
       <Name>EosSharp</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ApiUnitTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ApiUnitTests.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EosUnitTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>EosUnitTests.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SerializationUnitTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SerializationUnitTests.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

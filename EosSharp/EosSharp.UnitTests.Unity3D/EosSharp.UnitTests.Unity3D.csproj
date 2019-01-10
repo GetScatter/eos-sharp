@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EosSharp.Core\EosSharp.Core.csproj" />
+    <ProjectReference Include="..\EosSharp.UnitTests.Core\EosSharp.UnitTests.Core.csproj" />
+    <ProjectReference Include="..\EosSharp.Unity3D\EosSharp.Unity3D.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ApiUnitTests.cs">
+      <DependentUpon>ApiUnitTests.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="EosUnitTests.cs">
+      <DependentUpon>EosUnitTests.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="SerializationUnitTests.cs">
+      <DependentUpon>SerializationUnitTests.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ApiUnitTests.tt">
+      <LastGenOutput>ApiUnitTests.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="EosUnitTests.tt">
+      <LastGenOutput>EosUnitTests.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="SerializationUnitTests.tt">
+      <LastGenOutput>SerializationUnitTests.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+</Project>

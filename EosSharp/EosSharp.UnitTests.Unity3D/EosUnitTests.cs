@@ -3,14 +3,13 @@
 using EosSharp.Core;
 using EosSharp.Core.Api.v1;
 using EosSharp.Core.Providers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using EosSharp.Unity3D;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
 namespace EosSharp.UnitTests
 {
-    [TestClass]
     public class EosUnitTests
     {
         EosUnitTestCases EosUnitTestCases;
@@ -30,8 +29,6 @@ namespace EosSharp.UnitTests
 
             EosUnitTestCases = new EosUnitTestCases(new Eos(eosConfig));
         }
-		[TestMethod]
-        [TestCategory("Eos Tests")]
         public async Task GetBlock()
         {
             bool success = false;
@@ -45,10 +42,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test GetBlock run successfuly.");
+			else
+				Console.WriteLine("Test GetBlock run failed.");
         }
-		[TestMethod]
-        [TestCategory("Eos Tests")]
         public async Task GetTableRows()
         {
             bool success = false;
@@ -62,10 +60,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test GetTableRows run successfuly.");
+			else
+				Console.WriteLine("Test GetTableRows run failed.");
         }
-		[TestMethod]
-        [TestCategory("Eos Tests")]
         public async Task GetTableRowsGeneric()
         {
             bool success = false;
@@ -79,10 +78,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test GetTableRowsGeneric run successfuly.");
+			else
+				Console.WriteLine("Test GetTableRowsGeneric run failed.");
         }
-		[TestMethod]
-        [TestCategory("Eos Tests")]
         public async Task GetProducers()
         {
             bool success = false;
@@ -96,10 +96,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test GetProducers run successfuly.");
+			else
+				Console.WriteLine("Test GetProducers run failed.");
         }
-		[TestMethod]
-        [TestCategory("Eos Tests")]
         public async Task GetScheduledTransactions()
         {
             bool success = false;
@@ -113,10 +114,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test GetScheduledTransactions run successfuly.");
+			else
+				Console.WriteLine("Test GetScheduledTransactions run failed.");
         }
-		[TestMethod]
-        [TestCategory("Eos Tests")]
         public async Task CreateTransaction()
         {
             bool success = false;
@@ -130,10 +132,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test CreateTransaction run successfuly.");
+			else
+				Console.WriteLine("Test CreateTransaction run failed.");
         }
-		[TestMethod]
-        [TestCategory("Eos Tests")]
         public async Task CreateTransactionDict()
         {
             bool success = false;
@@ -147,10 +150,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test CreateTransactionDict run successfuly.");
+			else
+				Console.WriteLine("Test CreateTransactionDict run failed.");
         }
-		[TestMethod]
-        [TestCategory("Eos Tests")]
         public async Task CreateNewAccount()
         {
             bool success = false;
@@ -164,7 +168,10 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test CreateNewAccount run successfuly.");
+			else
+				Console.WriteLine("Test CreateNewAccount run failed.");
         }
 	}
 }

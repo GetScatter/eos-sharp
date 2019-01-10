@@ -3,14 +3,13 @@
 using EosSharp.Core;
 using EosSharp.Core.Api.v1;
 using EosSharp.Core.Providers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using EosSharp.Unity3D;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
 namespace EosSharp.UnitTests
 {
-    [TestClass]
     public class ApiUnitTests
     {
         ApiUnitTestCases ApiUnitTestCases;
@@ -31,8 +30,6 @@ namespace EosSharp.UnitTests
             ApiUnitTestCases = new ApiUnitTestCases(eosConfig, new EosApi(eosConfig, new HttpHelper()));
         }
 
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetInfo()
         {
             bool success = false;
@@ -46,10 +43,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetInfo run successfuly.");
+			else
+				Console.WriteLine("Test GetInfo run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetAccount()
         {
             bool success = false;
@@ -63,10 +61,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetAccount run successfuly.");
+			else
+				Console.WriteLine("Test GetAccount run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetCode()
         {
             bool success = false;
@@ -80,10 +79,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetCode run successfuly.");
+			else
+				Console.WriteLine("Test GetCode run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetAbi()
         {
             bool success = false;
@@ -97,10 +97,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetAbi run successfuly.");
+			else
+				Console.WriteLine("Test GetAbi run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetRawCodeAndAbi()
         {
             bool success = false;
@@ -114,10 +115,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetRawCodeAndAbi run successfuly.");
+			else
+				Console.WriteLine("Test GetRawCodeAndAbi run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetRawAbi()
         {
             bool success = false;
@@ -131,10 +133,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetRawAbi run successfuly.");
+			else
+				Console.WriteLine("Test GetRawAbi run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task AbiJsonToBin()
         {
             bool success = false;
@@ -148,10 +151,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test AbiJsonToBin run successfuly.");
+			else
+				Console.WriteLine("Test AbiJsonToBin run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task AbiBinToJson()
         {
             bool success = false;
@@ -165,10 +169,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test AbiBinToJson run successfuly.");
+			else
+				Console.WriteLine("Test AbiBinToJson run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetRequiredKeys()
         {
             bool success = false;
@@ -182,10 +187,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetRequiredKeys run successfuly.");
+			else
+				Console.WriteLine("Test GetRequiredKeys run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetBlock()
         {
             bool success = false;
@@ -199,10 +205,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetBlock run successfuly.");
+			else
+				Console.WriteLine("Test GetBlock run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetBlockHeaderState()
         {
             bool success = false;
@@ -216,10 +223,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetBlockHeaderState run successfuly.");
+			else
+				Console.WriteLine("Test GetBlockHeaderState run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetTableRows()
         {
             bool success = false;
@@ -233,10 +241,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetTableRows run successfuly.");
+			else
+				Console.WriteLine("Test GetTableRows run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetTableByScope()
         {
             bool success = false;
@@ -250,10 +259,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetTableByScope run successfuly.");
+			else
+				Console.WriteLine("Test GetTableByScope run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetCurrencyBalance()
         {
             bool success = false;
@@ -267,10 +277,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetCurrencyBalance run successfuly.");
+			else
+				Console.WriteLine("Test GetCurrencyBalance run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetCurrencyStats()
         {
             bool success = false;
@@ -284,10 +295,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetCurrencyStats run successfuly.");
+			else
+				Console.WriteLine("Test GetCurrencyStats run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetProducers()
         {
             bool success = false;
@@ -301,10 +313,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetProducers run successfuly.");
+			else
+				Console.WriteLine("Test GetProducers run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetProducerSchedule()
         {
             bool success = false;
@@ -318,10 +331,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetProducerSchedule run successfuly.");
+			else
+				Console.WriteLine("Test GetProducerSchedule run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetScheduledTransactions()
         {
             bool success = false;
@@ -335,10 +349,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetScheduledTransactions run successfuly.");
+			else
+				Console.WriteLine("Test GetScheduledTransactions run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task PushTransaction()
         {
             bool success = false;
@@ -352,10 +367,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test PushTransaction run successfuly.");
+			else
+				Console.WriteLine("Test PushTransaction run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetActions()
         {
             bool success = false;
@@ -369,10 +385,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetActions run successfuly.");
+			else
+				Console.WriteLine("Test GetActions run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetTransaction()
         {
             bool success = false;
@@ -386,10 +403,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetTransaction run successfuly.");
+			else
+				Console.WriteLine("Test GetTransaction run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetKeyAccounts()
         {
             bool success = false;
@@ -403,10 +421,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetKeyAccounts run successfuly.");
+			else
+				Console.WriteLine("Test GetKeyAccounts run failed.");
         }
-		[TestMethod]
-        [TestCategory("Api Tests")]
         public async Task GetControlledAccounts()
         {
             bool success = false;
@@ -420,7 +439,10 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+			if(success)
+				Console.WriteLine("Test GetControlledAccounts run successfuly.");
+			else
+				Console.WriteLine("Test GetControlledAccounts run failed.");
         }
 	}
 }

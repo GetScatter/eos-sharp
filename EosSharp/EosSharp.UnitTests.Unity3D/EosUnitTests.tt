@@ -1,0 +1,58 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import   namespace="System.Globalization" #>
+<#@ include  file=".\..\EosSharp.UnitTests.Core\EosTestCasesDef.t4" #>
+<#@ output   extension=".cs" #>
+// Auto Generated, do not edit.
+using EosSharp.Core;
+using EosSharp.Core.Api.v1;
+using EosSharp.Core.Providers;
+using EosSharp.Unity3D;
+using Newtonsoft.Json;
+using System;
+using System.Threading.Tasks;
+
+namespace EosSharp.UnitTests
+{
+    public class EosUnitTests
+    {
+        EosUnitTestCases EosUnitTestCases;
+        public EosUnitTests()
+        {
+            var eosConfig = new EosConfigurator()
+            {
+                SignProvider = new DefaultSignProvider("5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA"),
+
+                //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
+                //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+
+                HttpEndpoint = "https://nodeos01.btuga.io",
+                ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
+            };
+            var eosApi = new EosApi(eosConfig, new HttpHelper());
+
+            EosUnitTestCases = new EosUnitTestCases(new Eos(eosConfig));
+        }
+<# foreach (var tc in EosUnitTestCases) { #>
+        public async Task <#= tc #>()
+        {
+            bool success = false;
+            try
+            {
+                await EosUnitTestCases.<#= tc #>();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            if(success)
+				Console.WriteLine("Test <#= tc #> run successfuly.");
+			else
+				Console.WriteLine("Test <#= tc #> run failed.");
+        }
+<# } #>
+	}
+}

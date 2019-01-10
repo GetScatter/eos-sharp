@@ -1,0 +1,42 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import   namespace="System.Globalization" #>
+<#@ include  file=".\..\EosSharp.UnitTests.Core\EosTestCasesDef.t4" #>
+<#@ output   extension=".cs" #>
+// Auto Generated, do not edit.
+using Newtonsoft.Json;
+using System;
+
+namespace EosSharp.UnitTests
+{
+    public class SerializationUnitTests
+    {
+        SerializationUnitTestCases SerializationUnitTestCases;
+        public SerializationUnitTests()
+        {
+            SerializationUnitTestCases = new SerializationUnitTestCases();
+        }
+
+<# foreach (var tc in SerializationUnitTestCases) { #>
+        public void <#= tc #>()
+        {
+            bool success = false;
+            try
+            {
+                SerializationUnitTestCases.<#= tc #>();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            if(success)
+				Console.WriteLine("Test <#= tc #> run successfuly.");
+			else
+				Console.WriteLine("Test <#= tc #> run failed.");
+        }
+<# } #>
+	}
+}

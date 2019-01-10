@@ -1,4 +1,9 @@
-﻿
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import   namespace="System.Globalization" #>
+<#@ include  file=".\..\EosSharp.UnitTests.Core\EosTestCasesDef.t4" #>
+<#@ output   extension=".cs" #>
 // Auto Generated, do not edit.
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -15,14 +20,15 @@ namespace EosSharp.UnitTests
             SerializationUnitTestCases = new SerializationUnitTestCases();
         }
 
+<# foreach (var tc in SerializationUnitTestCases) { #>
 		[TestMethod]
         [TestCategory("Serialization Tests")]
-        public void DoubleSerialization()
+        public void <#= tc #>()
         {
             bool success = false;
             try
             {
-                SerializationUnitTestCases.DoubleSerialization();
+                SerializationUnitTestCases.<#= tc #>();
                 success = true;
             }
             catch (Exception ex)
@@ -32,22 +38,6 @@ namespace EosSharp.UnitTests
 
             Assert.IsTrue(success);
         }
-		[TestMethod]
-        [TestCategory("Serialization Tests")]
-        public void DecimalSerialization()
-        {
-            bool success = false;
-            try
-            {
-                SerializationUnitTestCases.DecimalSerialization();
-                success = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(JsonConvert.SerializeObject(ex));
-            }
-
-            Assert.IsTrue(success);
-        }
+<# } #>
 	}
 }

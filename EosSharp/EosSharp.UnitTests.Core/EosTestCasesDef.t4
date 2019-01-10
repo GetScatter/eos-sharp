@@ -1,0 +1,45 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#+ 
+	string[] ApiUnitTestCases = new string[] {
+		"GetInfo",
+		"GetAccount",
+		"GetCode",
+		"GetAbi",
+		"GetRawCodeAndAbi",
+		"GetRawAbi",
+		"AbiJsonToBin",
+		"AbiBinToJson",
+		"GetRequiredKeys",
+		"GetBlock",
+		"GetBlockHeaderState",
+		"GetTableRows",
+		"GetTableByScope",
+		"GetCurrencyBalance",
+		"GetCurrencyStats",
+		"GetProducers",
+		"GetProducerSchedule",
+		"GetScheduledTransactions",
+		"PushTransaction",
+		"GetActions",
+		"GetTransaction",
+		"GetKeyAccounts",
+		"GetControlledAccounts"
+	};
+
+	string[] EosUnitTestCases = new string[] {
+		"GetBlock",
+		"GetTableRows",
+		"GetTableRowsGeneric",
+		"GetProducers",
+		"GetScheduledTransactions",
+		"CreateTransaction",
+		"CreateTransactionDict",
+		"CreateNewAccount"
+    };
+
+	string[] SerializationUnitTestCases = new string[] {
+		"DoubleSerialization",
+		"DecimalSerialization"
+    };
+
+#>

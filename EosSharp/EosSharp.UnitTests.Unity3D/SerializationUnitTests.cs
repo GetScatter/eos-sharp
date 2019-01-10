@@ -1,12 +1,10 @@
 ﻿
 // Auto Generated, do not edit.
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
 
 namespace EosSharp.UnitTests
 {
-    [TestClass]
     public class SerializationUnitTests
     {
         SerializationUnitTestCases SerializationUnitTestCases;
@@ -15,8 +13,6 @@ namespace EosSharp.UnitTests
             SerializationUnitTestCases = new SerializationUnitTestCases();
         }
 
-		[TestMethod]
-        [TestCategory("Serialization Tests")]
         public void DoubleSerialization()
         {
             bool success = false;
@@ -30,10 +26,11 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test DoubleSerialization run successfuly.");
+			else
+				Console.WriteLine("Test DoubleSerialization run failed.");
         }
-		[TestMethod]
-        [TestCategory("Serialization Tests")]
         public void DecimalSerialization()
         {
             bool success = false;
@@ -47,7 +44,10 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if(success)
+				Console.WriteLine("Test DecimalSerialization run successfuly.");
+			else
+				Console.WriteLine("Test DecimalSerialization run failed.");
         }
 	}
 }

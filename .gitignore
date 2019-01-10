@@ -13,3 +13,7 @@
 /EosSharp/EosSharp.Unity3D/bin
 /EosSharp/EosSharp.Core/bin
 /EosSharp/EosSharp.Core/obj
+/EosSharp/EosSharp.UnitTests.Core/bin/Debug/netstandard2.0
+/EosSharp/EosSharp.UnitTests.Core/obj
+/EosSharp/EosSharp.UnitTests.Unity3D/bin/Debug/netstandard2.0
+/EosSharp/EosSharp.UnitTests.Unity3D/obj
