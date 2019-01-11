@@ -194,7 +194,7 @@ namespace EosSharp.Core.Providers
                 types = ReadType<List<AbiType>>(data),
                 structs = ReadType<List<AbiStruct>>(data),
                 actions = ReadAbiActionList(data),
-                tables = ReadType<List<AbiTable>>(data),
+                tables = ReadAbiTableList(data),
                 ricardian_clauses = ReadType<List<AbiRicardianClause>>(data),
                 error_messages = ReadType<List<string>>(data),
                 abi_extensions = ReadType<List<Extension>>(data)
@@ -1109,6 +1109,26 @@ namespace EosSharp.Core.Providers
             return items;
         }
 
+        private List<AbiTable> ReadAbiTableList(byte[] data)
+        {
+            var size = Convert.ToInt32(ReadVarUint32(data));
+            List<AbiTable> items = new List<AbiTable>();
+
+            for (int i = 0; i < size; i++)
+            {
+                items.Add(new AbiTable()
+                {
+                    name = (string)TypeReaders["name"](data),
+                    index_type = (string)TypeReaders["string"](data),
+                    key_names = ReadType<List<string>>(data),
+                    key_types = ReadType<List<string>>(data),
+                    type = (string)TypeReaders["string"](data)
+                });
+            }
+
+            return items;
+        }
+
         private object ReadAbiType(byte[] data, string type, Abi abi)
         {
             object value = null;
@@ -1233,7 +1253,7 @@ namespace EosSharp.Core.Providers
 
             foreach (var member in objectType.GetFields())
             {
-                if(IsCollection(member.FieldType))
+                if (IsCollection(member.FieldType))
                 {
                     objectType.GetField(member.Name).SetValue(value, ReadCollectionType(data, member.FieldType));
                 }
