@@ -38,5 +38,12 @@ namespace EosSharp.UnitTests
 				Console.WriteLine("Test <#= tc #> run failed.");
         }
 <# } #>
+
+		public void TestAll()
+        {
+<# foreach (var tc in SerializationUnitTestCases) { #>
+			<#= tc #>();
+<# } #>
+        }
 	}
 }

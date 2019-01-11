@@ -66,5 +66,10 @@ namespace EosSharp.UnitTests
             else
                 Console.WriteLine("Test GetBlockTaskLoop run failed.");
         }
+
+        public async Task TestAll()
+        {
+            await GetBlockTaskLoop();
+        }
     }
 }

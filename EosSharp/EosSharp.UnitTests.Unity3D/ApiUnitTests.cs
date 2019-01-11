@@ -444,5 +444,32 @@ namespace EosSharp.UnitTests
 			else
 				Console.WriteLine("Test GetControlledAccounts run failed.");
         }
+
+		public async Task TestAll()
+        {
+			await GetInfo();
+			await GetAccount();
+			await GetCode();
+			await GetAbi();
+			await GetRawCodeAndAbi();
+			await GetRawAbi();
+			await AbiJsonToBin();
+			await AbiBinToJson();
+			await GetRequiredKeys();
+			await GetBlock();
+			await GetBlockHeaderState();
+			await GetTableRows();
+			await GetTableByScope();
+			await GetCurrencyBalance();
+			await GetCurrencyStats();
+			await GetProducers();
+			await GetProducerSchedule();
+			await GetScheduledTransactions();
+			await PushTransaction();
+			await GetActions();
+			await GetTransaction();
+			await GetKeyAccounts();
+			await GetControlledAccounts();
+        }
 	}
 }

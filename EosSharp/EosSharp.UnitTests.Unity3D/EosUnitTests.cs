@@ -173,5 +173,17 @@ namespace EosSharp.UnitTests
 			else
 				Console.WriteLine("Test CreateNewAccount run failed.");
         }
+
+		public async Task TestAll()
+        {
+			await GetBlock();
+			await GetTableRows();
+			await GetTableRowsGeneric();
+			await GetProducers();
+			await GetScheduledTransactions();
+			await CreateTransaction();
+			await CreateTransactionDict();
+			await CreateNewAccount();
+        }
 	}
 }

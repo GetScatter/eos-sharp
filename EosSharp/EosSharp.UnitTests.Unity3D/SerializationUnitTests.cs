@@ -49,5 +49,11 @@ namespace EosSharp.UnitTests
 			else
 				Console.WriteLine("Test DecimalSerialization run failed.");
         }
+
+		public void TestAll()
+        {
+			DoubleSerialization();
+			DecimalSerialization();
+        }
 	}
 }

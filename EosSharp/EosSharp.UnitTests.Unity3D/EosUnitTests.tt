@@ -54,5 +54,12 @@ namespace EosSharp.UnitTests
 				Console.WriteLine("Test <#= tc #> run failed.");
         }
 <# } #>
+
+		public async Task TestAll()
+        {
+<# foreach (var tc in EosUnitTestCases) { #>
+			await <#= tc #>();
+<# } #>
+        }
 	}
 }

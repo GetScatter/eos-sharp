@@ -101,5 +101,12 @@ namespace EosSharp.UnitTests
             else
                 Console.WriteLine("Test SignTransaction run failed.");
         }
+
+        public async Task TestAll()
+        {
+            await SignProvider();
+            await SignHelloWorld();
+            await SignTransaction();
+        }
     }
 }
