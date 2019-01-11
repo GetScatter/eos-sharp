@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UnityTester\**" />
+    <EmbeddedResource Remove="UnityTester\**" />
+    <None Remove="UnityTester\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EosSharp.Core\EosSharp.Core.csproj" />
     <ProjectReference Include="..\EosSharp.UnitTests.Core\EosSharp.UnitTests.Core.csproj" />
     <ProjectReference Include="..\EosSharp.Unity3D\EosSharp.Unity3D.csproj" />

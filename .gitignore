@@ -17,3 +17,6 @@
 /EosSharp/EosSharp.UnitTests.Core/obj
 /EosSharp/EosSharp.UnitTests.Unity3D/bin/Debug/netstandard2.0
 /EosSharp/EosSharp.UnitTests.Unity3D/obj
+/EosSharp/EosSharp.UnitTests.Unity3D/UnityTester/Assets/Plugins
+/EosSharp/EosSharp.UnitTests.Unity3D/UnityTester/.vs/UnityTester/v15
+/EosSharp/EosSharp.UnitTests.Unity3D/UnityTester/obj/Debug
