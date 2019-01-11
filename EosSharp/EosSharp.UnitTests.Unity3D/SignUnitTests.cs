@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EosSharp.UnitTests
+namespace EosSharp.UnitTests.Unity3D
 {
     public class SignUnitTests
     {
@@ -68,15 +68,18 @@ namespace EosSharp.UnitTests
 
         public async Task SignTransaction()
         {
-            var trx = new Transaction()
+            bool success = false;
+            try
             {
-                // trx info
-                max_net_usage_words = 0,
-                max_cpu_usage_ms = 0,
-                delay_sec = 0,
-                context_free_actions = new List<Core.Api.v1.Action>(),
-                transaction_extensions = new List<Extension>(),
-                actions = new List<Core.Api.v1.Action>()
+                var trx = new Transaction()
+                {
+                    // trx info
+                    max_net_usage_words = 0,
+                    max_cpu_usage_ms = 0,
+                    delay_sec = 0,
+                    context_free_actions = new List<Core.Api.v1.Action>(),
+                    transaction_extensions = new List<Extension>(),
+                    actions = new List<Core.Api.v1.Action>()
                 {
                     new Core.Api.v1.Action()
                     {
@@ -86,17 +89,30 @@ namespace EosSharp.UnitTests
                             new PermissionLevel() {actor = "tester112345", permission = "active" }
                         },
                         name = "transfer",
-                        data = new { from = "tester112345", to = "tester212345", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                        data = new Dictionary<string, string>()
+                        {
+                            { "from", "tester112345" },
+                            { "to", "tester212345" },
+                            { "quantity", "0.0001 EOS" },
+                            { "memo", "hello crypto world!" }
+                        }
                     }
                 }
-            };
+                };
 
-            var abiSerializer = new AbiSerializationProvider(DefaultApi);
-            var packedTrx = await abiSerializer.SerializePackedTransaction(trx);
-            var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
-            var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
+                var abiSerializer = new AbiSerializationProvider(DefaultApi);
+                var packedTrx = await abiSerializer.SerializePackedTransaction(trx);
+                var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
+                var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
-            if (signatures.First() == "SIG_K1_Jze1PGnAo9MVHkxRxekZQKJebM11AgtK4NhsFtDEZsLujrocvJ5dnhejyr9RQji2K3DWdyUpM9BGyWts7FFr8Wib95hiTj")
+                success = signatures.First() == "SIG_K1_Jze1PGnAo9MVHkxRxekZQKJebM11AgtK4NhsFtDEZsLujrocvJ5dnhejyr9RQji2K3DWdyUpM9BGyWts7FFr8Wib95hiTj";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            if (success)
                 Console.WriteLine("Test SignTransaction run successfuly.");
             else
                 Console.WriteLine("Test SignTransaction run failed.");

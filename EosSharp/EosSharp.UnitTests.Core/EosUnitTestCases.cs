@@ -65,7 +65,7 @@ namespace EosSharp.UnitTests
             });
         }
 
-        public Task CreateTransaction()
+        public Task CreateTransactionAnonymousObjectData()
         {
             return Eos.CreateTransaction(new Transaction()
             {
@@ -85,7 +85,7 @@ namespace EosSharp.UnitTests
             });
         }
 
-        public Task CreateTransactionDict()
+        public Task CreateTransaction()
         {
             return Eos.CreateTransaction(new Transaction()
             {

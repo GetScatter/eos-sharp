@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
-namespace EosSharp.UnitTests
+namespace EosSharp.UnitTests.Unity3D
 {
     public class ApiUnitTests
     {

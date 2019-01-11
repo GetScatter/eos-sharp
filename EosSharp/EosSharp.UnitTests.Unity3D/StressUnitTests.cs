@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EosSharp.UnitTests
+namespace EosSharp.UnitTests.Unity3D
 {
     public class StressUnitTests
     {

@@ -117,12 +117,12 @@ namespace EosSharp.UnitTests
         }
 		[TestMethod]
         [TestCategory("Eos Tests")]
-        public async Task CreateTransaction()
+        public async Task CreateTransactionAnonymousObjectData()
         {
             bool success = false;
             try
             {
-                await EosUnitTestCases.CreateTransaction();
+                await EosUnitTestCases.CreateTransactionAnonymousObjectData();
                 success = true;
             }
             catch (Exception ex)
@@ -134,12 +134,12 @@ namespace EosSharp.UnitTests
         }
 		[TestMethod]
         [TestCategory("Eos Tests")]
-        public async Task CreateTransactionDict()
+        public async Task CreateTransaction()
         {
             bool success = false;
             try
             {
-                await EosUnitTestCases.CreateTransactionDict();
+                await EosUnitTestCases.CreateTransaction();
                 success = true;
             }
             catch (Exception ex)

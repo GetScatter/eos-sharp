@@ -118,18 +118,23 @@ namespace EosSharp.UnitTests
                 delay_sec = 0,
                 context_free_actions = new List<Core.Api.v1.Action>(),
                 actions = new List<Core.Api.v1.Action>()
+                {
+                    new Core.Api.v1.Action()
                     {
-                        new Core.Api.v1.Action()
+                        account = "eosio.token",
+                        authorization = new List<PermissionLevel>()
                         {
-                            account = "eosio.token",
-                            authorization = new List<PermissionLevel>()
-                            {
-                                new PermissionLevel() {actor = "tester112345", permission = "active" }
-                            },
-                            name = "transfer",
-                            data = new { from = "tester112345", to = "tester212345", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                            new PermissionLevel() {actor = "tester112345", permission = "active" }
+                        },
+                        name = "transfer",
+                        data = new Dictionary<string, object>() {
+                            { "from", "tester112345" },
+                            { "to", "tester212345" },
+                            { "quantity", "1.0000 EOS" },
+                            { "memo", "hello crypto world!" }
                         }
-                    },
+                    }
+                },
                 transaction_extensions = new List<Extension>()
             };
 
@@ -300,7 +305,12 @@ namespace EosSharp.UnitTests
                             new PermissionLevel() {actor = "tester112345", permission = "active" }
                         },
                         name = "transfer",
-                        data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
+                        data = new Dictionary<string, object>() {
+                            { "from", "tester112345" },
+                            { "to", "tester212345" },
+                            { "quantity", "1.0000 EOS" },
+                            { "memo", "hello crypto world!" }
+                        }
                     }
                 }
             };

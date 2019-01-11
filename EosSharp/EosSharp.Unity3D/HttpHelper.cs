@@ -58,13 +58,10 @@ namespace EosSharp.Unity3D
 
             await uwr.SendWebRequest();
 
+            //TODO handle network errors
             if (uwr.isNetworkError)
             {
                 Console.WriteLine("Error While Sending: " + uwr.error);
-            }
-            else
-            {
-                Console.WriteLine("Received: " + uwr.downloadHandler.text);
             }
 
             return JsonConvert.DeserializeObject<TResponseData>(uwr.downloadHandler.text);
@@ -81,13 +78,10 @@ namespace EosSharp.Unity3D
 
             await uwr.SendWebRequest();
 
+            //TODO handle network errors
             if (uwr.isNetworkError)
             {
                 Console.WriteLine("Error While Sending: " + uwr.error);
-            }
-            else
-            {
-                Console.WriteLine("Received: " + uwr.downloadHandler.text);
             }
 
             return JsonConvert.DeserializeObject<TResponseData>(uwr.downloadHandler.text);

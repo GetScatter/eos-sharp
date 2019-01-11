@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 
-namespace EosSharp.UnitTests
+namespace EosSharp.UnitTests.Unity3D
 {
     public class EosUnitTests
     {
@@ -119,6 +119,24 @@ namespace EosSharp.UnitTests
 			else
 				Console.WriteLine("Test GetScheduledTransactions run failed.");
         }
+        public async Task CreateTransactionAnonymousObjectData()
+        {
+            bool success = false;
+            try
+            {
+                await EosUnitTestCases.CreateTransactionAnonymousObjectData();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            if(success)
+				Console.WriteLine("Test CreateTransactionAnonymousObjectData run successfuly.");
+			else
+				Console.WriteLine("Test CreateTransactionAnonymousObjectData run failed.");
+        }
         public async Task CreateTransaction()
         {
             bool success = false;
@@ -136,24 +154,6 @@ namespace EosSharp.UnitTests
 				Console.WriteLine("Test CreateTransaction run successfuly.");
 			else
 				Console.WriteLine("Test CreateTransaction run failed.");
-        }
-        public async Task CreateTransactionDict()
-        {
-            bool success = false;
-            try
-            {
-                await EosUnitTestCases.CreateTransactionDict();
-                success = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(JsonConvert.SerializeObject(ex));
-            }
-
-            if(success)
-				Console.WriteLine("Test CreateTransactionDict run successfuly.");
-			else
-				Console.WriteLine("Test CreateTransactionDict run failed.");
         }
         public async Task CreateNewAccount()
         {
@@ -181,8 +181,8 @@ namespace EosSharp.UnitTests
 			await GetTableRowsGeneric();
 			await GetProducers();
 			await GetScheduledTransactions();
+			await CreateTransactionAnonymousObjectData();
 			await CreateTransaction();
-			await CreateTransactionDict();
 			await CreateNewAccount();
         }
 	}
