@@ -213,9 +213,9 @@ namespace EosSharp.Core.Providers
             }
         }
 
-        public object DeserializeStructData(string structType, string dataHex, Abi abi)
+        public Dictionary<string, object> DeserializeStructData(string structType, string dataHex, Abi abi)
         {
-            return DeserializeStructData<object>(structType, dataHex, abi);
+            return DeserializeStructData<Dictionary<string, object>>(structType, dataHex, abi);
         }
 
         public TStructData DeserializeStructData<TStructData>(string structType, string dataHex, Abi abi)
@@ -1174,10 +1174,6 @@ namespace EosSharp.Core.Providers
             {
                 value = (T)ReadAbiType(data, abiStruct.@base, abi);
             }
-            else if(typeof(T) == typeof(object))
-            {
-                value = new ExpandoObject();
-            }
             else
             {
                 value = Activator.CreateInstance(typeof(T));
@@ -1191,10 +1187,10 @@ namespace EosSharp.Core.Providers
 
                 if(string.IsNullOrWhiteSpace(fieldName))
                 {
-                    if (valueType == typeof(ExpandoObject))
+                    if (valueType is IDictionary<string, Object>)
                     {
                         (value as IDictionary<string, Object>).Add(field.name, abiValue);
-                    }                    
+                    }
                     else if (typeof(T) == typeof(object))
                         valueType.GetField(field.name).SetValue(value, abiValue);
 

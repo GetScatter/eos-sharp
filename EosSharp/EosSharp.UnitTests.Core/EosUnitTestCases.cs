@@ -31,6 +31,7 @@ namespace EosSharp.UnitTests
             });
         }
 
+        [Serializable]
         class Stat
         {
             public string issuer { get; set; }
@@ -125,25 +126,28 @@ namespace EosSharp.UnitTests
                             new PermissionLevel() {actor = "tester112345", permission = "active"}
                         },
                         name = "newaccount",
-                        data = new {
-                            creator = "tester112345",
-                            name = "mynewaccount",
-                            owner = new {
-                                threshold = 1,
-                                keys = new List<object>() {
+                        data = new Dictionary<string, object>() {
+                            { "creator", "tester112345" },
+                            { "name", "mynewaccount" },
+                            { "owner", new Dictionary<string, object>() {
+                                { "threshold", 1 },
+                                { "keys", new List<object>() {
                                     new { key = "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr", weight = 1}
-                                },
-                                accounts =  new List<object>(),
-                                waits =  new List<object>()
-                            },
-                            active = new {
-                                threshold = 1,
-                                keys = new List<object>() {
-                                    new { key = "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr", weight = 1}
-                                },
-                                accounts =  new List<object>(),
-                                waits =  new List<object>()
-                            }
+                                }},
+                                { "accounts", new List<object>() },
+                                { "waits", new List<object>() }
+                            }},
+                            { "active", new Dictionary<string, object>() {
+                                { "threshold", 1 },
+                                { "keys", new List<object>() {
+                                    new Dictionary<string, object>() {
+                                        { "key", "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" },
+                                        { "weight", 1}
+                                    }
+                                }},
+                                { "accounts",  new List<object>() },
+                                { "waits", new List<object>() }
+                            }}
                         }
                     },
                     new Core.Api.v1.Action()
@@ -154,10 +158,10 @@ namespace EosSharp.UnitTests
                             new PermissionLevel() { actor = "tester112345", permission = "active"}
                         },
                         name = "buyrambytes",
-                        data = new {
-                            payer = "tester112345",
-                            receiver = "mynewaccount",
-                            bytes = 8192,
+                        data = new Dictionary<string, object>() {
+                            { "payer", "tester112345" },
+                            { "receiver", "mynewaccount" },
+                            { "bytes", 8192 },
                         }
                     },
                     new Core.Api.v1.Action()
@@ -168,12 +172,12 @@ namespace EosSharp.UnitTests
                             new PermissionLevel() { actor = "tester112345", permission = "active"}
                         },
                         name = "delegatebw",
-                        data = new {
-                            from = "tester112345",
-                            receiver = "mynewaccount",
-                            stake_net_quantity = "1.0000 EOS",
-                            stake_cpu_quantity = "1.0000 EOS",
-                            transfer = false,
+                        data = new Dictionary<string, object>() {
+                            { "from", "tester112345" },
+                            { "receiver", "mynewaccount" },
+                            { "stake_net_quantity", "1.0000 EOS" },
+                            { "stake_cpu_quantity", "1.0000 EOS" },
+                            { "transfer", false },
                         }
                     }
                 }
