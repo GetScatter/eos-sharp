@@ -21,12 +21,12 @@ namespace EosSharp.Core.Providers
             k1 = 0,
             r1 = 1,
         };
-        private delegate object ReaderDelegate(byte[] data);
+        private delegate object ReaderDelegate(byte[] data, ref int readIndex);
 
         private EosApi Api { get; set; }
         private Dictionary<string, Action<MemoryStream, object>> TypeWriters { get; set; }
         private Dictionary<string, ReaderDelegate> TypeReaders { get; set; }
-        private int ReadIndex = 0;
+        //private int ReadIndex = 0;
 
         public AbiSerializationProvider(EosApi api)
         {
@@ -147,37 +147,38 @@ namespace EosSharp.Core.Providers
         public async Task<Transaction> DeserializePackedTransaction(string packtrx)
         {
             var data = SerializationHelper.HexStringToByteArray(packtrx);
-            ReadIndex = 0;
+            int readIndex = 0;
+
             var trx = new Transaction()
             {
-                expiration = (DateTime)ReadTimePointSec(data),
-                ref_block_num = (UInt16)ReadUint16(data),
-                ref_block_prefix = (UInt32)ReadUint32(data),
-                max_net_usage_words = (UInt32)ReadVarUint32(data),
-                max_cpu_usage_ms = (byte)ReadByte(data),
-                delay_sec = (UInt32)ReadVarUint32(data),
+                expiration = (DateTime)ReadTimePointSec(data, ref readIndex),
+                ref_block_num = (UInt16)ReadUint16(data, ref readIndex),
+                ref_block_prefix = (UInt32)ReadUint32(data, ref readIndex),
+                max_net_usage_words = (UInt32)ReadVarUint32(data, ref readIndex),
+                max_cpu_usage_ms = (byte)ReadByte(data, ref readIndex),
+                delay_sec = (UInt32)ReadVarUint32(data, ref readIndex),
             };
 
-            var contextFreeActionsSize = Convert.ToInt32(ReadVarUint32(data));
+            var contextFreeActionsSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             trx.context_free_actions = new List<Core.Api.v1.Action>(contextFreeActionsSize);
 
             for (int i = 0; i < contextFreeActionsSize; i++)
             {
-                var action = (Core.Api.v1.Action)ReadActionHeader(data);
+                var action = (Core.Api.v1.Action)ReadActionHeader(data, ref readIndex);
                 Abi abi = await GetAbi(action.account);
 
-                trx.context_free_actions.Add((Core.Api.v1.Action)ReadAction(data, action, abi));
+                trx.context_free_actions.Add((Core.Api.v1.Action)ReadAction(data, action, abi, ref readIndex));
             }
 
-            var actionsSize = Convert.ToInt32(ReadVarUint32(data));
+            var actionsSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             trx.actions = new List<Core.Api.v1.Action>(actionsSize);
 
             for (int i = 0; i < actionsSize; i++)
             {
-                var action = (Core.Api.v1.Action)ReadActionHeader(data);
+                var action = (Core.Api.v1.Action)ReadActionHeader(data, ref readIndex);
                 Abi abi = await GetAbi(action.account);
 
-                trx.actions.Add((Core.Api.v1.Action)ReadAction(data, action, abi));
+                trx.actions.Add((Core.Api.v1.Action)ReadAction(data, action, abi, ref readIndex));
             }
 
             return trx;
@@ -186,18 +187,18 @@ namespace EosSharp.Core.Providers
         public Abi DeserializePackedAbi(string packabi)
         {
             var data = SerializationHelper.Base64FcStringToByteArray(packabi);
-            ReadIndex = 0;
+            int readIndex = 0;
 
             return new Abi()
             {
-                version = (string)ReadString(data),
-                types = ReadType<List<AbiType>>(data),
-                structs = ReadType<List<AbiStruct>>(data),
-                actions = ReadAbiActionList(data),
-                tables = ReadAbiTableList(data),
-                ricardian_clauses = ReadType<List<AbiRicardianClause>>(data),
-                error_messages = ReadType<List<string>>(data),
-                abi_extensions = ReadType<List<Extension>>(data)
+                version = (string)ReadString(data, ref readIndex),
+                types = ReadType<List<AbiType>>(data, ref readIndex),
+                structs = ReadType<List<AbiStruct>>(data, ref readIndex),
+                actions = ReadAbiActionList(data, ref readIndex),
+                tables = ReadAbiTableList(data, ref readIndex),
+                ricardian_clauses = ReadType<List<AbiRicardianClause>>(data, ref readIndex),
+                error_messages = ReadType<List<string>>(data, ref readIndex),
+                abi_extensions = ReadType<List<Extension>>(data, ref readIndex)
             };
         }
 
@@ -222,8 +223,8 @@ namespace EosSharp.Core.Providers
         {
             var data = SerializationHelper.HexStringToByteArray(dataHex);
             var abiStruct = abi.structs.First(s => s.name == structType);
-            ReadIndex = 0;
-            return ReadAbiStruct<TStructData>(data, abiStruct, abi);
+            int readIndex = 0;
+            return ReadAbiStruct<TStructData>(data, abiStruct, abi, ref readIndex);
         }
 
         public Task<Abi[]> GetTransactionAbis(Transaction trx)
@@ -260,8 +261,8 @@ namespace EosSharp.Core.Providers
 
         public T DeserializeType<T>(byte[] data)
         {
-            ReadIndex = 0;
-            return ReadType<T>(data);
+            int readIndex = 0;
+            return ReadType<T>(data, ref readIndex);
         }
 
         #region Writer Functions
@@ -440,8 +441,8 @@ namespace EosSharp.Core.Providers
         private static void WriteTimePoint(MemoryStream ms, object value)
         {
             var ticks = SerializationHelper.DateToTimePoint((DateTime)value);
-            WriteUint32(ms, (UInt32)ticks >> 0);
-            WriteUint32(ms, (UInt32)Math.Floor((double)ticks / 0x100000000) >> 0);
+            WriteUint32(ms, Convert.ToUInt32(ticks) >> 0);
+            WriteUint32(ms, Convert.ToUInt32(Math.Floor((double)ticks / 0x100000000)) >> 0);
         }
 
         private static void WriteTimePointSec(MemoryStream ms, object value)
@@ -727,60 +728,60 @@ namespace EosSharp.Core.Providers
         #endregion
 
         #region Reader Functions
-        private object ReadByte(byte[] data)
+        private object ReadByte(byte[] data, ref int readIndex)
         {
-            return data[ReadIndex++];
+            return data[readIndex++];
         }
 
-        private object ReadUint16(byte[] data)
+        private object ReadUint16(byte[] data, ref int readIndex)
         {
-            var value = BitConverter.ToUInt16(data, ReadIndex);
-            ReadIndex += 2;
+            var value = BitConverter.ToUInt16(data, readIndex);
+            readIndex += 2;
             return value;
         }
 
-        private object ReadUint32(byte[] data)
+        private object ReadUint32(byte[] data, ref int readIndex)
         {
-            var value = BitConverter.ToUInt32(data, ReadIndex);
-            ReadIndex += 4;
+            var value = BitConverter.ToUInt32(data, readIndex);
+            readIndex += 4;
             return value;
         }
 
-        private object ReadInt64(byte[] data)
+        private object ReadInt64(byte[] data, ref int readIndex)
         {
-            var value = (Int64)BitConverter.ToUInt64(data, ReadIndex);
-            ReadIndex += 8;
+            var value = (Int64)BitConverter.ToUInt64(data, readIndex);
+            readIndex += 8;
             return value;
         }
 
-        private object ReadUint64(byte[] data)
+        private object ReadUint64(byte[] data, ref int readIndex)
         {
-            var value = BitConverter.ToUInt64(data, ReadIndex);
-            ReadIndex += 8;
+            var value = BitConverter.ToUInt64(data, readIndex);
+            readIndex += 8;
             return value;
         }
 
-        private object ReadInt128(byte[] data)
+        private object ReadInt128(byte[] data, ref int readIndex)
         {
-            byte[] amount = data.Skip(ReadIndex).Take(16).ToArray();
-            ReadIndex += 16;
+            byte[] amount = data.Skip(readIndex).Take(16).ToArray();
+            readIndex += 16;
             return SerializationHelper.SignedBinaryToDecimal(amount);
         }
 
-        private object ReadUInt128(byte[] data)
+        private object ReadUInt128(byte[] data, ref int readIndex)
         {
-            byte[] amount = data.Skip(ReadIndex).Take(16).ToArray();
-            ReadIndex += 16;
+            byte[] amount = data.Skip(readIndex).Take(16).ToArray();
+            readIndex += 16;
             return SerializationHelper.BinaryToDecimal(amount);
         }
 
-        private object ReadVarUint32(byte[] data)
+        private object ReadVarUint32(byte[] data, ref int readIndex)
         {
             uint v = 0;
             int bit = 0;
             while (true)
             {
-                byte b = data[ReadIndex++];
+                byte b = data[readIndex++];
                 v |= (uint)((b & 0x7f) << bit);
                 bit += 7;
                 if ((b & 0x80) == 0)
@@ -789,9 +790,9 @@ namespace EosSharp.Core.Providers
             return v >> 0;
         }
 
-        private object ReadVarInt32(byte[] data)
+        private object ReadVarInt32(byte[] data, ref int readIndex)
         {
-            var v = (UInt32)ReadVarUint32(data);
+            var v = (UInt32)ReadVarUint32(data, ref readIndex);
 
             if ((v & 1) != 0)
                 return ((~v) >> 1) | 0x80000000;
@@ -799,59 +800,59 @@ namespace EosSharp.Core.Providers
                 return v >> 1;
         }
 
-        private object ReadFloat32(byte[] data)
+        private object ReadFloat32(byte[] data, ref int readIndex)
         {
-            var value = BitConverter.ToSingle(data, ReadIndex);
-            ReadIndex += 4;
+            var value = BitConverter.ToSingle(data, readIndex);
+            readIndex += 4;
             return value;
         }
 
-        private object ReadFloat64(byte[] data)
+        private object ReadFloat64(byte[] data, ref int readIndex)
         {
-            var value = BitConverter.ToDouble(data, ReadIndex);
-            ReadIndex += 8;
+            var value = BitConverter.ToDouble(data, readIndex);
+            readIndex += 8;
             return value;
         }
 
-        private object ReadFloat128(byte[] data)
+        private object ReadFloat128(byte[] data, ref int readIndex)
         {
-            var a = data.Skip(ReadIndex).Take(16).ToArray();
+            var a = data.Skip(readIndex).Take(16).ToArray();
             var value = SerializationHelper.ByteArrayToHexString(a);
-            ReadIndex += 16;
+            readIndex += 16;
             return value;
         }
 
-        private object ReadBytes(byte[] data)
+        private object ReadBytes(byte[] data, ref int readIndex)
         {
-            var size = Convert.ToInt32(ReadVarUint32(data));
-            var value = data.Skip(ReadIndex).Take(size).ToArray();
-            ReadIndex += size;
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
+            var value = data.Skip(readIndex).Take(size).ToArray();
+            readIndex += size;
             return value;
         }
 
-        private object ReadBool(byte[] data)
+        private object ReadBool(byte[] data, ref int readIndex)
         {
-            return (byte)ReadByte(data) == 1;
+            return (byte)ReadByte(data, ref readIndex) == 1;
         }
 
-        private object ReadString(byte[] data)
+        private object ReadString(byte[] data, ref int readIndex)
         {
-            var size = Convert.ToInt32(ReadVarUint32(data));
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             string value = null;
             if (size > 0)
             {
-                value = Encoding.UTF8.GetString(data.Skip(ReadIndex).Take(size).ToArray());
-                ReadIndex += size;
+                value = Encoding.UTF8.GetString(data.Skip(readIndex).Take(size).ToArray());
+                readIndex += size;
             }
             return value;
         }
 
-        private object ReadName(byte[] data)
+        private object ReadName(byte[] data, ref int readIndex)
         {
-            byte[] a = data.Skip(ReadIndex).Take(8).ToArray();
+            byte[] a = data.Skip(readIndex).Take(8).ToArray();
             string result = "";
 
-            ReadIndex += 8;
+            readIndex += 8;
 
             for (int bit = 63; bit >= 0;)
             {
@@ -881,13 +882,13 @@ namespace EosSharp.Core.Providers
             return result;
         }
 
-        private object ReadAsset(byte[] data)
+        private object ReadAsset(byte[] data, ref int readIndex)
         {
-            byte[] amount = data.Skip(ReadIndex).Take(8).ToArray();
+            byte[] amount = data.Skip(readIndex).Take(8).ToArray();
 
-            ReadIndex += 8;
+            readIndex += 8;
 
-            var symbol = (Symbol)ReadSymbol(data);
+            var symbol = (Symbol)ReadSymbol(data, ref readIndex);
             string s = SerializationHelper.SignedBinaryToDecimal(amount, symbol.precision + 1);
 
             if (symbol.precision > 0)
@@ -896,36 +897,36 @@ namespace EosSharp.Core.Providers
             return s + ' ' + symbol.name;
         }
 
-        private object ReadTimePoint(byte[] data)
+        private object ReadTimePoint(byte[] data, ref int readIndex)
         {
-            var low = (UInt32)ReadUint32(data);
-            var high = (UInt32)ReadUint32(data);
+            var low = (UInt32)ReadUint32(data, ref readIndex);
+            var high = (UInt32)ReadUint32(data, ref readIndex);
             return SerializationHelper.TimePointToDate((high >> 0) * 0x100000000 + (low >> 0));
         }
 
-        private object ReadTimePointSec(byte[] data)
+        private object ReadTimePointSec(byte[] data, ref int readIndex)
         {
-            var secs = (UInt32)ReadUint32(data);
+            var secs = (UInt32)ReadUint32(data, ref readIndex);
             return SerializationHelper.TimePointSecToDate(secs);
         }
 
-        private object ReadBlockTimestampType(byte[] data)
+        private object ReadBlockTimestampType(byte[] data, ref int readIndex)
         {
-            var slot = (UInt32)ReadUint32(data);
+            var slot = (UInt32)ReadUint32(data, ref readIndex);
             return SerializationHelper.BlockTimestampToDate(slot);
         }
 
-        private object ReadSymbolString(byte[] data)
+        private object ReadSymbolString(byte[] data, ref int readIndex)
         {
-            var value = (Symbol)ReadSymbol(data);
+            var value = (Symbol)ReadSymbol(data, ref readIndex);
             return value.precision + ',' + value.name;
         }
 
-        private object ReadSymbolCode(byte[] data)
+        private object ReadSymbolCode(byte[] data, ref int readIndex)
         {
-            byte[] a = data.Skip(ReadIndex).Take(8).ToArray();
+            byte[] a = data.Skip(readIndex).Take(8).ToArray();
 
-            ReadIndex += 8;
+            readIndex += 8;
 
             int len;
             for (len = 0; len < a.Length; ++len)
@@ -935,36 +936,36 @@ namespace EosSharp.Core.Providers
             return string.Join("", a.Take(len));
         }
 
-        private object ReadChecksum160(byte[] data)
+        private object ReadChecksum160(byte[] data, ref int readIndex)
         {
-            var a = data.Skip(ReadIndex).Take(20).ToArray();
+            var a = data.Skip(readIndex).Take(20).ToArray();
             var value = SerializationHelper.ByteArrayToHexString(a);
-            ReadIndex += 20;
+            readIndex += 20;
             return value;
         }
 
-        private object ReadChecksum256(byte[] data)
+        private object ReadChecksum256(byte[] data, ref int readIndex)
         {
-            var a = data.Skip(ReadIndex).Take(32).ToArray();
+            var a = data.Skip(readIndex).Take(32).ToArray();
             var value = SerializationHelper.ByteArrayToHexString(a);
-            ReadIndex += 32;
+            readIndex += 32;
             return value;
         }
 
-        private object ReadChecksum512(byte[] data)
+        private object ReadChecksum512(byte[] data, ref int readIndex)
         {
-            var a = data.Skip(ReadIndex).Take(64).ToArray();
+            var a = data.Skip(readIndex).Take(64).ToArray();
             var value = SerializationHelper.ByteArrayToHexString(a);
-            ReadIndex += 64;
+            readIndex += 64;
             return value;
         }
 
-        private object ReadPublicKey(byte[] data)
+        private object ReadPublicKey(byte[] data, ref int readIndex)
         {
-            var type = (byte)ReadByte(data);
-            var keyBytes = data.Skip(ReadIndex).Take(CryptoHelper.PUB_KEY_DATA_SIZE).ToArray();
+            var type = (byte)ReadByte(data, ref readIndex);
+            var keyBytes = data.Skip(readIndex).Take(CryptoHelper.PUB_KEY_DATA_SIZE).ToArray();
 
-            ReadIndex += CryptoHelper.PUB_KEY_DATA_SIZE;
+            readIndex += CryptoHelper.PUB_KEY_DATA_SIZE;
 
             if(type == (int)KeyType.k1)
             {
@@ -980,12 +981,12 @@ namespace EosSharp.Core.Providers
             }
         }
 
-        private object ReadPrivateKey(byte[] data)
+        private object ReadPrivateKey(byte[] data, ref int readIndex)
         {
-            var type = (byte)ReadByte(data);
-            var keyBytes = data.Skip(ReadIndex).Take(CryptoHelper.PRIV_KEY_DATA_SIZE).ToArray();
+            var type = (byte)ReadByte(data, ref readIndex);
+            var keyBytes = data.Skip(readIndex).Take(CryptoHelper.PRIV_KEY_DATA_SIZE).ToArray();
 
-            ReadIndex += CryptoHelper.PRIV_KEY_DATA_SIZE;
+            readIndex += CryptoHelper.PRIV_KEY_DATA_SIZE;
 
             if (type == (int)KeyType.r1)
             {
@@ -997,12 +998,12 @@ namespace EosSharp.Core.Providers
             }
         }
 
-        private object ReadSignature(byte[] data)
+        private object ReadSignature(byte[] data, ref int readIndex)
         {
-            var type = (byte)ReadByte(data);
-            var signBytes = data.Skip(ReadIndex).Take(CryptoHelper.SIGN_KEY_DATA_SIZE).ToArray();
+            var type = (byte)ReadByte(data, ref readIndex);
+            var signBytes = data.Skip(readIndex).Take(CryptoHelper.SIGN_KEY_DATA_SIZE).ToArray();
 
-            ReadIndex += CryptoHelper.SIGN_KEY_DATA_SIZE;
+            readIndex += CryptoHelper.SIGN_KEY_DATA_SIZE;
 
             if (type == (int)KeyType.r1)
             {
@@ -1018,25 +1019,25 @@ namespace EosSharp.Core.Providers
             }
         }
 
-        private object ReadExtendedAsset(byte[] data)
+        private object ReadExtendedAsset(byte[] data, ref int readIndex)
         {
             return new ExtendedAsset()
             {
-                quantity = (string)ReadAsset(data),
-                contract = (string)ReadName(data)
+                quantity = (string)ReadAsset(data, ref readIndex),
+                contract = (string)ReadName(data, ref readIndex)
             };
         }
 
-        private object ReadSymbol(byte[] data)
+        private object ReadSymbol(byte[] data, ref int readIndex)
         {
             var value = new Symbol
             {
-                precision = (byte)ReadByte(data)
+                precision = (byte)ReadByte(data, ref readIndex)
             };
 
-            byte[] a = data.Skip(ReadIndex).Take(7).ToArray();
+            byte[] a = data.Skip(readIndex).Take(7).ToArray();
 
-            ReadIndex += 7;
+            readIndex += 7;
 
             int len;
             for (len = 0; len < a.Length; ++len)
@@ -1048,95 +1049,95 @@ namespace EosSharp.Core.Providers
             return value;
         }
 
-        private object ReadPermissionLevel(byte[] data)
+        private object ReadPermissionLevel(byte[] data, ref int readIndex)
         {
             var value = new PermissionLevel()
             {
-                actor = (string)ReadName(data),
-                permission = (string)ReadName(data),
+                actor = (string)ReadName(data, ref readIndex),
+                permission = (string)ReadName(data, ref readIndex),
             };
             return value;
         }
 
-        private object ReadActionHeader(byte[] data)
+        private object ReadActionHeader(byte[] data, ref int readIndex)
         {
             return new Core.Api.v1.Action()
             {
-                account = (string)ReadName(data),
-                name = (string)ReadName(data)
+                account = (string)ReadName(data, ref readIndex),
+                name = (string)ReadName(data, ref readIndex)
             };
         }
 
-        private object ReadAction(byte[] data, Core.Api.v1.Action action, Abi abi)
+        private object ReadAction(byte[] data, Core.Api.v1.Action action, Abi abi, ref int readIndex)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
 
-            var size = Convert.ToInt32(ReadVarUint32(data));
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
 
             action.authorization = new List<PermissionLevel>(size);
             for (var i = 0; i < size ; i++)
             {
-                action.authorization.Add((PermissionLevel)ReadPermissionLevel(data));
+                action.authorization.Add((PermissionLevel)ReadPermissionLevel(data, ref readIndex));
             }
 
             var abiAction = abi.actions.First(aa => aa.name == action.name);
             var abiStruct = abi.structs.First(s => s.name == abiAction.type);
 
-            var dataSize = Convert.ToInt32(ReadVarUint32(data));
+            var dataSize = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
 
-            action.data = ReadAbiStruct(data, abiStruct, abi);
+            action.data = ReadAbiStruct(data, abiStruct, abi, ref readIndex);
 
-            action.hex_data = (string)ReadString(data);
+            action.hex_data = (string)ReadString(data, ref readIndex);
 
             return action;
         }
 
-        private List<AbiAction> ReadAbiActionList(byte[] data)
+        private List<AbiAction> ReadAbiActionList(byte[] data, ref int readIndex)
         {
-            var size = Convert.ToInt32(ReadVarUint32(data));
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             List<AbiAction> items = new List<AbiAction>();
 
             for (int i = 0; i < size; i++)
             {
                 items.Add(new AbiAction() {
-                    name = (string)TypeReaders["name"](data),
-                    type = (string)TypeReaders["string"](data),
-                    ricardian_contract = (string)TypeReaders["string"](data)
+                    name = (string)TypeReaders["name"](data, ref readIndex),
+                    type = (string)TypeReaders["string"](data, ref readIndex),
+                    ricardian_contract = (string)TypeReaders["string"](data, ref readIndex)
                 });
             }
 
             return items;
         }
 
-        private List<AbiTable> ReadAbiTableList(byte[] data)
+        private List<AbiTable> ReadAbiTableList(byte[] data, ref int readIndex)
         {
-            var size = Convert.ToInt32(ReadVarUint32(data));
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             List<AbiTable> items = new List<AbiTable>();
 
             for (int i = 0; i < size; i++)
             {
                 items.Add(new AbiTable()
                 {
-                    name = (string)TypeReaders["name"](data),
-                    index_type = (string)TypeReaders["string"](data),
-                    key_names = ReadType<List<string>>(data),
-                    key_types = ReadType<List<string>>(data),
-                    type = (string)TypeReaders["string"](data)
+                    name = (string)TypeReaders["name"](data, ref readIndex),
+                    index_type = (string)TypeReaders["string"](data, ref readIndex),
+                    key_names = ReadType<List<string>>(data, ref readIndex),
+                    key_types = ReadType<List<string>>(data, ref readIndex),
+                    type = (string)TypeReaders["string"](data, ref readIndex)
                 });
             }
 
             return items;
         }
 
-        private object ReadAbiType(byte[] data, string type, Abi abi)
+        private object ReadAbiType(byte[] data, string type, Abi abi, ref int readIndex)
         {
             object value = null;
 
             //optional type
             if (type.EndsWith("?"))
             {
-                var opt = (byte)ReadByte(data);
+                var opt = (byte)ReadByte(data, ref readIndex);
 
                 if (opt == 0)
                 {
@@ -1148,12 +1149,12 @@ namespace EosSharp.Core.Providers
             if (type.EndsWith("[]"))
             {
                 var arrayType = type.Substring(0, type.Length - 2);
-                var size = Convert.ToInt32(ReadVarUint32(data));
+                var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
                 var items = new List<object>(size);
 
                 for (int i = 0; i < size; i++)
                 {
-                    items.Add(ReadAbiType(data, arrayType, abi));
+                    items.Add(ReadAbiType(data, arrayType, abi, ref readIndex));
                 }
 
                 return items;
@@ -1163,14 +1164,14 @@ namespace EosSharp.Core.Providers
 
             if (reader != null)
             {
-                value = reader(data);
+                value = reader(data, ref readIndex);
             }
             else
             {
                 var abiStruct = abi.structs.FirstOrDefault(s => s.name == type);
                 if (abiStruct != null)
                 {
-                    value = ReadAbiStruct(data, abiStruct, abi);
+                    value = ReadAbiStruct(data, abiStruct, abi, ref readIndex);
                 }
                 else
                 {
@@ -1181,18 +1182,18 @@ namespace EosSharp.Core.Providers
             return value;
         }
 
-        private object ReadAbiStruct(byte[] data, AbiStruct abiStruct, Abi abi)
+        private object ReadAbiStruct(byte[] data, AbiStruct abiStruct, Abi abi, ref int readIndex)
         {
-            return ReadAbiStruct<object>(data, abiStruct, abi);
+            return ReadAbiStruct<object>(data, abiStruct, abi, ref readIndex);
         }
 
-        private T ReadAbiStruct<T>(byte[] data, AbiStruct abiStruct, Abi abi)
+        private T ReadAbiStruct<T>(byte[] data, AbiStruct abiStruct, Abi abi, ref int readIndex)
         {
             object value = default(T);
 
             if (!string.IsNullOrWhiteSpace(abiStruct.@base))
             {
-                value = (T)ReadAbiType(data, abiStruct.@base, abi);
+                value = (T)ReadAbiType(data, abiStruct.@base, abi, ref readIndex);
             }
             else
             {
@@ -1202,7 +1203,7 @@ namespace EosSharp.Core.Providers
             var valueType = value.GetType();
             foreach (var field in abiStruct.fields)
             {
-                var abiValue = ReadAbiType(data, field.type, abi);
+                var abiValue = ReadAbiType(data, field.type, abi, ref readIndex);
                 var fieldName = FindObjectFieldName(field.name, value.GetType());
 
                 if(string.IsNullOrWhiteSpace(fieldName))
@@ -1223,30 +1224,30 @@ namespace EosSharp.Core.Providers
             return (T)value;
         }
 
-        private T ReadType<T>(byte[] data)
+        private T ReadType<T>(byte[] data, ref int readIndex)
         {
-            return (T)ReadType(data, typeof(T));
+            return (T)ReadType(data, typeof(T), ref readIndex);
         }
 
-        private object ReadType(byte[] data, Type objectType)
+        private object ReadType(byte[] data, Type objectType, ref int readIndex)
         {
             if (IsCollection(objectType))
             {
-                return ReadCollectionType(data, objectType);
+                return ReadCollectionType(data, objectType, ref readIndex);
             }
             else if (IsOptional(objectType))
             {
-                var opt = (byte)ReadByte(data);
+                var opt = (byte)ReadByte(data, ref readIndex);
                 if (opt == 1)
                 {
                     var optionalType = GetFirstGenericType(objectType);
-                    return ReadType(data, optionalType);
+                    return ReadType(data, optionalType, ref readIndex);
                 }
             }
             else if (IsPrimitive(objectType))
             {
                 var readerName = GetNormalizedReaderName(objectType);
-                return TypeReaders[readerName](data);
+                return TypeReaders[readerName](data, ref readIndex);
             }
 
             var value = Activator.CreateInstance(objectType);
@@ -1255,40 +1256,40 @@ namespace EosSharp.Core.Providers
             {
                 if (IsCollection(member.FieldType))
                 {
-                    objectType.GetField(member.Name).SetValue(value, ReadCollectionType(data, member.FieldType));
+                    objectType.GetField(member.Name).SetValue(value, ReadCollectionType(data, member.FieldType, ref readIndex));
                 }
                 else if(IsOptional(member.FieldType))
                 {
-                    var opt = (byte)ReadByte(data);
+                    var opt = (byte)ReadByte(data, ref readIndex);
                     if (opt == 1)
                     {
                         var optionalType = GetFirstGenericType(member.FieldType);
-                        objectType.GetField(member.Name).SetValue(value, ReadType(data, optionalType));
+                        objectType.GetField(member.Name).SetValue(value, ReadType(data, optionalType, ref readIndex));
                     }
                 }
                 else if (IsPrimitive(member.FieldType))
                 {
                     var readerName = GetNormalizedReaderName(member.FieldType, member.GetCustomAttributes());
-                    objectType.GetField(member.Name).SetValue(value, TypeReaders[readerName](data));
+                    objectType.GetField(member.Name).SetValue(value, TypeReaders[readerName](data, ref readIndex));
                 }
                 else
                 {
-                    objectType.GetField(member.Name).SetValue(value, ReadType(data, member.FieldType));
+                    objectType.GetField(member.Name).SetValue(value, ReadType(data, member.FieldType, ref readIndex));
                 }
             }
 
             return value;
         }
 
-        private IList ReadCollectionType(byte[] data, Type objectType)
+        private IList ReadCollectionType(byte[] data, Type objectType, ref int readIndex)
         {
             var collectionType = GetFirstGenericType(objectType);
-            var size = Convert.ToInt32(ReadVarUint32(data));
+            var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
             IList items = (IList)Activator.CreateInstance(objectType);
 
             for (int i = 0; i < size; i++)
             {
-                items.Add(ReadType(data, collectionType));
+                items.Add(ReadType(data, collectionType, ref readIndex));
             }
 
             return items;

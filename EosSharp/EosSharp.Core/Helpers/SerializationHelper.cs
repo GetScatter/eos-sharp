@@ -216,7 +216,7 @@ namespace EosSharp.Core.Helpers
         public static UInt32 DateToTimePointSec(DateTime value)
         {
             var span = (value - new DateTime(1970, 1, 1));
-            return (UInt32)span.TotalSeconds;
+            return Convert.ToUInt32(span.TotalSeconds);
         }
 
         public static DateTime TimePointSecToDate(UInt32 secs)
@@ -227,7 +227,7 @@ namespace EosSharp.Core.Helpers
         public static UInt32 DateToBlockTimestamp(DateTime value)
         { 
             var span = (value - new DateTime(1970, 1, 1));
-            return (UInt32)Math.Round((span.TotalMilliseconds - 946684800000) / 500);
+            return Convert.ToUInt32(Math.Round((span.TotalMilliseconds - 946684800000) / 500));
         }
 
         public static DateTime BlockTimestampToDate(UInt32 slot)
