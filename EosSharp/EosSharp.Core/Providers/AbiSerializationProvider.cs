@@ -204,12 +204,19 @@ namespace EosSharp.Core.Providers
 
         public byte[] SerializeActionData(Core.Api.v1.Action action, Abi abi)
         {
+            var abiAction = abi.actions.FirstOrDefault(aa => aa.name == action.name);
+            
+            if (abiAction == null)
+                throw new ArgumentException(string.Format("action name {0} not found on abi.", action.name));
+
+            var abiStruct = abi.structs.FirstOrDefault(s => s.name == abiAction.type);
+
+            if (abiStruct == null)
+                throw new ArgumentException(string.Format("struct type {0} not found on abi.", abiAction.type));
+
             using (MemoryStream ms = new MemoryStream())
             {
-                var abiAction = abi.actions.First(aa => aa.name == action.name);
-                var abiStruct = abi.structs.First(s => s.name == abiAction.type);
                 WriteAbiStruct(ms, action.data, abiStruct, abi);
-
                 return ms.ToArray();
             }
         }
@@ -441,8 +448,8 @@ namespace EosSharp.Core.Providers
         private static void WriteTimePoint(MemoryStream ms, object value)
         {
             var ticks = SerializationHelper.DateToTimePoint((DateTime)value);
-            WriteUint32(ms, Convert.ToUInt32(ticks) >> 0);
-            WriteUint32(ms, Convert.ToUInt32(Math.Floor((double)ticks / 0x100000000)) >> 0);
+            WriteUint32(ms, (UInt32)(ticks & 0xffffffff));
+            WriteUint32(ms, (UInt32)Math.Floor((double)ticks / 0x100000000));
         }
 
         private static void WriteTimePointSec(MemoryStream ms, object value)

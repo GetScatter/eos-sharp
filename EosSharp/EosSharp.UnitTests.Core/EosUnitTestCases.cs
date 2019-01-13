@@ -25,9 +25,9 @@ namespace EosSharp.UnitTests
             return Eos.GetTableRows(new GetTableRowsRequest()
             {
                 json = false,
-                code = "eosio",
-                scope = "eosio",
-                table = "producers"
+                code = "eosio.token",
+                scope = "EOS",
+                table = "stat"
             });
         }
 
@@ -132,7 +132,10 @@ namespace EosSharp.UnitTests
                             { "owner", new Dictionary<string, object>() {
                                 { "threshold", 1 },
                                 { "keys", new List<object>() {
-                                    new { key = "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr", weight = 1}
+                                    new Dictionary<string, object>() {
+                                        { "key", "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" },
+                                        { "weight", 1}
+                                    }
                                 }},
                                 { "accounts", new List<object>() },
                                 { "waits", new List<object>() }

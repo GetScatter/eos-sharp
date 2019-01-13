@@ -205,7 +205,7 @@ namespace EosSharp.Core.Helpers
         public static UInt64 DateToTimePoint(DateTime value)
         {
             var span = (value - new DateTime(1970, 1, 1));
-            return (UInt64)span.TotalMilliseconds;
+            return (UInt64)(span.Ticks / TimeSpan.TicksPerMillisecond);
         }
 
         public static DateTime TimePointToDate(long ticks)
@@ -216,23 +216,23 @@ namespace EosSharp.Core.Helpers
         public static UInt32 DateToTimePointSec(DateTime value)
         {
             var span = (value - new DateTime(1970, 1, 1));
-            return Convert.ToUInt32(span.TotalSeconds);
+            return (UInt32)((span.Ticks / TimeSpan.TicksPerSecond) & 0xffffffff);
         }
 
         public static DateTime TimePointSecToDate(UInt32 secs)
         {
-            return new DateTime(secs * 1000 + new DateTime(1970, 1, 1).Ticks);
+            return new DateTime(secs * TimeSpan.TicksPerSecond + new DateTime(1970, 1, 1).Ticks);
         }
 
         public static UInt32 DateToBlockTimestamp(DateTime value)
         { 
             var span = (value - new DateTime(1970, 1, 1));
-            return Convert.ToUInt32(Math.Round((span.TotalMilliseconds - 946684800000) / 500));
+            return (UInt32)((UInt64)Math.Round((double)(span.Ticks / TimeSpan.TicksPerMillisecond - 946684800000) / 500) & 0xffffffff);
         }
 
         public static DateTime BlockTimestampToDate(UInt32 slot)
         {
-            return new DateTime(slot * 500 + 946684800000 + new DateTime(1970, 1, 1).Ticks);
+            return new DateTime(slot * TimeSpan.TicksPerMillisecond * 500 + 946684800000 + new DateTime(1970, 1, 1).Ticks);
         }
     }
 }

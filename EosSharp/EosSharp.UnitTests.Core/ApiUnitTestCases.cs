@@ -77,7 +77,12 @@ namespace EosSharp.UnitTests
             return DefaultApi.AbiJsonToBin(new AbiJsonToBinRequest() {
                 code = "eosio.token",
                 action = "transfer",
-                args = new { from = "eosio", to = "eosio.names", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                args = new Dictionary<string, object>() {
+                    { "from", "eosio" },
+                    { "to", "eosio.names" },
+                    { "quantity", "1.0000 EOS" },
+                    { "memo", "hello crypto world!" }
+                }
             });
         }
 
@@ -87,7 +92,12 @@ namespace EosSharp.UnitTests
             {
                 code = "eosio.token",
                 action = "transfer",
-                args = new { from = "eosio", to = "eosio.names", quantity = "1.0000 EOS", memo = "hello crypto world!" }
+                args = new Dictionary<string, object>() {
+                    { "from", "eosio" },
+                    { "to", "eosio.names" },
+                    { "quantity", "1.0000 EOS" },
+                    { "memo", "hello crypto world!" }
+                }
             });
 
             await DefaultApi.AbiBinToJson(new AbiBinToJsonRequest()
@@ -182,9 +192,9 @@ namespace EosSharp.UnitTests
             return DefaultApi.GetTableRows(new GetTableRowsRequest()
             {
                 json = true,
-                code = "eosio",
-                scope = "eosio",
-                table = "producers"
+                code = "eosio.token",
+                scope = "EOS",
+                table = "stat"
             });
         }
 
