@@ -4,7 +4,6 @@ using EosSharp.Core.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,7 +25,6 @@ namespace EosSharp.Core.Providers
         private EosApi Api { get; set; }
         private Dictionary<string, Action<MemoryStream, object>> TypeWriters { get; set; }
         private Dictionary<string, ReaderDelegate> TypeReaders { get; set; }
-        //private int ReadIndex = 0;
 
         public AbiSerializationProvider(EosApi api)
         {

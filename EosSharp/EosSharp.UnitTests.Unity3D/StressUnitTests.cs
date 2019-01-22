@@ -71,6 +71,7 @@ namespace EosSharp.UnitTests.Unity3D
         {
             //TODO disabled for now because of CORS policy blocked in localhost
             //await GetBlockTaskLoop();
+            await Task.FromResult(0);
         }
     }
 }
