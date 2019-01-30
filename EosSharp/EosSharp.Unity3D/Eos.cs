@@ -1,6 +1,6 @@
 ﻿using EosSharp.Core;
 
-namespace EosSharp
+namespace EosSharp.Unity3D
 {
     public class Eos : EosBase
     {

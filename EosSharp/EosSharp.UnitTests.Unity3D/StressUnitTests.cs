@@ -1,16 +1,13 @@
 ﻿using EosSharp.Core;
 using EosSharp.Core.Providers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using EosSharp.Unity3D;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace EosSharp.UnitTests
+namespace EosSharp.UnitTests.Unity3D
 {
-    [TestClass]
     public class StressUnitTests
     {
         Eos Eos { get; set; }
@@ -28,8 +25,6 @@ namespace EosSharp.UnitTests
             });
         }
 
-        [TestMethod]
-        [TestCategory("Stress Tests")]
         public async Task GetBlockTaskLoop()
         {
             bool success = false;
@@ -44,21 +39,17 @@ namespace EosSharp.UnitTests
 
                 for (int i = 0; i < nrTasks; i++)
                 {
-                    tasks.Add(Task.Factory.StartNew(async (taskIdObj) =>
+                    for (int j = 1; j <= taskBlocks; j++)
                     {
-                        int taskId = taskIdObj as int? ?? 0;
-                        for (int j = 1; j <= taskBlocks; j++)
+                        try
                         {
-                            try
-                            {
-                                await Eos.GetBlock((taskId * taskBlocks + blockStartPos + j).ToString());
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine(JsonConvert.SerializeObject(ex));
-                            }
+                            await Eos.GetBlock((i * taskBlocks + blockStartPos + j).ToString());
                         }
-                    }, i).Unwrap());
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(JsonConvert.SerializeObject(ex));
+                        }
+                    }
                 }
 
                 await Task.WhenAll(tasks.ToArray());
@@ -70,7 +61,17 @@ namespace EosSharp.UnitTests
                 Console.WriteLine(JsonConvert.SerializeObject(ex));
             }
 
-            Assert.IsTrue(success);
+            if (success)
+                Console.WriteLine("Test GetBlockTaskLoop run successfuly.");
+            else
+                Console.WriteLine("Test GetBlockTaskLoop run failed.");
+        }
+
+        public async Task TestAll()
+        {
+            //TODO disabled for now because of CORS policy blocked in localhost
+            //await GetBlockTaskLoop();
+            await Task.FromResult(0);
         }
     }
 }
