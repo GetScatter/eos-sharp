@@ -25,9 +25,9 @@ namespace EosSharp.UnitTests.Unity3D
                 HttpEndpoint = "https://nodeos01.btuga.io",
                 ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
             };
-            var eosApi = new EosApi(eosConfig, new HttpHelper());
+            var eosApi = new EosApi(eosConfig, new HttpHandler());
 
-            ApiUnitTestCases = new ApiUnitTestCases(eosConfig, new EosApi(eosConfig, new HttpHelper()));
+            ApiUnitTestCases = new ApiUnitTestCases(eosConfig, eosApi);
         }
 
         public async Task GetInfo()

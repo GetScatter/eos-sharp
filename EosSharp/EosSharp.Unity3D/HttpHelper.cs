@@ -14,7 +14,7 @@ using UnityEngine.Networking;
 
 namespace EosSharp.Unity3D
 {
-    public class HttpHelper : IHttpHelper
+    public class HttpHandler : IHttpHandler
     {
         private static readonly HttpClient client = new HttpClient();
         private static Dictionary<string, object> ResponseCache { get; set; } = new Dictionary<string, object>();

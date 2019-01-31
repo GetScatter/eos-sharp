@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EosSharp.Core.Interfaces
 {
-    public interface IHttpHelper
+    public interface IHttpHandler
     {
         void ClearResponseCache();
         Task<TResponseData> PostJsonAsync<TResponseData>(string url, object data);

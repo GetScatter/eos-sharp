@@ -3,7 +3,6 @@ using EosSharp.Core.Exceptions;
 using EosSharp.Core.Helpers;
 using EosSharp.Core.Interfaces;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace EosSharp
 {
-    public class HttpHelper : IHttpHelper
+    public class HttpHandler : IHttpHandler
     {
         private static readonly HttpClient client = new HttpClient();
         private static Dictionary<string, object> ResponseCache { get; set; } = new Dictionary<string, object>();

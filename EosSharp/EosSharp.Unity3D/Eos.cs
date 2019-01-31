@@ -5,7 +5,7 @@ namespace EosSharp.Unity3D
     public class Eos : EosBase
     {
         public Eos(EosConfigurator configuratior) : 
-            base(configuratior, new HttpHelper())
+            base(configuratior, new HttpHandler())
         {
         }
     }

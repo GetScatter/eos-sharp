@@ -29,7 +29,7 @@ namespace EosSharp.UnitTests
                 HttpEndpoint = "https://nodeos01.btuga.io",
                 ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
             };
-            DefaultApi = new EosApi(EosConfig, new HttpHelper());
+            DefaultApi = new EosApi(EosConfig, new HttpHandler());
         }
 
         [TestMethod]

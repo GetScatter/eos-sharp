@@ -14,15 +14,24 @@ using System.Threading.Tasks;
 
 namespace EosSharp.Core.Api.v1
 {
+
+	/// <summary>
+    /// EosApi defines api methods to interface with a http handler
+    /// </summary>
     public class EosApi
     { 
         public EosConfigurator Config { get; set; }
-        public IHttpHelper HttpHelper { get; set; }
+        public IHttpHandler HttpHandler { get; set; }
 
-        public EosApi(EosConfigurator config, IHttpHelper httpHelper)
+		/// <summary>
+        /// Eos Client api constructor.
+        /// </summary>
+        /// <param name="config">Configures client parameters</param>
+        /// <param name="httpHandler">Http handler implementation</param>
+        public EosApi(EosConfigurator config, IHttpHandler httpHandler)
         {
-            Config = config;
-            HttpHelper = httpHelper;
+           Config = config;
+           HttpHandler = httpHandler;
         }
 
 <# foreach (var method in apiMethods) { #>
@@ -32,9 +41,9 @@ namespace EosSharp.Core.Api.v1
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
 <#        if(method.IsResponseCollection) { #>
-			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= EscapeKeyWords(method.Response[0].Name) #> = await HttpHelper.GetJsonAsync<<#= method.Response[0].Type#>>(url) };
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= EscapeKeyWords(method.Response[0].Name) #> = await HttpHandler.GetJsonAsync<<#= method.Response[0].Type#>>(url) };
 <#        } else { #>
-            return await HttpHelper.GetJsonAsync<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>>(url);
+            return await HttpHandler.GetJsonAsync<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>>(url);
 <#        } #>
         }
 <#      } #>
@@ -42,9 +51,9 @@ namespace EosSharp.Core.Api.v1
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
 <#        if(method.IsResponseCollection) { #>
-			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= EscapeKeyWords(method.Response[0].Name) #> = await HttpHelper.GetJsonAsync<<#= method.Response[0].Type#>>(url) };
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= EscapeKeyWords(method.Response[0].Name) #> = await HttpHandler.GetJsonAsync<<#= method.Response[0].Type#>>(url) };
 <#        } else { #>
-            return await HttpHelper.GetJsonAsync<<#= SnakeCaseToPascalCase(method.Name) #>Response>(url);
+            return await HttpHandler.GetJsonAsync<<#= SnakeCaseToPascalCase(method.Name) #>Response>(url);
 <#        } #>
         }
 <#   } else { #>
@@ -53,9 +62,9 @@ namespace EosSharp.Core.Api.v1
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
 <#        if(method.IsResponseCollection) { #>
-			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= EscapeKeyWords(method.Response[0].Name) #> = await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>) };
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= EscapeKeyWords(method.Response[0].Name) #> = await httpHandler.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>) };
 <#        } else { #>
-            return await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>>(url, data<#= method.IsCachable ? ", reload" : "" #>);
+            return await HttpHandler.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= SnakeCaseToPascalCase(method.Name) #>Response<#= method.ResponseGenericTypes #>>(url, data<#= method.IsCachable ? ", reload" : "" #>);
 <#        } #>
         }
 <#      } #>
@@ -63,9 +72,9 @@ namespace EosSharp.Core.Api.v1
         {
             var url = string.Format("{0}/v1/<#= method.Module #>/<#= method.Name #>", Config.HttpEndpoint);
 <#        if(method.IsResponseCollection) { #>
-			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= EscapeKeyWords(method.Response[0].Name) #> = await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>) };
+			return new <#= SnakeCaseToPascalCase(method.Name) #>Response() { <#= EscapeKeyWords(method.Response[0].Name) #> = await HttpHandler.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= method.Response[0].Type#>>(url, data<#= method.IsCachable ? ", reload" : "" #>) };
 <#        } else { #>
-            return await HttpHelper.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= SnakeCaseToPascalCase(method.Name) #>Response>(url, data<#= method.IsCachable ? ", reload" : "" #>);
+            return await HttpHandler.PostJson<#= method.IsCachable ? "WithCache" : "" #>Async<<#= SnakeCaseToPascalCase(method.Name) #>Response>(url, data<#= method.IsCachable ? ", reload" : "" #>);
 <#        } #>
         }
 <#   } #>

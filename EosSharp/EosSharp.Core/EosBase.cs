@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace EosSharp.Core
 {
+    /// <summary>
+    /// Client wrapper to interact with eos blockchains.
+    /// </summary>
     public class EosBase
     {
         private EosConfigurator EosConfig { get; set; }
@@ -17,21 +20,23 @@ namespace EosSharp.Core
         private AbiSerializationProvider AbiSerializer { get; set; }
 
         /// <summary>
-        /// Client wrapper to interact with eos blockchains.
+        /// Client wrapper constructor.
         /// </summary>
         /// <param name="config">Configures client parameters</param>
-        public EosBase(EosConfigurator config, IHttpHelper httpHelper)
+        /// <param name="httpHandler">Http handler implementation</param>
+        public EosBase(EosConfigurator config, IHttpHandler httpHandler)
         {
             EosConfig = config;
             if (EosConfig == null)
             {
                 throw new ArgumentNullException("config");
             }
-            Api = new EosApi(EosConfig, httpHelper);
+            Api = new EosApi(EosConfig, httpHandler);
             AbiSerializer = new AbiSerializationProvider(Api);
         }
 
         #region Api Methods
+
         /// <summary>
         /// Query for blockchain information
         /// </summary>
@@ -40,8 +45,9 @@ namespace EosSharp.Core
         {
             return Api.GetInfo();
         }
+
         /// <summary>
-        /// Query for blockchain account information
+        /// Query for account information
         /// </summary>
         /// <param name="accountName">account to query information</param>
         /// <returns>account information</returns>
@@ -53,6 +59,12 @@ namespace EosSharp.Core
             });
         }
 
+        /// <summary>
+        /// Query for smart contract detailed information
+        /// </summary>
+        /// <param name="accountName">smart contract account name</param>
+        /// <param name="codeAsWasm">query code as wasm, wast otherwise</param>
+        /// <returns>smart contract information</returns>
         public Task<GetCodeResponse> GetCode(string accountName, bool codeAsWasm)
         {
             return Api.GetCode(new GetCodeRequest()
@@ -62,6 +74,11 @@ namespace EosSharp.Core
             });
         }
 
+        /// <summary>
+        /// Query for smart contract abi detailed information
+        /// </summary>
+        /// <param name="accountName">smart contract account name</param>
+        /// <returns></returns>
         public async Task<Abi> GetAbi(string accountName)
         {
             return (await Api.GetAbi(new GetAbiRequest()
@@ -70,6 +87,12 @@ namespace EosSharp.Core
             })).abi;
         }
 
+        /// <summary>
+        /// Query for smart contract abi detailed information
+        /// </summary>
+        /// <param name="accountName">smart contract account name</param>
+        /// <param name="abiHash">TODO</param>
+        /// <returns>smart contract abi information as Base64FcString</returns>
         public Task<GetRawAbiResponse> GetRawAbi(string accountName, string abiHash = null)
         {
             return Api.GetRawAbi(new GetRawAbiRequest()
@@ -79,6 +102,11 @@ namespace EosSharp.Core
             });
         }
 
+        /// <summary>
+        /// Query for smart contract raw wasm and abi information
+        /// </summary>
+        /// <param name="accountName">smart contract account name</param>
+        /// <returns>smart contract wasm and abi information</returns>
         public Task<GetRawCodeAndAbiResponse> GetRawCodeAndAbi(string accountName)
         {
             return Api.GetRawCodeAndAbi(new GetRawCodeAndAbiRequest()
@@ -87,6 +115,13 @@ namespace EosSharp.Core
             });
         }
 
+        /// <summary>
+        /// Transform action data to packed binary format
+        /// </summary>
+        /// <param name="code">smart contract account name</param>
+        /// <param name="action">action name</param>
+        /// <param name="data">action </param>
+        /// <returns></returns>
         public async Task<string> AbiJsonToBin(string code, string action, object data)
         {
             return (await Api.AbiJsonToBin(new AbiJsonToBinRequest()
@@ -97,6 +132,13 @@ namespace EosSharp.Core
             })).binargs;
         }
 
+        /// <summary>
+        /// Transform action data as packed binary format to object
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="action"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public async Task<object> AbiBinToJson(string code, string action, string data)
         {
             return (await Api.AbiBinToJson(new AbiBinToJsonRequest()
@@ -107,6 +149,12 @@ namespace EosSharp.Core
             })).args;
         }
 
+        /// <summary>
+        /// Calculate required keys to sign the given transaction
+        /// </summary>
+        /// <param name="availableKeys">available public keys list</param>
+        /// <param name="trx">transaction requiring signatures</param>
+        /// <returns>required public keys</returns>
         public async Task<List<string>> GetRequiredKeys(List<string> availableKeys, Transaction trx)
         {
             int actionIndex = 0;
@@ -129,6 +177,7 @@ namespace EosSharp.Core
                 transaction = trx
             })).required_keys;
         }
+
         /// <summary>
         /// Query for blockchain block information
         /// </summary>
@@ -142,6 +191,11 @@ namespace EosSharp.Core
             });
         }
 
+        /// <summary>
+        /// Query block head state information
+        /// </summary>
+        /// <param name="blockNumOrId">block number or id</param>
+        /// <returns>TODO</returns>
         public Task<GetBlockHeaderStateResponse> GetBlockHeaderState(string blockNumOrId)
         {
             return Api.GetBlockHeaderState(new GetBlockHeaderStateRequest()
@@ -149,6 +203,7 @@ namespace EosSharp.Core
                 block_num_or_id = blockNumOrId
             });
         }
+
         /// <summary>
         /// Query for blockchain smart contract table state information
         /// </summary>
@@ -191,6 +246,7 @@ namespace EosSharp.Core
                 return result;
             }
         }
+
         /// <summary>
         /// Query for blockchain smart contract table state information
         /// </summary>
@@ -226,6 +282,13 @@ namespace EosSharp.Core
             return result;
         }
 
+        /// <summary>
+        /// Query account balance for a given token
+        /// </summary>
+        /// <param name="code">token smart contract account</param>
+        /// <param name="account">account name to check</param>
+        /// <param name="symbol">token symbol (optional)</param>
+        /// <returns>token balances</returns>
         public async Task<List<string>> GetCurrencyBalance(string code, string account, string symbol)
         {
             return (await Api.GetCurrencyBalance(new GetCurrencyBalanceRequest()
@@ -236,6 +299,12 @@ namespace EosSharp.Core
             })).assets;
         }
 
+        /// <summary>
+        /// Query token statistics
+        /// </summary>
+        /// <param name="code">token smart contract account</param>
+        /// <param name="symbol">token symbol (optional)</param>
+        /// <returns>currencies statistics</returns>
         public async Task<Dictionary<string, CurrencyStat>> GetCurrencyStats(string code, string symbol)
         {
             return (await Api.GetCurrencyStats(new GetCurrencyStatsRequest()
@@ -245,6 +314,13 @@ namespace EosSharp.Core
             })).stats;
         }
 
+        /// <summary>
+        /// Query producers information
+        /// </summary>
+        /// <param name="request.json">get list as json</param>
+        /// <param name="request.lower_bound">lower bound for the selected index value</param>
+        /// <param name="request.limit">limit the amount of results. Default 50</param>
+        /// <returns>producers information</returns>
         public async Task<GetProducersResponse> GetProducers(GetProducersRequest request)
         {
             var result = await Api.GetProducers(request);
@@ -264,11 +340,22 @@ namespace EosSharp.Core
             return result;
         }
 
+        /// <summary>
+        /// Query producers schedule
+        /// </summary>
+        /// <returns>Active, pending and proposed schedule</returns>
         public Task<GetProducerScheduleResponse> GetProducerSchedule()
         {
             return Api.GetProducerSchedule();
         }
 
+        /// <summary>
+        /// Query scheduled transactions
+        /// </summary>
+        /// <param name="request.json">get list as json</param>
+        /// <param name="request.lower_bound">lower bound for the selected index value</param>
+        /// <param name="request.limit">limit the amount of results. Default 50</param>
+        /// <returns>Scheduled transactions</returns>
         public async Task<GetScheduledTransactionsResponse> GetScheduledTransactions(GetScheduledTransactionsRequest request)
         {
             var result = await Api.GetScheduledTransactions(request);
@@ -291,6 +378,11 @@ namespace EosSharp.Core
             return result;
         }
 
+        /// <summary>
+        /// Creates a signed transaction using the signature provider and broadcasts it to the network
+        /// </summary>
+        /// <param name="trx">Transaction to send</param>
+        /// <returns>transaction id</returns>
         public async Task<string> CreateTransaction(Transaction trx)
         {
             if (EosConfig.SignProvider == null)
@@ -343,6 +435,7 @@ namespace EosSharp.Core
 
             return result.transaction_id;
         }
+
         /// <summary>
         /// Query for account actions log
         /// </summary>
@@ -360,6 +453,11 @@ namespace EosSharp.Core
             });
         }
 
+        /// <summary>
+        /// Query transaction information
+        /// </summary>
+        /// <param name="transactionId">transaction id</param>
+        /// <returns>Transaction information</returns>
         public Task<GetTransactionResponse> GetTransaction(string transactionId)
         {
             return Api.GetTransaction(new GetTransactionRequest()
@@ -368,6 +466,11 @@ namespace EosSharp.Core
             });
         }
 
+        /// <summary>
+        /// Query public key accounts
+        /// </summary>
+        /// <param name="publicKey">public key</param>
+        /// <returns>account names</returns>
         public async Task<List<string>> GetKeyAccounts(string publicKey)
         {
             return (await Api.GetKeyAccounts(new GetKeyAccountsRequest()
@@ -376,6 +479,11 @@ namespace EosSharp.Core
             })).account_names;
         }
 
+        /// <summary>
+        /// Query controlled accounts by a given account
+        /// </summary>
+        /// <param name="accountName">account name to search</param>
+        /// <returns>controlled account names</returns>
         public async Task<List<string>> GetControlledAccounts(string accountName)
         {
             return (await Api.GetControlledAccounts(new GetControlledAccountsRequest()

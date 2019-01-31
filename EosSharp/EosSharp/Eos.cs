@@ -2,10 +2,17 @@
 
 namespace EosSharp
 {
+    /// <summary>
+    /// EOSIO client wrapper using general purpose HttpHandler
+    /// </summary>
     public class Eos : EosBase
     {
-        public Eos(EosConfigurator configuratior) : 
-            base(configuratior, new HttpHelper())
+        /// <summary>
+        /// EOSIO Client wrapper constructor.
+        /// </summary>
+        /// <param name="config">Configures client parameters</param>
+        public Eos(EosConfigurator config) : 
+            base(config, new HttpHandler())
         {
         }
     }
