@@ -2,6 +2,9 @@
 
 namespace EosSharp.Core
 {
+    /// <summary>
+    /// Aggregates all properties to configure Eos client
+    /// </summary>
     public class EosConfigurator
     {
         /// <summary>

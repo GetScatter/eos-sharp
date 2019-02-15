@@ -5,6 +5,9 @@ using UnityEngine.Networking;
 
 namespace EosSharp.Unity3D
 {
+    /// <summary>
+    /// Class to implement async / awayt on a UnityWebRequest class
+    /// </summary>
     public class UnityWebRequestAwaiter : INotifyCompletion
     {
         private UnityWebRequestAsyncOperation asyncOp;
@@ -31,6 +34,9 @@ namespace EosSharp.Unity3D
         }
     }
 
+    /// <summary>
+    /// Extender to augment UnityWebRequest clas
+    /// </summary>
     public static class ExtensionMethods
     {
         public static UnityWebRequestAwaiter GetAwaiter(this UnityWebRequestAsyncOperation asyncOp)
