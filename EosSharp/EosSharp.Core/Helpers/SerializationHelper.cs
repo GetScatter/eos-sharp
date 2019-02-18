@@ -10,11 +10,20 @@ namespace EosSharp.Core.Helpers
 {
     public class SerializationHelper
     {
+        /// <summary>
+        /// Is a big Number negative
+        /// </summary>
+        /// <param name="bin">big number in byte array</param>
+        /// <returns></returns>
         public static bool IsNegative(byte[] bin)
         {
             return (bin[bin.Length - 1] & 0x80) != 0;
         }
 
+        /// <summary>
+        /// Negate a big number
+        /// </summary>
+        /// <param name="bin">big number in byte array</param>
         public static void Negate(byte[] bin)
         {
             int carry = 1;
@@ -26,6 +35,12 @@ namespace EosSharp.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Convert an unsigned decimal number as string to a big number
+        /// </summary>
+        /// <param name="size">Size in bytes of the big number</param>
+        /// <param name="s">decimal encoded as string</param>
+        /// <returns></returns>
         public static byte[] DecimalToBinary(uint size, string s)
         {
             byte[] result = new byte[size];
@@ -47,6 +62,12 @@ namespace EosSharp.Core.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Convert an signed decimal number as string to a big number
+        /// </summary>
+        /// <param name="size">Size in bytes of the big number</param>
+        /// <param name="s">decimal encoded as string</param>
+        /// <returns></returns>
         public static byte[] SignedDecimalToBinary(uint size, string s)
         {
             bool negative = s[0] == '-';
@@ -58,6 +79,12 @@ namespace EosSharp.Core.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Convert big number to an unsigned decimal number
+        /// </summary>
+        /// <param name="bin">big number as byte array</param>
+        /// <param name="minDigits">0-pad result to this many digits</param>
+        /// <returns></returns>
         public static string BinaryToDecimal(byte[] bin, int minDigits = 1)
         {
             var result = new List<char>(minDigits);
@@ -86,6 +113,12 @@ namespace EosSharp.Core.Helpers
             return string.Join("", result);
         }
 
+        /// <summary>
+        /// Convert big number to an signed decimal number
+        /// </summary>
+        /// <param name="bin">big number as byte array</param>
+        /// <param name="minDigits">0-pad result to this many digits</param>
+        /// <returns></returns>
         public static string SignedBinaryToDecimal(byte[] bin, int minDigits = 1)
         {
             if (IsNegative(bin))
@@ -96,6 +129,11 @@ namespace EosSharp.Core.Helpers
             return BinaryToDecimal(bin, minDigits);
         }
 
+        /// <summary>
+        /// Convert base64 with fc prefix to byte array
+        /// </summary>
+        /// <param name="s">string to convert</param>
+        /// <returns></returns>
         public static byte[] Base64FcStringToByteArray(string s)
         {
             //fc adds extra '='
@@ -107,6 +145,11 @@ namespace EosSharp.Core.Helpers
             return Convert.FromBase64String(s);
         }
 
+        /// <summary>
+        /// Convert ascii char to symbol value
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public static byte CharToSymbol(char c)
         {
             if (c >= 'a' && c <= 'z')
@@ -116,6 +159,11 @@ namespace EosSharp.Core.Helpers
             return 0;
         }
 
+        /// <summary>
+        /// Convert snake case string to pascal case
+        /// </summary>
+        /// <param name="s">string to convert</param>
+        /// <returns></returns>
         public static string SnakeCaseToPascalCase(string s)
         {
             var result = s.ToLower().Replace("_", " ");
@@ -124,6 +172,11 @@ namespace EosSharp.Core.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Convert pascal case string to snake case
+        /// </summary>
+        /// <param name="s">string to convert</param>
+        /// <returns></returns>
         public static string PascalCaseToSnakeCase(string s)
         {
             if (string.IsNullOrEmpty(s))
@@ -152,6 +205,11 @@ namespace EosSharp.Core.Helpers
             return builder.ToString();
         }
 
+        /// <summary>
+        /// Serialize object to byte array
+        /// </summary>
+        /// <param name="obj">object to serialize</param>
+        /// <returns></returns>
         public static byte[] ObjectToByteArray(object obj)
         {
             if (obj == null)
@@ -165,6 +223,11 @@ namespace EosSharp.Core.Helpers
             }
         }
 
+        /// <summary>
+        /// Encode byte array to hexadecimal string
+        /// </summary>
+        /// <param name="ba">byte array to convert</param>
+        /// <returns></returns>
         public static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hex = new StringBuilder(ba.Length * 2);
@@ -174,6 +237,11 @@ namespace EosSharp.Core.Helpers
             return hex.ToString();
         }
 
+        /// <summary>
+        /// Decode hexadecimal string to byte array
+        /// </summary>
+        /// <param name="hex"></param>
+        /// <returns></returns>
         public static byte[] HexStringToByteArray(string hex)
         {
             var l = hex.Length / 2;
@@ -183,11 +251,21 @@ namespace EosSharp.Core.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Serialize object to hexadecimal encoded string
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static string ObjectToHexString(object obj)
         {
             return ByteArrayToHexString(ObjectToByteArray(obj));
         }
 
+        /// <summary>
+        /// Combina multiple arrays into one
+        /// </summary>
+        /// <param name="arrays"></param>
+        /// <returns></returns>
         public static byte[] Combine(IEnumerable<byte[]> arrays)
         {
             byte[] ret = new byte[arrays.Sum(x => x != null ? x.Length : 0)];
@@ -202,34 +280,64 @@ namespace EosSharp.Core.Helpers
             return ret;
         }
 
+        /// <summary>
+        /// Convert DateTime to `time_point` (miliseconds since epoch)
+        /// </summary>
+        /// <param name="value">date to convert</param>
+        /// <returns></returns>
         public static UInt64 DateToTimePoint(DateTime value)
         {
             var span = (value - new DateTime(1970, 1, 1));
             return (UInt64)(span.Ticks / TimeSpan.TicksPerMillisecond);
         }
 
+        /// <summary>
+        /// Convert `time_point` (miliseconds since epoch) to DateTime
+        /// </summary>
+        /// <param name="ticks">time_point ticks to convert</param>
+        /// <returns></returns>
         public static DateTime TimePointToDate(long ticks)
         {
             return new DateTime(ticks + new DateTime(1970, 1, 1).Ticks);
         }
 
+        /// <summary>
+        /// Convert DateTime to `time_point_sec` (seconds since epoch)
+        /// </summary>
+        /// <param name="value">date to convert</param>
+        /// <returns></returns>
         public static UInt32 DateToTimePointSec(DateTime value)
         {
             var span = (value - new DateTime(1970, 1, 1));
             return (UInt32)((span.Ticks / TimeSpan.TicksPerSecond) & 0xffffffff);
         }
 
+        /// <summary>
+        /// Convert `time_point_sec` (seconds since epoch) to DateTime
+        /// </summary>
+        /// <param name="secs">time_point_sec to convert</param>
+        /// <returns></returns>
         public static DateTime TimePointSecToDate(UInt32 secs)
         {
             return new DateTime(secs * TimeSpan.TicksPerSecond + new DateTime(1970, 1, 1).Ticks);
         }
 
+        /// <summary>
+        /// Convert DateTime to `block_timestamp_type` (half-seconds since a different epoch)
+        /// </summary>
+        /// <param name="value">date to convert</param>
+        /// <returns></returns>
         public static UInt32 DateToBlockTimestamp(DateTime value)
         { 
             var span = (value - new DateTime(1970, 1, 1));
             return (UInt32)((UInt64)Math.Round((double)(span.Ticks / TimeSpan.TicksPerMillisecond - 946684800000) / 500) & 0xffffffff);
         }
 
+        /// <summary>
+        /// Convert `block_timestamp_type` (half-seconds since a different epoch) to DateTime
+        /// </summary>
+        /// <param name="slot">block_timestamp slot to convert</param>
+        /// <returns></returns>
         public static DateTime BlockTimestampToDate(UInt32 slot)
         {
             return new DateTime(slot * TimeSpan.TicksPerMillisecond * 500 + 946684800000 + new DateTime(1970, 1, 1).Ticks);

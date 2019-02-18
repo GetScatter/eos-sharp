@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 
 namespace EosSharp.Core.Providers
 {
+    /// <summary>
+    /// Serialize / deserialize transaction and fields using a Abi schema
+    /// https://developers.eos.io/eosio-home/docs/the-abi
+    /// </summary>
     public class AbiSerializationProvider
     {
         private enum KeyType
@@ -20,12 +24,17 @@ namespace EosSharp.Core.Providers
             k1 = 0,
             r1 = 1,
         };
+
         private delegate object ReaderDelegate(byte[] data, ref int readIndex);
 
         private EosApi Api { get; set; }
         private Dictionary<string, Action<MemoryStream, object>> TypeWriters { get; set; }
         private Dictionary<string, ReaderDelegate> TypeReaders { get; set; }
 
+        /// <summary>
+        /// Construct abi serialization provided using EOS api
+        /// </summary>
+        /// <param name="api"></param>
         public AbiSerializationProvider(EosApi api)
         {
             this.Api = api;
@@ -101,8 +110,13 @@ namespace EosSharp.Core.Providers
                 {"signature",            ReadSignature          },
                 {"extended_asset",       ReadExtendedAsset      }
             };
-        }      
+        }
 
+        /// <summary>
+        /// Serialize transaction to packed asynchronously
+        /// </summary>
+        /// <param name="trx">transaction to pack</param>
+        /// <returns></returns>
         public async Task<byte[]> SerializePackedTransaction(Transaction trx)
         {
             int actionIndex = 0;
@@ -142,6 +156,11 @@ namespace EosSharp.Core.Providers
             }
         }
 
+        /// <summary>
+        /// Deserialize packed transaction asynchronously
+        /// </summary>
+        /// <param name="packtrx">hex encoded strinh with packed transaction</param>
+        /// <returns></returns>
         public async Task<Transaction> DeserializePackedTransaction(string packtrx)
         {
             var data = SerializationHelper.HexStringToByteArray(packtrx);
@@ -182,6 +201,11 @@ namespace EosSharp.Core.Providers
             return trx;
         }
 
+        /// <summary>
+        /// Deserialize packed abi
+        /// </summary>
+        /// <param name="packabi">string encoded abi</param>
+        /// <returns></returns>
         public Abi DeserializePackedAbi(string packabi)
         {
             var data = SerializationHelper.Base64FcStringToByteArray(packabi);
@@ -200,6 +224,12 @@ namespace EosSharp.Core.Providers
             };
         }
 
+        /// <summary>
+        /// Serialize action to packed action data
+        /// </summary>
+        /// <param name="action">action to pack</param>
+        /// <param name="abi">abi schema to look action structure</param>
+        /// <returns></returns>
         public byte[] SerializeActionData(Core.Api.v1.Action action, Abi abi)
         {
             var abiAction = abi.actions.FirstOrDefault(aa => aa.name == action.name);
@@ -219,11 +249,26 @@ namespace EosSharp.Core.Providers
             }
         }
 
+        /// <summary>
+        /// Deserialize structure data as "Dictionary<string, object>"
+        /// </summary>
+        /// <param name="structType">struct type in abi</param>
+        /// <param name="dataHex">data to deserialize</param>
+        /// <param name="abi">abi schema to look for struct type</param>
+        /// <returns></returns>
         public Dictionary<string, object> DeserializeStructData(string structType, string dataHex, Abi abi)
         {
             return DeserializeStructData<Dictionary<string, object>>(structType, dataHex, abi);
         }
 
+        /// <summary>
+        /// Deserialize structure data with generic TStructData type
+        /// </summary>
+        /// <typeparam name="TStructData">deserialization struct data type</typeparam>
+        /// <param name="structType">struct type in abi</param>
+        /// <param name="dataHex">data to deserialize</param>
+        /// <param name="abi">abi schema to look for struct type</param>
+        /// <returns></returns>
         public TStructData DeserializeStructData<TStructData>(string structType, string dataHex, Abi abi)
         {
             var data = SerializationHelper.HexStringToByteArray(dataHex);
@@ -232,6 +277,11 @@ namespace EosSharp.Core.Providers
             return ReadAbiStruct<TStructData>(data, abiStruct, abi, ref readIndex);
         }
 
+        /// <summary>
+        /// Get abi schemas used in transaction
+        /// </summary>
+        /// <param name="trx"></param>
+        /// <returns></returns>
         public Task<Abi[]> GetTransactionAbis(Transaction trx)
         {
             var abiTasks = new List<Task<Abi>>();
@@ -249,6 +299,11 @@ namespace EosSharp.Core.Providers
             return Task.WhenAll(abiTasks);
         }
 
+        /// <summary>
+        /// Get abi schema by contract account name
+        /// </summary>
+        /// <param name="accountName">account name</param>
+        /// <returns></returns>
         public async Task<Abi> GetAbi(string accountName)
         {
             var result = await Api.GetRawAbi(new GetRawAbiRequest()
@@ -259,11 +314,23 @@ namespace EosSharp.Core.Providers
             return DeserializePackedAbi(result.abi);
         }
 
+        /// <summary>
+        /// Deserialize type by encoded string data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dataHex"></param>
+        /// <returns></returns>
         public T DeserializeType<T>(string dataHex)
         {
             return DeserializeType<T>(SerializationHelper.HexStringToByteArray(dataHex));
         }
 
+        /// <summary>
+        /// Deserialize type by binary data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public T DeserializeType<T>(byte[] data)
         {
             int readIndex = 0;
