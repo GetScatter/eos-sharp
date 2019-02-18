@@ -48,18 +48,18 @@ Returns:
 ```csharp
 class GetInfoResponse 
 { 
-	string server_version;
-	string chain_id;
-	UInt32 head_block_num;
-	UInt32 last_irreversible_block_num;
-	string last_irreversible_block_id;
-	string head_block_id;
-	DateTime head_block_time;
-	string head_block_producer;
-	string virtual_block_cpu_limit;
-	string virtual_block_net_limit;
-	string block_cpu_limit;
-	string block_net_limit;
+    string server_version;
+    string chain_id;
+    UInt32 head_block_num;
+    UInt32 last_irreversible_block_num;
+    string last_irreversible_block_id;
+    string head_block_id;
+    DateTime head_block_time;
+    string head_block_producer;
+    string virtual_block_cpu_limit;
+    string virtual_block_net_limit;
+    string block_cpu_limit;
+    string block_net_limit;
 }
 ```
 
@@ -71,23 +71,23 @@ Returns:
 ```csharp
 class GetAccountResponse
 {
-	string account_name;
-	UInt32 head_block_num;
-	DateTime head_block_time;
-	bool privileged;
-	DateTime last_code_update;
-	DateTime created;
-	Int64 ram_quota;
-	Int64 net_weight;
-	Int64 cpu_weight; 
-	Resource net_limit; 
-	Resource cpu_limit;
-	UInt64 ram_usage;
-	List<Permission> permissions;
-	RefundRequest refund_request;
-	SelfDelegatedBandwidth self_delegated_bandwidth;
-	TotalResources total_resources;
-	VoterInfo voter_info;
+    string account_name;
+    UInt32 head_block_num;
+    DateTime head_block_time;
+    bool privileged;
+    DateTime last_code_update;
+    DateTime created;
+    Int64 ram_quota;
+    Int64 net_weight;
+    Int64 cpu_weight; 
+    Resource net_limit; 
+    Resource cpu_limit;
+    UInt64 ram_usage;
+    List<Permission> permissions;
+    RefundRequest refund_request;
+    SelfDelegatedBandwidth self_delegated_bandwidth;
+    TotalResources total_resources;
+    VoterInfo voter_info;
 }
 ```
 
@@ -99,21 +99,21 @@ Returns:
 ```csharp
 class GetBlockResponse
 {
-	DateTime timestamp;
-	string producer;
-	UInt32 confirmed;
-	string previous;
-	string transaction_mroot;
-	string action_mroot;
-	UInt32 schedule_version;
-	string new_producers;
-	List<Extension> block_extensions;
-	List<Extension> header_extensions;
-	string producer_signature;
-	List<TransactionReceipt> transactions;
-	string id;
-	UInt32 block_num;
-	UInt32 ref_block_prefix;
+    DateTime timestamp;
+    string producer;
+    UInt32 confirmed;
+    string previous;
+    string transaction_mroot;
+    string action_mroot;
+    UInt32 schedule_version;
+    string new_producers;
+    List<Extension> block_extensions;
+    List<Extension> header_extensions;
+    string producer_signature;
+    List<TransactionReceipt> transactions;
+    string id;
+    UInt32 block_num;
+    UInt32 ref_block_prefix;
 }
 ```
 
@@ -207,11 +207,11 @@ class GetTableByScopeResponse
 
 class TableByScopeResultRow
 {
-	string code;
-	string scope;
-	string table;
-	string payer;
-	UInt32? count;
+    string code;
+    string scope;
+    string table;
+    string payer;
+    UInt32? count;
 }
 ```
 
@@ -229,9 +229,9 @@ Returns:
 ```csharp
 class GetActionsResponse
 {
-	List<GlobalAction> actions;
-	UInt32 last_irreversible_block;
-	bool time_limit_exceeded_error;
+    List<GlobalAction> actions;
+    UInt32 last_irreversible_block;
+    bool time_limit_exceeded_error;
 }
 ```
 
