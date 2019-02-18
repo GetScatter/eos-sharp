@@ -1,9 +1,13 @@
 # eos-sharp
 C# client library for EOS blockchains. The library is based on https://github.com/EOSIO/eosjs and MIT licensed.
 
+```
+Install-Package eos-sharp
+```
+
 ### Prerequisite to build
 
-Visual Studio 2017 
+Visual Studio 2017+
 
 ### Instalation
 eos-sharp is now available through nuget https://www.nuget.org/packages/eos-sharp
@@ -44,18 +48,18 @@ Returns:
 ```csharp
 class GetInfoResponse 
 { 
-    string    ServerVersion
-    string    ChainId 
-    UInt32?   HeadBlockNum   
-    UInt32?   LastIrreversibleBlockNum
-    string    LastIrreversibleBlockId
-    string    HeadBlockId   
-    DateTime? HeadBlockTime 
-    string    HeadBlockProducer
-    string    VirtualBlockCpuLimit
-    string    VirtualBlockNetLimit  
-    string    BlockCpuLimit
-    string    BlockNetLimit
+	string server_version;
+	string chain_id;
+	UInt32 head_block_num;
+	UInt32 last_irreversible_block_num;
+	string last_irreversible_block_id;
+	string head_block_id;
+	DateTime head_block_time;
+	string head_block_producer;
+	string virtual_block_cpu_limit;
+	string virtual_block_net_limit;
+	string block_cpu_limit;
+	string block_net_limit;
 }
 ```
 
@@ -67,23 +71,23 @@ Returns:
 ```csharp
 class GetAccountResponse
 {
-    string                 AccountName
-    UInt32?                HeadBlockNum 
-    DateTime?              HeadBlockTime
-    bool?                  Privileged
-    DateTime?              LastCodeUpdate 
-    DateTime?              Created
-    Int32?                 RamQuota 
-    Int32?                 NetWeight 
-    Int32?                 CpuWeight
-    Resource               NetLimit
-    Resource               CpuLimit 
-    UInt32?                RamUsage 
-    List<Permission>       Permissions
-    RefundRequest          RefundRequest
-    SelfDelegatedBandwidth SelfDelegatedBandwidth 
-    TotalResources         TotalResources 
-    VoterInfo              VoterInfo
+	string account_name;
+	UInt32 head_block_num;
+	DateTime head_block_time;
+	bool privileged;
+	DateTime last_code_update;
+	DateTime created;
+	Int64 ram_quota;
+	Int64 net_weight;
+	Int64 cpu_weight; 
+	Resource net_limit; 
+	Resource cpu_limit;
+	UInt64 ram_usage;
+	List<Permission> permissions;
+	RefundRequest refund_request;
+	SelfDelegatedBandwidth self_delegated_bandwidth;
+	TotalResources total_resources;
+	VoterInfo voter_info;
 }
 ```
 
@@ -95,21 +99,21 @@ Returns:
 ```csharp
 class GetBlockResponse
 {
-    DateTime?              Timestamp  
-    string                 Producer
-    UInt32                 Confirmed  
-    string                 Previous  
-    string                 TransactionMroot  
-    string                 ActionMroot 
-    UInt32                 ScheduleVersion 
-    string                 NewProducers
-    List<Extension>        BlockExtensions  
-    List<Extension>        HeaderExtensions
-    string                 ProducerSignature 
-    List<BlockTransaction> Transactions   
-    string                 Id
-    UInt32                 BlockNum 
-    UInt32                 RefBlockPrefix
+	DateTime timestamp;
+	string producer;
+	UInt32 confirmed;
+	string previous;
+	string transaction_mroot;
+	string action_mroot;
+	UInt32 schedule_version;
+	string new_producers;
+	List<Extension> block_extensions;
+	List<Extension> header_extensions;
+	string producer_signature;
+	List<TransactionReceipt> transactions;
+	string id;
+	UInt32 block_num;
+	UInt32 ref_block_prefix;
 }
 ```
 
@@ -130,10 +134,10 @@ class GetBlockResponse
 
 ```csharp
 var result = await eos.GetTableRows(new GetTableRowsRequest() {
-    Json = true,
-    Code = "eosio.token",
-    Scope = "EOS",
-    Table = "stat"
+    json = true,
+    code = "eosio.token",
+    scope = "EOS",
+    table = "stat"
 });
 ```
 
@@ -142,8 +146,8 @@ Returns:
 ```csharp
 class GetTableRowsResponse
 {
-    List<object> Rows
-    bool?        More
+    List<object> rows
+    bool?        more
 }
 ```
 
@@ -151,22 +155,19 @@ Using generic type
 
 ```csharp
 /*JsonProperty helps map the fields from the api*/
-class Stat
+public class Stat
 {
-    [JsonProperty("issuer")]
-    public string Issuer { get; set; }
-    [JsonProperty("max_supply")]
-    public string MaxSupply { get; set; }
-    [JsonProperty("supply")]
-    public string Supply { get; set; }
+    public string issuer { get; set; }
+    public string max_supply { get; set; }
+    public string supply { get; set; }
 }
 
 var result = await Eos.GetTableRows<Stat>(new GetTableRowsRequest()
 {
-    Json = true,
-    Code = "eosio.token",
-    Scope = "EOS",
-    Table = "stat"
+    json = true,
+    code = "eosio.token",
+    scope = "EOS",
+    table = "stat"
 });
 ```
 
@@ -175,8 +176,8 @@ Returns:
 ```csharp
 class GetTableRowsResponse<Stat>
 {
-    List<Stat> Rows
-    bool?      More
+    List<Stat> rows
+    bool?      more
 }
 ```
 
@@ -190,8 +191,8 @@ class GetTableRowsResponse<Stat>
 
 ```csharp
 var result = await eos.GetTableByScope(new GetTableByScopeRequest() {
-    Code = "eosio.token",
-    Table = "accounts"
+   code = "eosio.token",
+   table = "accounts"
 });
 ```
 
@@ -200,17 +201,17 @@ Returns:
 ```csharp
 class GetTableByScopeResponse
 {
-    List<TableByScopeResultRow> Rows
-    string More
+    List<TableByScopeResultRow> rows
+    string more
 }
 
 class TableByScopeResultRow
 {
-    string Code
-    string Scope
-    string Table
-    string Payer
-    UInt32? Count
+	string code;
+	string scope;
+	string table;
+	string payer;
+	UInt32? count;
 }
 ```
 
@@ -228,28 +229,31 @@ Returns:
 ```csharp
 class GetActionsResponse
 {
-    List<GlobalAction> Actions
-    UInt32?            LastIrreversibleBlock
-    bool?              TimeLimitExceededError
+	List<GlobalAction> actions;
+	UInt32 last_irreversible_block;
+	bool time_limit_exceeded_error;
 }
 ```
 
 #### Create Transaction
 
+**NOTE: using anonymous objects and / or properties as action data is not supported on WEBGL Unity exports
+Use data as dictionary or strongly typed objects with fields.**
+
 ```csharp
 var result = await eos.CreateTransaction(new Transaction()
 {
-    Actions = new List<Api.v1.Action>()
+    actions = new List<Api.v1.Action>()
     {
         new Api.v1.Action()
         {
-            Account = "eosio.token",
-            Authorization = new List<PermissionLevel>()
+            account = "eosio.token",
+            authorization = new List<PermissionLevel>()
             {
-                new PermissionLevel() {Actor = "tester112345", Permission = "active" }
+                new PermissionLevel() {actor = "tester112345", permission = "active" }
             },
-            Name = "transfer",
-            Data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
+            name = "transfer",
+            data = new { from = "tester112345", to = "tester212345", quantity = "0.0001 EOS", memo = "hello crypto world!" }
         }
     }
 });
@@ -260,17 +264,17 @@ Data can also be a Dictionary with key as string. The dictionary value can be an
 ```csharp
 var result = await eos.CreateTransaction(new Transaction()
 {
-    Actions = new List<Api.v1.Action>()
+    actions = new List<Api.v1.Action>()
     {
         new Api.v1.Action()
         {
-            Account = "eosio.token",
-            Authorization = new List<PermissionLevel>()
+            account = "eosio.token",
+            authorization = new List<PermissionLevel>()
             {
-                new PermissionLevel() {Actor = "tester112345", Permission = "active" }
+                new PermissionLevel() {actor = "tester112345", permission = "active" }
             },
-            Name = "transfer",
-            Data = new Dictionary<string, string>()
+            name = "transfer",
+            data = new Dictionary<string, string>()
             {
                 { "from", "tester112345" },
                 { "to", "tester212345" },
@@ -290,14 +294,29 @@ Is also possible to implement your own **ISignProvider** to customize how the si
 Example:
 
 ```csharp
+/// <summary>
+/// Signature provider implementation that uses a private server to hold keys
+/// </summary>
 class SuperSecretSignProvider : ISignProvider
 {
+	/// <summary>
+    /// Get available public keys from signature provider server
+    /// </summary>
+    /// <returns>List of public keys</returns>
    public async Task<IEnumerable<string>> GetAvailableKeys()
    {
         var result = await HttpHelper.GetJsonAsync<SecretResponse>("https://supersecretserver.com/get_available_keys");
         return result.Keys;
    }
    
+	/// <summary>
+	/// Sign bytes using the signature provider server
+	/// </summary>
+	/// <param name="chainId">EOSIO Chain id</param>
+	/// <param name="requiredKeys">required public keys for signing this bytes</param>
+	/// <param name="signBytes">signature bytes</param>
+	/// <param name="abiNames">abi contract names to get abi information from</param>
+	/// <returns>List of signatures per required keys</returns>
    public async Task<IEnumerable<string>> Sign(string chainId, List<string> requiredKeys, byte[] signBytes)
    {
         var result = await HttpHelper.PostJsonAsync<SecretSignResponse>("https://supersecretserver.com/sign", new SecretRequest {
@@ -309,6 +328,7 @@ class SuperSecretSignProvider : ISignProvider
    }
 }
 
+// create new Eos client instance using your custom signature provider
 Eos eos = new Eos(new EosConfigurator()
 {
     SignProvider = new SuperSecretSignProvider(),
