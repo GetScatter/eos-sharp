@@ -1,0 +1,456 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ include file="EosApiUtils.t4" once="true" #>  
+<#+ 
+	// Definitions of Api types
+	ApiType[] apiTypes = new ApiType[] {
+		new ApiType() 
+		{
+			Name = "Symbol",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "precision", Type = "byte" }
+            }
+        },
+
+		new ApiType() 
+		{
+			Name = "Resource",
+			Fields = new Field[]
+            {
+				new Field() { Name = "used", Type = "Int64" },
+				new Field() { Name = "available", Type = "Int64" },
+				new Field() { Name = "max", Type = "Int64" }
+            }
+        },
+
+		new ApiType() 
+		{
+			Name = "AuthorityKey",
+			Fields = new Field[]
+            {
+				new Field() { Name = "key", Type = "string" },
+				new Field() { Name = "weight", Type = "Int32" }
+            }
+        },
+
+		new ApiType() 
+		{
+			Name = "AuthorityAccount",
+			Fields = new Field[]
+            {
+				new Field() { Name = "account", Type = "string" },
+				new Field() { Name = "weight", Type = "Int32" }
+            }
+        },
+
+		new ApiType() 
+		{
+			Name = "AuthorityWait",
+			Fields = new Field[]
+            {
+				new Field() { Name = "wait_sec", Type = "string" },
+				new Field() { Name = "weight", Type = "Int32" }
+            }
+        },
+
+		new ApiType() 
+		{
+			Name = "Authority",
+			Fields = new Field[]
+            {
+				new Field() { Name = "threshold", Type = "UInt32" },
+				new Field() { Name = "keys", Type = "List<AuthorityKey>" },
+				new Field() { Name = "accounts", Type = "List<AuthorityAccount>" },
+				new Field() { Name = "waits", Type = "List<AuthorityWait>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Permission",
+			Fields = new Field[]
+            {
+				new Field() { Name = "perm_name", Type = "string" },
+				new Field() { Name = "parent", Type = "string" },
+				new Field() { Name = "required_auth", Type = "Authority" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiType",
+			Fields = new Field[]
+            {
+				new Field() { Name = "new_type_name", Type = "string" },
+				new Field() { Name = "type", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiField",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "type", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiStruct",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "base", Type = "string" },
+				new Field() { Name = "fields", Type = "List<AbiField>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiAction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string", AbiFieldType = "name" },				
+				new Field() { Name = "type", Type = "string" },
+				new Field() { Name = "ricardian_contract", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiTable",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string", AbiFieldType = "name" },
+				new Field() { Name = "index_type", Type = "string" },
+				new Field() { Name = "key_names", Type = "List<string>" },
+				new Field() { Name = "key_types", Type = "List<string>" },
+				new Field() { Name = "type", Type = "string" },
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Abi",
+			Fields = new Field[]
+            {
+				new Field() { Name = "version", Type = "string" },
+				new Field() { Name = "types", Type = "List<AbiType>" },
+				new Field() { Name = "structs", Type = "List<AbiStruct>" },
+				new Field() { Name = "actions", Type = "List<AbiAction>" },
+				new Field() { Name = "tables", Type = "List<AbiTable>" },
+				new Field() { Name = "ricardian_clauses", Type = "List<AbiRicardianClause>" },
+				new Field() { Name = "error_messages", Type = "List<string>" },
+				new Field() { Name = "abi_extensions", Type = "List<Extension>" },
+				new Field() { Name = "variants", Type = "List<Variant>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "AbiRicardianClause",
+			Fields = new Field[]
+            {
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "body", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "CurrencyStat",
+			Fields = new Field[]
+            {
+				new Field() { Name = "supply", Type = "string" },
+				new Field() { Name = "max_supply", Type = "string" },
+				new Field() { Name = "issuer", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Producer",
+			Fields = new Field[]
+            {
+				new Field() { Name = "owner", Type = "string", AbiFieldType = "name" },
+				new Field() { Name = "total_votes", Type = "double", AbiFieldType = "float64" },
+				new Field() { Name = "producer_key", Type = "string", AbiFieldType = "public_key" },
+				new Field() { Name = "is_active", Type = "bool" },
+				new Field() { Name = "url", Type = "string" },
+				new Field() { Name = "unpaid_blocks", Type = "UInt32" },
+				new Field() { Name = "last_claim_time", Type = "UInt64" },
+				new Field() { Name = "location", Type = "UInt16" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "ScheduleProducers",
+			Fields = new Field[]
+            {
+				new Field() { Name = "producer_name", Type = "string" },
+				new Field() { Name = "block_signing_key", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Schedule",
+			Fields = new Field[]
+            {
+				new Field() { Name = "version", Type = "UInt32?" },
+				new Field() { Name = "producers", Type = "List<ScheduleProducers>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "PermissionLevel",
+			Fields = new Field[]
+            {
+				new Field() { Name = "actor", Type = "string" },
+				new Field() { Name = "permission", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Extension",
+			Fields = new Field[]
+            {
+				new Field() { Name = "type", Type = "UInt16" },
+				new Field() { Name = "data", Type = "byte[]" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Variant",
+			Fields = new Field[]
+            {
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "type", Type = "List<string>" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Action",
+
+			Fields = new Field[]
+            {
+				new Field() { Name = "account", Type = "string" },
+				new Field() { Name = "name", Type = "string" },
+				new Field() { Name = "authorization", Type = "List<PermissionLevel>" },
+				new Field() { Name = "data", Type = "object" },
+				new Field() { Name = "hex_data", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Transaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "expiration", Type = "DateTime" },
+				new Field() { Name = "ref_block_num", Type = "UInt16" },
+				new Field() { Name = "ref_block_prefix", Type = "UInt32" },
+				new Field() { Name = "max_net_usage_words", Type = "UInt32" },
+				new Field() { Name = "max_cpu_usage_ms", Type = "byte" },
+				new Field() { Name = "delay_sec", Type = "UInt32" },
+				new Field() { Name = "context_free_actions", Type = "List<Action>", Default = "new List<Action>()"},
+				new Field() { Name = "actions", Type = "List<Action>" , Default = "new List<Action>()"},
+				new Field() { Name = "transaction_extensions", Type = "List<Extension>" , Default = "new List<Extension>()"}
+
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "ScheduledTransaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "trx_id", Type = "string" },
+				new Field() { Name = "sender", Type = "string" },
+				new Field() { Name = "sender_id", Type = "string" },
+				new Field() { Name = "payer", Type = "string" },
+				new Field() { Name = "delay_until", Type = "DateTime?" },
+				new Field() { Name = "expiration", Type = "DateTime?" },
+				new Field() { Name = "published", Type = "DateTime?" },
+				new Field() { Name = "transaction", Type = "Object" },
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "Receipt",
+			Fields = new Field[]
+            {
+				new Field() { Name = "receiver", Type = "string" },
+				new Field() { Name = "act_digest", Type = "string" },
+				new Field() { Name = "global_sequence", Type = "UInt64?" },
+				new Field() { Name = "recv_sequence", Type = "UInt64?" },
+				new Field() { Name = "auth_sequence", Type = "List<List<object>>" },
+				new Field() { Name = "code_sequence", Type = "UInt64?" },
+				new Field() { Name = "abi_sequence", Type = "UInt64?" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "ActionTrace",
+			Fields = new Field[]
+            {
+				new Field() { Name = "receipt", Type = "Receipt" },
+				new Field() { Name = "act", Type = "Action" },
+				new Field() { Name = "elapsed", Type = "UInt32?" },
+				new Field() { Name = "cpu_usage", Type = "UInt32?" },
+				new Field() { Name = "console", Type = "string" },
+				new Field() { Name = "total_cpu_usage", Type = "UInt32?" },
+				new Field() { Name = "trx_id", Type = "string" },
+				new Field() { Name = "inline_traces", Type = "List<ActionTrace>" },
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "GlobalAction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "global_action_seq", Type = "UInt64?" },
+				new Field() { Name = "account_action_seq", Type = "UInt64?" },
+				new Field() { Name = "block_num", Type = "UInt32?" },
+				new Field() { Name = "block_time", Type = "DateTime?" },
+				new Field() { Name = "action_trace", Type = "ActionTrace" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "TransactionReceipt",
+			Fields = new Field[]
+            {
+				new Field() { Name = "status", Type = "string" },
+				new Field() { Name = "cpu_usage_us", Type = "UInt32?" },
+				new Field() { Name = "net_usage_words", Type = "UInt32?" },
+				new Field() { Name = "trx", Type = "object" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "ProcessedTransaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "receipt", Type = "TransactionReceipt" },
+				new Field() { Name = "elapsed", Type = "UInt32" },
+				new Field() { Name = "net_usage", Type = "UInt32" },
+				new Field() { Name = "scheduled", Type = "bool" },
+				new Field() { Name = "except", Type = "string" },
+				new Field() { Name = "action_traces", Type = "List<ActionTrace>" }
+
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "DetailedTransaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "receipt", Type = "TransactionReceipt" },
+				new Field() { Name = "trx", Type = "Transaction" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "PackedTransaction",
+			Fields = new Field[]
+            {
+				new Field() { Name = "compression", Type = "string" },
+				new Field() { Name = "context_free_data", Type = "List<object>" },
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "packed_context_free_data", Type = "string" },
+				new Field() { Name = "packed_trx", Type = "string" },
+				new Field() { Name = "signatures", Type = "List<string>" },
+				new Field() { Name = "transaction", Type = "Transaction" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "RefundRequest",
+			Fields = new Field[]
+            {
+				new Field() { Name = "cpu_amount", Type = "string" },
+				new Field() { Name = "net_amount", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "SelfDelegatedBandwidth",
+			Fields = new Field[]
+            {
+				new Field() { Name = "cpu_weight", Type = "string" },
+				new Field() { Name = "from", Type = "string" },
+				new Field() { Name = "net_weight", Type = "string" },
+				new Field() { Name = "to", Type = "string" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "TotalResources",
+			Fields = new Field[]
+            {
+				new Field() { Name = "cpu_weight", Type = "string" },
+				new Field() { Name = "net_weight", Type = "string" },
+				new Field() { Name = "owner", Type = "string" },
+				new Field() { Name = "ram_bytes", Type = "UInt64?" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "VoterInfo",
+			Fields = new Field[]
+            {
+				new Field() { Name = "is_proxy", Type = "bool?" },
+				new Field() { Name = "last_vote_weight", Type = "double?" },
+				new Field() { Name = "owner", Type = "string" },
+				new Field() { Name = "producers", Type = "List<string>" },
+				new Field() { Name = "proxied_vote_weight", Type = "double?" },
+				new Field() { Name = "proxy", Type = "string" },
+				new Field() { Name = "staked", Type = "UInt64?" }
+            }
+        },
+
+		new ApiType()
+        {
+			Name = "ExtendedAsset",
+			Fields = new Field[]
+            {
+				new Field() { Name = "quantity", Type = "string" },
+				new Field() { Name = "contract", Type = "string" }
+            }
+        },
+
+		new ApiType()
+		{
+			Name = "TableByScopeResultRow",
+			Fields = new Field[]
+            {
+				new Field() { Name = "code", Type = "string" },
+				new Field() { Name = "scope", Type = "string" },
+				new Field() { Name = "table", Type = "string" },
+				new Field() { Name = "payer", Type = "string" },
+				new Field() { Name = "count", Type = "UInt32?"}
+            }
+		},
+    };
+#>

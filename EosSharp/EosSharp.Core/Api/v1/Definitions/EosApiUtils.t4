@@ -1,0 +1,62 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#+ 
+	public class Field 
+	{
+		public string Name { get; set; }
+		public string Type { get; set; }
+        public string Default { get; set; }
+		public string AbiFieldType { get; set; }
+	}
+
+	public class ApiType 
+	{
+        public string Name { get; set; }
+		public Field[] Fields { get; set; }
+    }
+
+	public class ApiMethod 
+	{
+        public string Module { get; set; }
+		public string Name { get; set; }
+        public string ResponseGenericTypes { get; set; }
+        public bool IsResponseCollection { get; set; }
+        public bool IsCachable { get; set; }
+        public Field[] Request { get; set; }
+		public Field[] Response { get; set; }
+		public Field[] GenericResponse { get; set; }		
+	}
+
+	public string SnakeCaseToPascalCase(string s)
+	{
+		var result = s.ToLower().Replace("_", " ");
+		TextInfo info = CultureInfo.CurrentCulture.TextInfo;
+		result = info.ToTitleCase(result).Replace(" ", string.Empty);
+		return result;
+	}
+
+	public string RenderFieldDefault(Field field) {
+		if(string.IsNullOrWhiteSpace(field.Default))
+			return ";";
+
+		if(field.Type.ToLower() == "string") {
+			return " = \"" + field.Default + "\";";
+        }
+		else {
+			return " = " + field.Default + ";";
+        }
+    }
+
+	public string EscapeKeyWords(string s) {
+
+		switch(s) {
+			case "base":
+				return "@base";
+			case "class":
+				return "@class";
+			case "new":
+				return "@new";
+        }
+
+		return s;
+    }
+#>

@@ -1,0 +1,439 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ include file="EosApiUtils.t4" once="true" #>  
+<#+ 
+	//Definitions of Api methods with request and response structure
+	ApiMethod[] apiMethods = new ApiMethod[] {
+		// chain methods
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_info", 
+			Response = new Field[] 
+			{
+				new Field() { Name = "server_version",              Type = "string" },
+				new Field() { Name = "chain_id",                    Type = "string" },
+				new Field() { Name = "head_block_num",              Type = "UInt32" },
+				new Field() { Name = "last_irreversible_block_num", Type = "UInt32" },
+				new Field() { Name = "last_irreversible_block_id",  Type = "string" },
+				new Field() { Name = "head_block_id",               Type = "string" },
+				new Field() { Name = "head_block_time",             Type = "DateTime" },
+				new Field() { Name = "head_block_producer",         Type = "string" },
+				new Field() { Name = "virtual_block_cpu_limit",     Type = "string" },
+				new Field() { Name = "virtual_block_net_limit",     Type = "string" },
+				new Field() { Name = "block_cpu_limit",             Type = "string" },
+				new Field() { Name = "block_net_limit",             Type = "string" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_account",
+			Request = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" }
+			},
+			Response = new Field[] {
+				new Field() { Name = "account_name",   Type = "string" },
+				new Field() { Name = "head_block_num", Type = "UInt32" },
+				new Field() { Name = "head_block_time", Type = "DateTime" },
+				new Field() { Name = "privileged", Type = "bool" },
+				new Field() { Name = "last_code_update", Type = "DateTime" },
+				new Field() { Name = "created", Type = "DateTime" },
+				new Field() { Name = "ram_quota", Type = "Int64" },
+				new Field() { Name = "net_weight", Type = "Int64" },
+				new Field() { Name = "cpu_weight", Type = "Int64" },
+				new Field() { Name = "net_limit", Type = "Resource" },
+				new Field() { Name = "cpu_limit", Type = "Resource" }, 
+				new Field() { Name = "ram_usage", Type = "UInt64" },
+				new Field() { Name = "permissions", Type = "List<Permission>" },
+				new Field() { Name = "refund_request", Type = "RefundRequest" },
+				new Field() { Name = "self_delegated_bandwidth", Type = "SelfDelegatedBandwidth" },
+				new Field() { Name = "total_resources", Type = "TotalResources" },
+				new Field() { Name = "voter_info", Type = "VoterInfo" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_code",
+			IsCachable = true,
+			Request = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "code_as_wasm", Type = "bool" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "wast",         Type = "string" },
+				new Field() { Name = "wasm",         Type = "string" },
+				new Field() { Name = "code_hash",    Type = "string" },
+				new Field() { Name = "abi",          Type = "Abi" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_abi",
+			IsCachable = true,
+			Request = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "abi",          Type = "Abi" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_raw_code_and_abi",
+			IsCachable = true,
+			Request = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "wasm",         Type = "string" },
+				new Field() { Name = "abi",          Type = "string" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_raw_abi",
+			IsCachable = true,
+			Request = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "abi_hash", Type = "string" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "code_hash",         Type = "string" },
+				new Field() { Name = "abi_hash",          Type = "string" },
+				new Field() { Name = "abi",          Type = "string" }
+			}
+		},
+
+		
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "abi_json_to_bin",
+			Request = new Field[] 
+			{
+				new Field() { Name = "code",   Type = "string" },
+				new Field() { Name = "action", Type = "string" },
+				new Field() { Name = "args",   Type = "object" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "binargs", Type = "string" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "abi_bin_to_json",
+			Request = new Field[] 
+			{
+				new Field() { Name = "code",    Type = "string" },
+				new Field() { Name = "action",  Type = "string" },
+				new Field() { Name = "binargs", Type = "string" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "args", Type = "object" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_required_keys",
+			Request = new Field[] 
+			{
+				new Field() { Name = "transaction",    Type = "Transaction" },
+				new Field() { Name = "available_keys", Type = "List<string>" }
+			},
+			Response = new Field[] {
+				new Field() { Name = "required_keys", Type = "List<string>" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_block",
+			Request = new Field[] 
+			{
+				new Field() { Name = "block_num_or_id", Type = "string" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "timestamp", Type = "DateTime" },
+				new Field() { Name = "producer", Type = "string" },
+				new Field() { Name = "confirmed", Type = "UInt32" },
+				new Field() { Name = "previous", Type = "string" },
+				new Field() { Name = "transaction_mroot", Type = "string" },
+				new Field() { Name = "action_mroot", Type = "string" },
+				new Field() { Name = "schedule_version", Type = "UInt32" },
+				new Field() { Name = "new_producers", Type = "string" },
+				new Field() { Name = "block_extensions", Type = "List<Extension>" },
+				new Field() { Name = "header_extensions", Type = "List<Extension>" },
+				new Field() { Name = "producer_signature", Type = "string" },
+				new Field() { Name = "transactions", Type = "List<TransactionReceipt>" },
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "block_num", Type = "UInt32" },
+				new Field() { Name = "ref_block_prefix", Type = "UInt32" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_block_header_state",
+			Request = new Field[] 
+			{
+				new Field() { Name = "block_num_or_id", Type = "string" }
+			},
+			Response = new Field[] {}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_table_rows",
+			ResponseGenericTypes = "<TRowType>",
+			Request = new Field[] 
+			{
+				new Field() { Name = "json", Type = "bool", Default = "false" },
+				new Field() { Name = "code", Type = "string" },
+				new Field() { Name = "scope", Type = "string" },
+				new Field() { Name = "table", Type = "string" },
+				new Field() { Name = "table_key", Type = "string" },
+				new Field() { Name = "lower_bound", Type = "string", Default = "0" },
+				new Field() { Name = "upper_bound", Type = "string", Default = "-1" },
+				new Field() { Name = "limit", Type = "Int32", Default = "10" },
+				new Field() { Name = "key_type", Type = "string" },
+				new Field() { Name = "index_position", Type = "string" },
+				new Field() { Name = "encode_type", Type = "string", Default = "dec" },
+				new Field() { Name = "reverse", Type = "bool" },
+				new Field() { Name = "show_payer", Type = "bool" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "rows", Type = "List<object>"},
+				new Field() { Name = "more", Type = "bool" }
+			},
+			GenericResponse = new Field[] 
+			{
+				new Field() { Name = "rows", Type = "List<TRowType>"},
+				new Field() { Name = "more", Type = "bool" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_table_by_scope",
+			Request = new Field[] 
+			{
+				new Field() { Name = "code", Type = "string" },
+				new Field() { Name = "table", Type = "string", Default = "" },
+				new Field() { Name = "lower_bound", Type = "string" },
+				new Field() { Name = "upper_bound", Type = "string" },
+				new Field() { Name = "limit", Type = "Int32", Default = "10" },
+				new Field() { Name = "reverse", Type = "bool" }
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "rows", Type = "List<TableByScopeResultRow>"},
+				new Field() { Name = "more", Type = "string" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_currency_balance",
+			IsResponseCollection = true,
+			Request = new Field[] 
+			{
+				new Field() { Name = "code", Type = "string" },
+				new Field() { Name = "account", Type = "string" },
+				new Field() { Name = "symbol", Type = "string" }
+
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "assets", Type = "List<string>" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_currency_stats",
+			IsResponseCollection = true,
+			Request = new Field[]
+			{
+				new Field() { Name = "code", Type = "string" },
+				new Field() { Name = "symbol", Type = "string" }
+
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "stats", Type = "Dictionary<string, CurrencyStat>" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_producers",
+			Request = new Field[] 
+			{
+				new Field() { Name = "json", Type = "bool", Default = "false" },
+				new Field() { Name = "lower_bound", Type = "string" },
+				new Field() { Name = "limit", Type = "Int32", Default = "50" }
+
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "rows", Type = "List<object>" },
+				new Field() { Name = "total_producer_vote_weight", Type = "double" },
+				new Field() { Name = "more", Type = "string" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_producer_schedule",
+			Response = new Field[] 
+			{
+				new Field() { Name = "active", Type = "Schedule" },
+				new Field() { Name = "pending", Type = "Schedule" },
+				new Field() { Name = "proposed", Type = "Schedule" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "get_scheduled_transactions",
+			Request = new Field[] 
+			{
+				new Field() { Name = "json", Type = "bool", Default = "false" },
+				new Field() { Name = "lower_bound", Type = "string" },
+				new Field() { Name = "limit", Type = "Int32", Default = "50" }
+
+			},
+			Response = new Field[] 
+			{
+				new Field() { Name = "transactions", Type = "List<ScheduledTransaction>" },
+				new Field() { Name = "more", Type = "string" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "chain", 
+			Name = "push_transaction",
+			Request = new Field[] 
+			{
+				new Field() { Name = "signatures", Type = "string[]" },
+				new Field() { Name = "compression", Type = "UInt32" },
+				new Field() { Name = "packed_context_free_data", Type = "string" },
+				new Field() { Name = "packed_trx", Type = "string" },
+				new Field() { Name = "transaction", Type = "Transaction" }
+			},
+			Response = new Field[]
+			{
+				new Field() { Name = "transaction_id", Type = "string" },
+				new Field() { Name = "processed", Type = "ProcessedTransaction" }
+			}
+		},
+
+		// chain history methods
+		new ApiMethod() 
+		{ 
+			Module = "history", 
+			Name = "get_actions",
+			Request = new Field[] 
+			{
+				new Field() { Name = "account_name", Type = "string" },
+				new Field() { Name = "pos", Type = "Int32" },
+				new Field() { Name = "offset", Type = "Int32" },
+			},
+			Response = new Field[]
+			{
+				new Field() { Name = "actions", Type = "List<GlobalAction>" },
+				new Field() { Name = "last_irreversible_block", Type = "UInt32" },
+				new Field() { Name = "time_limit_exceeded_error", Type = "bool" },
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "history", 
+			Name = "get_transaction",
+			Request = new Field[] 
+			{
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "block_num_hint", Type = "string" }
+			},
+			Response = new Field[]
+			{
+				new Field() { Name = "id", Type = "string" },
+				new Field() { Name = "trx", Type = "DetailedTransaction" },
+				new Field() { Name = "block_time", Type = "DateTime" },
+				new Field() { Name = "block_num", Type = "UInt32" },
+				new Field() { Name = "last_irreversible_block", Type = "UInt32" },
+				new Field() { Name = "traces", Type = "List<ActionTrace>" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "history", 
+			Name = "get_key_accounts",
+			Request = new Field[] 
+			{
+				new Field() { Name = "public_key", Type = "string" }
+			},
+			Response = new Field[]
+			{
+				new Field() { Name = "account_names", Type = "List<string>" }
+			}
+		},
+
+		new ApiMethod() 
+		{ 
+			Module = "history", 
+			Name = "get_controlled_accounts",
+			Request = new Field[] 
+			{
+				new Field() { Name = "controlling_account", Type = "string" }
+			},
+			Response = new Field[]
+			{
+				new Field() { Name = "controlled_accounts", Type = "List<string>" }
+			}
+		}
+	};
+#>

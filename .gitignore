@@ -9,3 +9,14 @@
 /EosSharp/EosSharp/bin
 /EosSharp/EosSharp.UnitTests/bin
 /EosSharp/.vs
+/EosSharp/EosSharp.Unity3D/obj
+/EosSharp/EosSharp.Unity3D/bin
+/EosSharp/EosSharp.Core/bin
+/EosSharp/EosSharp.Core/obj
+/EosSharp/EosSharp.UnitTests.Core/bin/Debug/netstandard2.0
+/EosSharp/EosSharp.UnitTests.Core/obj
+/EosSharp/EosSharp.UnitTests.Unity3D/bin/Debug/netstandard2.0
+/EosSharp/EosSharp.UnitTests.Unity3D/obj
+/EosSharp/EosSharp.UnitTests.Unity3D/UnityTester/Assets/Plugins
+/EosSharp/EosSharp.UnitTests.Unity3D/UnityTester/.vs/UnityTester/v15
+/EosSharp/EosSharp.UnitTests.Unity3D/UnityTester/obj/Debug
