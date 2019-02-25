@@ -10,20 +10,13 @@
     <PackageProjectUrl>https://github.com/GetScatter/eos-sharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GetScatter/eos-sharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Copyright>Copyright 2018</Copyright>
+    <Copyright>Copyright 2019</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>2.0.0.1</AssemblyVersion>
-    <FileVersion>2.0.0.1</FileVersion>
-    <Version>2.0.1</Version>
-    <PackageReleaseNotes>This release introduces breaking changes! Developers are advised to upgrate to this version that has WebGL unity exports support.
-
-Complete refactor eos-sharp to handle Unity3D constraints and be more modular
-Add support to WebGL unity exports
-change licence to GNU
-improve code documentation
-change Api properties to fields
-change names to EOSIO api names and remove JsonProperty usage</PackageReleaseNotes>
+    <AssemblyVersion>2.0.0.2</AssemblyVersion>
+    <FileVersion>2.0.0.2</FileVersion>
+    <Version>2.0.2</Version>
+    <PackageReleaseNotes>Update licence back to MIT</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
@@ -53,7 +46,7 @@ change names to EOSIO api names and remove JsonProperty usage</PackageReleaseNot
   
   <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
     <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
     </ItemGroup>
   </Target>
 
