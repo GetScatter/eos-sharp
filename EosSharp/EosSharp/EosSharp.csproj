@@ -17,7 +17,7 @@
     <FileVersion>2.0.0.2</FileVersion>
     <Version>2.0.2</Version>
     <PackageReleaseNotes>Update licence back to MIT</PackageReleaseNotes>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
