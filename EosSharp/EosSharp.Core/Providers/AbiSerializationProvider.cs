@@ -715,7 +715,7 @@ namespace EosSharp.Core.Providers
             }
             else
             {
-                var abiStruct = abi.structs.FirstOrDefault(s => s.name == type);
+                var abiStruct = GetTypeAbiStruct(abi, type);
                 if (abiStruct != null)
                 {
                     WriteAbiStruct(ms, value, abiStruct, abi);
@@ -797,10 +797,32 @@ namespace EosSharp.Core.Providers
             return default(TSerializer);
         }
 
-        #endregion
+        private AbiStruct GetTypeAbiStruct(Abi abi, string type)
+        {
+            var abiType = abi.types.FirstOrDefault(t => t.new_type_name == type);
 
-        #region Reader Functions
-        private object ReadByte(byte[] data, ref int readIndex)
+            if(abiType != null)
+            {
+                var abiStruct = abi.structs.FirstOrDefault(s => s.name == abiType.type);
+                if (abiStruct != null)
+                {
+                    return abiStruct;
+                }
+                else
+                {
+                    return GetTypeAbiStruct(abi, abiType.type);
+                }
+            }
+            else
+            {
+                return abi.structs.FirstOrDefault(s => s.name == type);
+            }
+        }
+
+    #endregion
+
+    #region Reader Functions
+    private object ReadByte(byte[] data, ref int readIndex)
         {
             return data[readIndex++];
         }
@@ -1240,7 +1262,7 @@ namespace EosSharp.Core.Providers
             }
             else
             {
-                var abiStruct = abi.structs.FirstOrDefault(s => s.name == type);
+                var abiStruct = GetTypeAbiStruct(abi, type);
                 if (abiStruct != null)
                 {
                     value = ReadAbiStruct(data, abiStruct, abi, ref readIndex);
