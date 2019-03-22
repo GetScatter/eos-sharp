@@ -29,17 +29,20 @@ namespace EosSharp.Core.Helpers
         /// <summary>
         /// Generate a new key pair based on a key type
         /// </summary>
-        /// <param name="keyType">Optional key type. (sha256x2, R1, K1)</param>
+        /// <param name="keyType">Optional key type. (sha256x2, R1)</param>
         /// <returns>key pair</returns>
-        public static KeyPair GenerateKeyPair(string keyType = null)
+        public static KeyPair GenerateKeyPair(string keyType = "sha256x2")
         {
             var key = Secp256K1Manager.GenerateRandomKey();
             var pubKey = Secp256K1Manager.GetPublicKey(key, true);
 
+            if (keyType != "sha256x2" && keyType != "R1")
+                throw new Exception("invalid key type.");
+
             return new KeyPair()
             {
                 PrivateKey = KeyToString(key, keyType, keyType == "R1" ? "PVT_R1_" : null),
-                PublicKey = KeyToString(pubKey, keyType, keyType == "R1" ? "PUB_R1_" : "EOS")
+                PublicKey = KeyToString(pubKey, keyType != "sha256x2" ? keyType : null, keyType == "R1" ? "PUB_R1_" : "EOS")
             };
         }
 
@@ -154,17 +157,22 @@ namespace EosSharp.Core.Helpers
         {
             var keyBytes = Base58.Decode(key);
             byte[] digest = null;
-            int versionSize = 0;
+            int skipSize = 0;
 
             if(keyType == "sha256x2")
             {
-                versionSize = 1;
-                digest = Sha256Manager.GetHash(Sha256Manager.GetHash(keyBytes.Take(size + versionSize).ToArray()));
+                // skip version
+                skipSize = 1;
+                digest = Sha256Manager.GetHash(Sha256Manager.GetHash(keyBytes.Take(size + skipSize).ToArray()));
             }
             else if(!string.IsNullOrWhiteSpace(keyType))
             {
+                // skip K1 recovery param
+                if(keyType == "K1")
+                    skipSize = 1;
+
                 digest = Ripemd160Manager.GetHash(SerializationHelper.Combine(new List<byte[]>() {
-                    keyBytes.Take(size).ToArray(),
+                    keyBytes.Take(size + skipSize).ToArray(),
                     Encoding.UTF8.GetBytes(keyType)
                 }));
             }
@@ -173,7 +181,7 @@ namespace EosSharp.Core.Helpers
                 digest = Ripemd160Manager.GetHash(keyBytes.Take(size).ToArray());
             }
 
-            if (!keyBytes.Skip(size + versionSize).SequenceEqual(digest.Take(4)))
+            if (!keyBytes.Skip(size + skipSize).SequenceEqual(digest.Take(4)))
             {
                 throw new Exception("checksum doesn't match.");
             }

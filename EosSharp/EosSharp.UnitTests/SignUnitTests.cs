@@ -1,4 +1,5 @@
-﻿using EosSharp.Core;
+﻿using Cryptography.ECDSA;
+using EosSharp.Core;
 using EosSharp.Core.Api.v1;
 using EosSharp.Core.Helpers;
 using EosSharp.Core.Providers;
@@ -23,11 +24,11 @@ namespace EosSharp.UnitTests
             {
                 SignProvider = new DefaultSignProvider("5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA"),
 
-                //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
-                //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+                HttpEndpoint = "https://nodes.eos42.io", //Mainnet
+                ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
 
-                HttpEndpoint = "https://nodeos01.btuga.io",
-                ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
+                //HttpEndpoint = "https://nodeos01.btuga.io",
+                //ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
             };
             DefaultApi = new EosApi(EosConfig, new HttpHandler());
         }
@@ -36,8 +37,28 @@ namespace EosSharp.UnitTests
         [TestCategory("Signature Tests")]
         public void GenerateKeyPair()
         {
-            Console.WriteLine(JsonConvert.SerializeObject(CryptoHelper.GenerateKeyPair("R1")));
             Console.WriteLine(JsonConvert.SerializeObject(CryptoHelper.GenerateKeyPair()));
+        }
+
+        [TestMethod]
+        [TestCategory("Signature Tests")]
+        public void VerifyKeyTypes()
+        {
+            var key = CryptoHelper.GenerateKeyPair();
+
+            CryptoHelper.PrivKeyStringToBytes(key.PrivateKey);
+            CryptoHelper.PubKeyStringToBytes(key.PublicKey);
+
+            var helloBytes = Encoding.UTF8.GetBytes("Hello world!");
+
+            var hash = Sha256Manager.GetHash(helloBytes);
+
+            var sign = Secp256K1Manager.SignCompressedCompact(hash, CryptoHelper.GetPrivateKeyBytesWithoutCheckSum(key.PrivateKey));
+            var check = new List<byte[]>() { sign, Encoding.UTF8.GetBytes("K1") };
+            var checksum = Ripemd160Manager.GetHash(SerializationHelper.Combine(check)).Take(4).ToArray();
+            var signAndChecksum = new List<byte[]>() { sign, checksum };
+
+            CryptoHelper.SignStringToBytes("SIG_K1_" + Base58.Encode(SerializationHelper.Combine(signAndChecksum)));
         }
 
         [TestMethod]
@@ -60,13 +81,21 @@ namespace EosSharp.UnitTests
 
         [TestMethod]
         [TestCategory("Signature Tests")]
+        public void SignParse()
+        {
+            var signature = "SIG_K1_KZoEShDrNxiAQq8rYafahdudAESBAfHQxU7ihavonMDMND4jNSHhk9q4UVbs7tTLK6RidFmFmSruipEM1chyxFgN46meSF";
+            var keyBytes = CryptoHelper.SignStringToBytes(signature);
+        }
+
+        [TestMethod]
+        [TestCategory("Signature Tests")]
         public async Task SignHelloWorld()
         {
             var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
             var helloBytes = Encoding.UTF8.GetBytes("Hello world!");
             var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, helloBytes);
 
-            Assert.IsTrue(signatures.First() == "SIG_K1_JxtwrzV246xdAgqgH36oX5MjMeg1sEFdUWuwnE9Fhr9eqi5JzgmKXm9UEJgNZMLYdnZhphL1QmE8aW7rTDPC8k8acvkoMR");
+            Assert.IsTrue(signatures.First() == "SIG_K1_KZ16wreoktSNYiiJaR3DgUW3QNSHYvhqXcZDc1nvKdFJ7h2HTQPofmBYJos3VgJ1q1ZjCnJQCN6ffagyQL4g9imXD9Fm8m");
         }
 
         [TestMethod]
@@ -101,7 +130,7 @@ namespace EosSharp.UnitTests
             var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
             var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
-            Assert.IsTrue(signatures.First() == "SIG_K1_KWLNqBX3qhbeagcFpkeKHA5EE9yAEzwmeVwY5zW3fgVcswP1x6ur45qENqWxd2GvjAUKnmaTcrKWG2crWWnw22RHdBE8oS");
+            Assert.IsTrue(signatures.First() == "SIG_K1_KVsYuAMd2gopMCsCPxgUMCaPRMvtnMVTbbEDSujBSw6TVeu7v7xHFRYT2Y6nBKSKS6hHjjJE6YZQNdbrMYX71FibTatikf");
         }
     }
 }
