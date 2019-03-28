@@ -32,6 +32,7 @@
 		"GetTableRowsGeneric",
 		"GetProducers",
 		"GetScheduledTransactions",
+		"CreateTransactionArrayData",
 		"CreateTransactionAnonymousObjectData",
 		"CreateTransaction",
 		"CreateNewAccount"

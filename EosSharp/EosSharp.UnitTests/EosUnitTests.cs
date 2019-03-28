@@ -23,7 +23,10 @@ namespace EosSharp.UnitTests
                 //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
                 //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
 
-                HttpEndpoint = "https://nodeos01.btuga.io",
+                //HttpEndpoint = "https://nodeos01.btuga.io",
+                //ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
+
+				HttpEndpoint = "http://localhost:8888",
                 ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
             };
             var eosApi = new EosApi(eosConfig, new HttpHandler());
@@ -106,6 +109,23 @@ namespace EosSharp.UnitTests
             try
             {
                 await EosUnitTestCases.GetScheduledTransactions();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            Assert.IsTrue(success);
+        }
+		[TestMethod]
+        [TestCategory("Eos Tests")]
+        public async Task CreateTransactionArrayData()
+        {
+            bool success = false;
+            try
+            {
+                await EosUnitTestCases.CreateTransactionArrayData();
                 success = true;
             }
             catch (Exception ex)

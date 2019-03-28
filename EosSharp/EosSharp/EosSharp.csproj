@@ -13,11 +13,10 @@
     <Copyright>Copyright 2019</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>2.0.3.0</AssemblyVersion>
-    <FileVersion>2.0.3.0</FileVersion>
-    <Version>2.0.3</Version>
-    <PackageReleaseNotes>Fix bug on generating key pairs
-Fix bug on verifying K1 signatures based on recovery sig param</PackageReleaseNotes>
+    <AssemblyVersion>2.0.4.0</AssemblyVersion>
+    <FileVersion>2.0.4.0</FileVersion>
+    <Version>2.0.4</Version>
+    <PackageReleaseNotes>Fix bug on specialized Array types</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

@@ -119,6 +119,24 @@ namespace EosSharp.UnitTests.Unity3D
 			else
 				Console.WriteLine("Test GetScheduledTransactions run failed.");
         }
+        public async Task CreateTransactionArrayData()
+        {
+            bool success = false;
+            try
+            {
+                await EosUnitTestCases.CreateTransactionArrayData();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            if(success)
+				Console.WriteLine("Test CreateTransactionArrayData run successfuly.");
+			else
+				Console.WriteLine("Test CreateTransactionArrayData run failed.");
+        }
         public async Task CreateTransactionAnonymousObjectData()
         {
             bool success = false;
@@ -181,6 +199,7 @@ namespace EosSharp.UnitTests.Unity3D
 			await GetTableRowsGeneric();
 			await GetProducers();
 			await GetScheduledTransactions();
+			await CreateTransactionArrayData();
 			await CreateTransactionAnonymousObjectData();
 			await CreateTransaction();
 			await CreateNewAccount();

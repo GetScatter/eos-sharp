@@ -1,7 +1,7 @@
 ﻿using EosSharp.Core;
 using EosSharp.Core.Api.v1;
-using EosSharp.Core.Providers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -63,6 +63,30 @@ namespace EosSharp.UnitTests
             return Eos.GetScheduledTransactions(new GetScheduledTransactionsRequest()
             {
                 json = false
+            });
+        }
+
+        public Task CreateTransactionArrayData()
+        {
+            return Eos.CreateTransaction(new Transaction()
+            {
+                actions = new List<Core.Api.v1.Action>()
+                {
+                    new Core.Api.v1.Action()
+                    {
+                        account = "platform",
+                        authorization = new List<PermissionLevel>()
+                        {
+                            new PermissionLevel() {actor = "player1", permission = "active" }
+                        },
+                        name = "testarr",
+                        data = new { user = "player1", array = new List<UInt64>() { 1, 6, 3} }
+                        //data = new { user = "player1", array = new UInt64[] { 1, 6, 3} }
+                        //data = new { user = "player1", array = new Queue<UInt64>(new UInt64[] { 1, 6, 3}) }
+                        //data = new { user = "player1", array = new Stack<UInt64>(new UInt64[] { 1, 6, 3}) }
+                        //data = new { user = "player1", array = new ArrayList() { 1, 6, 3} }
+                    }
+                }
             });
         }
 

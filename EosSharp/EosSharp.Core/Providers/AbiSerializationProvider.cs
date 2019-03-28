@@ -697,10 +697,10 @@ namespace EosSharp.Core.Providers
             // array type
             if(type.EndsWith("[]"))
             {
-                var items = (IEnumerable<object>)value;
+                var items = (ICollection)value;
                 var arrayType = type.Substring(0, type.Length - 2);
 
-                WriteVarUint32(ms, items.Count());
+                WriteVarUint32(ms, items.Count);
                 foreach (var item in items)
                     WriteAbiType(ms, item, arrayType, abi);
 
