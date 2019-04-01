@@ -90,6 +90,48 @@ namespace EosSharp.UnitTests
             });
         }
 
+        public Task CreateTransactionActionArrayStructData()
+        {
+            var args = new List<object>()
+            { 
+                {
+                    new Dictionary<string, object>()
+                    {
+                        { "air_id", Convert.ToUInt64("8") },
+                        { "air_place", Convert.ToString("监测点8888") },
+                        { "air_pm2_5", Convert.ToString("pm2.5数值") },
+                        { "air_voc", Convert.ToString("voc数值") },
+                        { "air_carbon", Convert.ToString("碳数值") },
+                        { "air_nitrogen", Convert.ToString("氮数值") },
+                        { "air_sulfur", Convert.ToString("硫数值") },
+                        { "air_longitude", Convert.ToString("经度") },
+                        { "air_latitude", Convert.ToString("纬度") }
+                    }
+                }
+            };
+
+            return Eos.CreateTransaction(new Transaction()
+            {
+                actions = new List<Core.Api.v1.Action>()
+                {
+                    new Core.Api.v1.Action()
+                    {
+                        account = "platform",
+                        authorization = new List<PermissionLevel>()
+                        {
+                            new PermissionLevel() {actor = "player1", permission = "active" }
+                        },
+                        name = "airquality",
+                        data = new {
+                            aql = args,
+                            a = args,
+                            b = args
+                        }
+                    }
+                }
+            });
+        }
+
         public Task CreateTransactionAnonymousObjectData()
         {
             return Eos.CreateTransaction(new Transaction()

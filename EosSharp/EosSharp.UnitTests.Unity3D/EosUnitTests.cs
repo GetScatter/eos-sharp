@@ -137,6 +137,24 @@ namespace EosSharp.UnitTests.Unity3D
 			else
 				Console.WriteLine("Test CreateTransactionArrayData run failed.");
         }
+        public async Task CreateTransactionActionArrayStructData()
+        {
+            bool success = false;
+            try
+            {
+                await EosUnitTestCases.CreateTransactionActionArrayStructData();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            if(success)
+				Console.WriteLine("Test CreateTransactionActionArrayStructData run successfuly.");
+			else
+				Console.WriteLine("Test CreateTransactionActionArrayStructData run failed.");
+        }
         public async Task CreateTransactionAnonymousObjectData()
         {
             bool success = false;
@@ -200,6 +218,7 @@ namespace EosSharp.UnitTests.Unity3D
 			await GetProducers();
 			await GetScheduledTransactions();
 			await CreateTransactionArrayData();
+			await CreateTransactionActionArrayStructData();
 			await CreateTransactionAnonymousObjectData();
 			await CreateTransaction();
 			await CreateNewAccount();

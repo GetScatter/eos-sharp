@@ -137,6 +137,23 @@ namespace EosSharp.UnitTests
         }
 		[TestMethod]
         [TestCategory("Eos Tests")]
+        public async Task CreateTransactionActionArrayStructData()
+        {
+            bool success = false;
+            try
+            {
+                await EosUnitTestCases.CreateTransactionActionArrayStructData();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            Assert.IsTrue(success);
+        }
+		[TestMethod]
+        [TestCategory("Eos Tests")]
         public async Task CreateTransactionAnonymousObjectData()
         {
             bool success = false;

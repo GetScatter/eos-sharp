@@ -33,6 +33,7 @@
 		"GetProducers",
 		"GetScheduledTransactions",
 		"CreateTransactionArrayData",
+		"CreateTransactionActionArrayStructData",
 		"CreateTransactionAnonymousObjectData",
 		"CreateTransaction",
 		"CreateNewAccount"

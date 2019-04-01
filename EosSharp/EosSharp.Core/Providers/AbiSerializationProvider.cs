@@ -678,14 +678,16 @@ namespace EosSharp.Core.Providers
 
         private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi)
         {
+            var uwtype = UnwrapTypeDef(abi, type);
+
             //optional type
-            if(type.EndsWith("?"))
+            if (uwtype.EndsWith("?"))
             {
                 WriteByte(ms, value != null ? 1 : 0);
                 if(value != null)
                 {
                     WriteByte(ms, 1);
-                    type.Substring(0, type.Length - 1);
+                    uwtype.Substring(0, uwtype.Length - 1);
                 }
                 else
                 {
@@ -695,10 +697,10 @@ namespace EosSharp.Core.Providers
             }
 
             // array type
-            if(type.EndsWith("[]"))
+            if(uwtype.EndsWith("[]"))
             {
                 var items = (ICollection)value;
-                var arrayType = type.Substring(0, type.Length - 2);
+                var arrayType = uwtype.Substring(0, uwtype.Length - 2);
 
                 WriteVarUint32(ms, items.Count);
                 foreach (var item in items)
@@ -715,7 +717,7 @@ namespace EosSharp.Core.Providers
             }
             else
             {
-                var abiStruct = GetTypeAbiStruct(abi, type);
+                var abiStruct = abi.structs.FirstOrDefault(s => s.name == uwtype);
                 if (abiStruct != null)
                 {
                     WriteAbiStruct(ms, value, abiStruct, abi);
@@ -773,6 +775,17 @@ namespace EosSharp.Core.Providers
             }
         }
 
+        private string UnwrapTypeDef(Abi abi, string type)
+        {
+            var wtype = abi.types.FirstOrDefault(t => t.new_type_name == type);
+            if(wtype != null && wtype.type != type)
+            {
+                return UnwrapTypeDef(abi, wtype.type);
+            }
+
+            return type;
+        }
+
         private TSerializer GetTypeSerializerAndCache<TSerializer>(string type, Dictionary<string, TSerializer> typeSerializers, Abi abi)
         {
             TSerializer nativeSerializer;
@@ -781,11 +794,11 @@ namespace EosSharp.Core.Providers
                 return nativeSerializer;
             }
 
-            var abiType = abi.types.FirstOrDefault(t => t.new_type_name == type);
+            var abiTypeDef = abi.types.FirstOrDefault(t => t.new_type_name == type);
 
-            if(abiType != null)
+            if(abiTypeDef != null)
             {
-                var serializer = GetTypeSerializerAndCache(abiType.type, typeSerializers, abi);
+                var serializer = GetTypeSerializerAndCache(abiTypeDef.type, typeSerializers, abi);
 
                 if(serializer != null)
                 {
@@ -796,29 +809,6 @@ namespace EosSharp.Core.Providers
 
             return default(TSerializer);
         }
-
-        private AbiStruct GetTypeAbiStruct(Abi abi, string type)
-        {
-            var abiType = abi.types.FirstOrDefault(t => t.new_type_name == type);
-
-            if(abiType != null)
-            {
-                var abiStruct = abi.structs.FirstOrDefault(s => s.name == abiType.type);
-                if (abiStruct != null)
-                {
-                    return abiStruct;
-                }
-                else
-                {
-                    return GetTypeAbiStruct(abi, abiType.type);
-                }
-            }
-            else
-            {
-                return abi.structs.FirstOrDefault(s => s.name == type);
-            }
-        }
-
     #endregion
 
     #region Reader Functions
@@ -1227,9 +1217,10 @@ namespace EosSharp.Core.Providers
         private object ReadAbiType(byte[] data, string type, Abi abi, ref int readIndex)
         {
             object value = null;
+            var uwtype = UnwrapTypeDef(abi, type);
 
             //optional type
-            if (type.EndsWith("?"))
+            if (uwtype.EndsWith("?"))
             {
                 var opt = (byte)ReadByte(data, ref readIndex);
 
@@ -1240,9 +1231,9 @@ namespace EosSharp.Core.Providers
             }
 
             // array type
-            if (type.EndsWith("[]"))
+            if (uwtype.EndsWith("[]"))
             {
-                var arrayType = type.Substring(0, type.Length - 2);
+                var arrayType = uwtype.Substring(0, uwtype.Length - 2);
                 var size = Convert.ToInt32(ReadVarUint32(data, ref readIndex));
                 var items = new List<object>(size);
 
@@ -1262,7 +1253,7 @@ namespace EosSharp.Core.Providers
             }
             else
             {
-                var abiStruct = GetTypeAbiStruct(abi, type);
+                var abiStruct = abi.structs.FirstOrDefault(s => s.name == uwtype);
                 if (abiStruct != null)
                 {
                     value = ReadAbiStruct(data, abiStruct, abi, ref readIndex);
