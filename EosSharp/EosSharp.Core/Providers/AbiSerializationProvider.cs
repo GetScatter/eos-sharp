@@ -1269,7 +1269,7 @@ namespace EosSharp.Core.Providers
 
         private object ReadAbiStruct(byte[] data, AbiStruct abiStruct, Abi abi, ref int readIndex)
         {
-            return ReadAbiStruct<object>(data, abiStruct, abi, ref readIndex);
+            return ReadAbiStruct<Dictionary<string, object>>(data, abiStruct, abi, ref readIndex);
         }
 
         private T ReadAbiStruct<T>(byte[] data, AbiStruct abiStruct, Abi abi, ref int readIndex)
@@ -1289,21 +1289,16 @@ namespace EosSharp.Core.Providers
             foreach (var field in abiStruct.fields)
             {
                 var abiValue = ReadAbiType(data, field.type, abi, ref readIndex);
-                var fieldName = FindObjectFieldName(field.name, value.GetType());
 
-                if(string.IsNullOrWhiteSpace(fieldName))
+                if (value is IDictionary<string, object>)
                 {
-                    if (valueType is IDictionary<string, Object>)
-                    {
-                        (value as IDictionary<string, Object>).Add(field.name, abiValue);
-                    }
-                    else if (typeof(T) == typeof(object))
-                        valueType.GetField(field.name).SetValue(value, abiValue);
-
-                    continue;
+                    (value as IDictionary<string, object>).Add(field.name, abiValue);
                 }
-
-                valueType.GetField(fieldName).SetValue(value, abiValue);
+                else
+                {
+                    var fieldName = FindObjectFieldName(field.name, value.GetType());
+                    valueType.GetField(fieldName).SetValue(value, abiValue);
+                }
             }
 
             return (T)value;
