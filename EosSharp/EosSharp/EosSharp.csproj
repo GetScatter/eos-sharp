@@ -13,10 +13,10 @@
     <Copyright>Copyright 2019</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>2.0.5.0</AssemblyVersion>
-    <FileVersion>2.0.5.0</FileVersion>
-    <Version>2.0.5</Version>
-    <PackageReleaseNotes>fix bug on vector of structs typedefs</PackageReleaseNotes>
+    <AssemblyVersion>2.0.6.0</AssemblyVersion>
+    <FileVersion>2.0.6.0</FileVersion>
+    <Version>2.0.6</Version>
+    <PackageReleaseNotes>Fix unpacking transactions bug (thanks to dbulha)</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
