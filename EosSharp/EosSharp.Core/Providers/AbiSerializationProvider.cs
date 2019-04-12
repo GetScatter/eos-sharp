@@ -1285,17 +1285,21 @@ namespace EosSharp.Core.Providers
                 value = Activator.CreateInstance(typeof(T));
             }
 
-            var valueType = value.GetType();
-            foreach (var field in abiStruct.fields)
+            if (value is IDictionary<string, object>)
             {
-                var abiValue = ReadAbiType(data, field.type, abi, ref readIndex);
-
-                if (value is IDictionary<string, object>)
+                var valueDict = value as IDictionary<string, object>;
+                foreach (var field in abiStruct.fields)
                 {
-                    (value as IDictionary<string, object>).Add(field.name, abiValue);
+                    var abiValue = ReadAbiType(data, field.type, abi, ref readIndex);
+                    valueDict.Add(field.name, abiValue);
                 }
-                else
+            }
+            else
+            {
+                var valueType = value.GetType();
+                foreach (var field in abiStruct.fields)
                 {
+                    var abiValue = ReadAbiType(data, field.type, abi, ref readIndex);
                     var fieldName = FindObjectFieldName(field.name, value.GetType());
                     valueType.GetField(fieldName).SetValue(value, abiValue);
                 }
