@@ -1,5 +1,4 @@
-﻿
-// Auto Generated, do not edit.
+﻿// Auto Generated, do not edit.
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;

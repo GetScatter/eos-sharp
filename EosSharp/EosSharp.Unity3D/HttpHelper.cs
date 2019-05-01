@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace EosSharp.Unity3D
@@ -39,11 +40,7 @@ namespace EosSharp.Unity3D
             UnityWebRequest uwr = BuildUnityWebRequest(url, UnityWebRequest.kHttpVerbPOST, data);
 
             await uwr.SendWebRequest();
-
-            if (uwr.isNetworkError)
-            {
-                Console.WriteLine("Error While Sending: " + uwr.error);
-            }
+            CheckUnityWebRequestErrors(uwr);
 
             return JsonConvert.DeserializeObject<TResponseData>(uwr.downloadHandler.text);
         }
@@ -84,12 +81,7 @@ namespace EosSharp.Unity3D
             UnityWebRequest uwr = BuildUnityWebRequest(url, UnityWebRequest.kHttpVerbPOST, data);
 
             await uwr.SendWebRequest();
-
-            //TODO handle network errors
-            if (uwr.isNetworkError)
-            {
-                Console.WriteLine("Error While Sending: " + uwr.error);
-            }
+            CheckUnityWebRequestErrors(uwr);
 
             return JsonConvert.DeserializeObject<TResponseData>(uwr.downloadHandler.text);
         }
@@ -120,12 +112,7 @@ namespace EosSharp.Unity3D
             UnityWebRequest uwr = UnityWebRequest.Get(url);
 
             await uwr.SendWebRequest();
-
-            //TODO handle network errors
-            if (uwr.isNetworkError)
-            {
-                Console.WriteLine("Error While Sending: " + uwr.error);
-            }
+            CheckUnityWebRequestErrors(uwr);
 
             return JsonConvert.DeserializeObject<TResponseData>(uwr.downloadHandler.text);
         }
@@ -212,22 +199,7 @@ namespace EosSharp.Unity3D
                 return stream;
 
             var content = await StreamToStringAsync(stream);
-
-            ApiErrorException apiError = null;
-            try
-            {
-                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content);
-            }
-            catch(Exception)
-            {
-                throw new ApiException
-                {
-                    StatusCode = (int)response.StatusCode,
-                    Content = content
-                };
-            }
-
-            throw apiError;
+            throw BuildApiError(content, (int)response.StatusCode);
         }
 
         /// <summary>
@@ -263,6 +235,47 @@ namespace EosSharp.Unity3D
 
             uwr.SetRequestHeader("Content-Type", "application/json");
             return uwr;
+        }
+
+        /// <summary>
+        /// Build Api Error from response content and http status code
+        /// </summary>
+        /// <param name="content">content to build</param>
+        /// <param name="statusCode">status code</param>
+        /// <returns>ApiError object</returns>
+        private static ApiErrorException BuildApiError(string content, int statusCode = 0)
+        {
+            ApiErrorException apiError;
+            try
+            {
+                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content);
+            }
+            catch (Exception)
+            {
+                throw new ApiException()
+                {
+                    StatusCode = statusCode,
+                    Content = content
+                };
+            }
+
+            return apiError;
+        }
+
+        /// <summary>
+        /// Checks Unity web request for errors and throws
+        /// </summary>
+        /// <param name="uwr"></param>
+        private static void CheckUnityWebRequestErrors(UnityWebRequest uwr)
+        {
+            if (uwr.isNetworkError)
+            {
+                throw BuildApiError("Error While Sending: " + uwr.error, (int)uwr.responseCode);
+            }
+            else if (uwr.isHttpError)
+            {
+                throw BuildApiError(uwr.downloadHandler.text, (int)uwr.responseCode);
+            }
         }
     }
 }

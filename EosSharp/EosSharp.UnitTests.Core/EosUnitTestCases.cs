@@ -163,13 +163,13 @@ namespace EosSharp.UnitTests
                         account = "eosio.token",
                         authorization = new List<PermissionLevel>()
                         {
-                            new PermissionLevel() {actor = "tester112345", permission = "active" }
+                            new PermissionLevel() {actor = "bensigbensig", permission = "active" }
                         },
                         name = "transfer",
                         data = new Dictionary<string, string>()
                         {
-                            { "from", "tester112345" },
-                            { "to", "tester212345" },
+                            { "from", "bensigbensig" },
+                            { "to", "bluchain1234" },
                             { "quantity", "0.0001 EOS" },
                             { "memo", "hello crypto world!" }
                         }

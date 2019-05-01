@@ -1,5 +1,4 @@
-﻿
-// Auto Generated, do not edit.
+﻿// Auto Generated, do not edit.
 using EosSharp.Core;
 using EosSharp.Core.Api.v1;
 using EosSharp.Core.Providers;

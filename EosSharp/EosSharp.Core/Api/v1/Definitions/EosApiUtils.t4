@@ -1,5 +1,4 @@
-﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
-<#+ 
+﻿<#+ 
 	public class Field 
 	{
 		public string Name { get; set; }

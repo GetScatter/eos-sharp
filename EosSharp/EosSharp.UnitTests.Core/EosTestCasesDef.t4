@@ -1,5 +1,4 @@
-﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
-<#+ 
+﻿<#+ 
 	string[] ApiUnitTestCases = new string[] {
 		"GetInfo",
 		"GetAccount",

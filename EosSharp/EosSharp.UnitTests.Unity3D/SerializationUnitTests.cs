@@ -1,5 +1,4 @@
-﻿
-// Auto Generated, do not edit.
+﻿// Auto Generated, do not edit.
 using Newtonsoft.Json;
 using System;
 

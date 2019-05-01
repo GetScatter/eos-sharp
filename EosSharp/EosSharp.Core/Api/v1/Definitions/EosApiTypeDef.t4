@@ -1,5 +1,4 @@
-﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
-<#@ include file="EosApiUtils.t4" once="true" #>  
+﻿<#@ include file="EosApiUtils.t4" once="true" #>  
 <#+ 
 	// Definitions of Api types
 	ApiType[] apiTypes = new ApiType[] {
