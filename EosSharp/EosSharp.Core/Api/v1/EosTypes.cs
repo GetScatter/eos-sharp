@@ -661,7 +661,7 @@ namespace EosSharp.Core.Api.v1
  
 		public UInt32 schedule_version;
  
-		public string new_producers;
+		public Schedule new_producers;
  
 		public List<Extension> block_extensions;
  

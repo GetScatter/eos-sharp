@@ -24,11 +24,11 @@ namespace EosSharp.UnitTests
             {
                 SignProvider = new DefaultSignProvider("5K57oSZLpfzePvQNpsLS6NfKXLhhRARNU13q6u2ZPQCGHgKLbTA"),
 
-                HttpEndpoint = "https://nodes.eos42.io", //Mainnet
-                ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
+                //HttpEndpoint = "https://nodes.eos42.io", //Mainnet
+                //ChainId = "aca376f206b8fc25a6ed44dbdc66547c36c6c33e3a119ffbeaef943642f0e906"
 
-                //HttpEndpoint = "https://nodeos01.btuga.io",
-                //ChainId = "cf057bbfb72640471fd910bcb67639c22df9f92470936cddc1ade0e2f2e7dc4f"
+                HttpEndpoint = "https://jungle2.cryptolions.io",
+                ChainId = "e70aaab8997e1dfce58fbfac80cbbb8fecec7b99cf982a9444273cbc64c41473"
             };
             DefaultApi = new EosApi(EosConfig, new HttpHandler());
         }
@@ -132,5 +132,15 @@ namespace EosSharp.UnitTests
 
             Assert.IsTrue(signatures.First() == "SIG_K1_KVsYuAMd2gopMCsCPxgUMCaPRMvtnMVTbbEDSujBSw6TVeu7v7xHFRYT2Y6nBKSKS6hHjjJE6YZQNdbrMYX71FibTatikf");
         }
+
+        [TestMethod]
+        [TestCategory("Signature Tests")]
+        public async Task DeserializePackedTransaction()
+        {
+            var packed_trx = "";
+            var abiSerializer = new AbiSerializationProvider(DefaultApi);
+            var trx = await abiSerializer.DeserializePackedTransaction(packed_trx);
+            Console.WriteLine(JsonConvert.SerializeObject(trx));
+        }  
     }
 }

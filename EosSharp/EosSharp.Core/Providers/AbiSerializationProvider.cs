@@ -1172,8 +1172,6 @@ namespace EosSharp.Core.Providers
 
             action.data = ReadAbiStruct(data, abiStruct, abi, ref readIndex);
 
-            action.hex_data = (string)ReadString(data, ref readIndex);
-
             return action;
         }
 
