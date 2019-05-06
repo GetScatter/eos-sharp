@@ -106,7 +106,7 @@ class GetBlockResponse
     string transaction_mroot;
     string action_mroot;
     UInt32 schedule_version;
-    string new_producers;
+    Schedule new_producers;
     List<Extension> block_extensions;
     List<Extension> header_extensions;
     string producer_signature;
