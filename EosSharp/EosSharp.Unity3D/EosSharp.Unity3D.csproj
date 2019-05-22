@@ -17,10 +17,12 @@
     <Reference Include="UnityEditor">
       <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEditor.dll</HintPath>
 	  <HintPath>C:\Program Files\Unity\Hub\Editor\2019.1.1f1\Editor\Data\Managed\UnityEditor.dll</HintPath>
+	  <HintPath>C:\Program Files\Unity\Hub\Editor\2019.1.3f1\Editor\Data\Managed\UnityEditor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll</HintPath>
 	  <HintPath>C:\Program Files\Unity\Hub\Editor\2019.1.1f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
+	  <HintPath>C:\Program Files\Unity\Hub\Editor\2019.1.3f1\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
 
