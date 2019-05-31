@@ -14,6 +14,11 @@ namespace EosSharp.Core.Exceptions
         public string message;
         public ApiError error;
 
+        public ApiErrorException()
+        {
+
+        }
+
         public ApiErrorException(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
