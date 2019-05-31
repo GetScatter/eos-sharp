@@ -30,7 +30,8 @@ namespace EosSharp.Unity3D
 
         private void OnRequestCompleted(AsyncOperation obj)
         {
-            continuation();
+            if(continuation != null)
+                continuation();
         }
     }
 
