@@ -342,5 +342,41 @@ namespace EosSharp.Core.Helpers
         {
             return new DateTime(slot * TimeSpan.TicksPerMillisecond * 500 + 946684800000 + new DateTime(1970, 1, 1).Ticks);
         }
+
+        /// <summary>
+        /// Convert Name into unsigned long
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>Converted value</returns>
+        public static UInt64 ConvertNameToLong(string name)
+        {
+            return BitConverter.ToUInt64(ConvertNameToBytes(name), 0);
+        }
+
+        /// <summary>
+        /// Convert Name into bytes
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>Converted value bytes</returns>
+        public static byte[] ConvertNameToBytes(string name)
+        {
+            var a = new byte[8];
+            Int32 bit = 63;
+            for (int i = 0; i < name.Length; ++i)
+            {
+                var c = SerializationHelper.CharToSymbol(name[i]);
+                if (bit < 5)
+                    c = (byte)(c << 1);
+                for (int j = 4; j >= 0; --j)
+                {
+                    if (bit >= 0)
+                    {
+                        a[(int)Math.Floor((decimal)(bit / 8))] |= (byte)(((c >> j) & 1) << (bit % 8));
+                        --bit;
+                    }
+                }
+            }
+            return a;
+        }
     }
 }

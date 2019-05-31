@@ -448,23 +448,7 @@ namespace EosSharp.Core.Providers
 
         private static void WriteName(MemoryStream ms, object value)
         {
-            var a = new byte[8];
-            Int32 bit = 63;
-            string s = (string)value;
-            for (int i = 0; i < s.Length; ++i)
-            {
-                var c = SerializationHelper.CharToSymbol(s[i]);
-                if (bit < 5)
-                    c = (byte)(c << 1);
-                for (int j = 4; j >= 0; --j)
-                {
-                    if (bit >= 0)
-                    {
-                        a[(int)Math.Floor((decimal)(bit / 8))] |= (byte)(((c >> j) & 1) << (bit % 8));
-                        --bit;
-                    }
-                }
-            }
+            var a = SerializationHelper.ConvertNameToBytes((string)value);
             ms.Write(a, 0, 8);
         }
 
