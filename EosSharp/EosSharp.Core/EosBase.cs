@@ -404,14 +404,28 @@ namespace EosSharp.Core
                 if (getInfoResult == null)
                     getInfoResult = await Api.GetInfo();
 
-                var getBlockResult = await Api.GetBlock(new GetBlockRequest()
-                {
-                    block_num_or_id = getInfoResult.last_irreversible_block_num.ToString()
-                });
+                var taposBlockNum = getInfoResult.head_block_num - (int)EosConfig.blocksBehind;
 
-                trx.expiration = getInfoResult.head_block_time.AddSeconds(EosConfig.ExpireSeconds);
-                trx.ref_block_num = (UInt16)(getInfoResult.last_irreversible_block_num & 0xFFFF);
-                trx.ref_block_prefix = getBlockResult.ref_block_prefix;
+                if ((taposBlockNum - getInfoResult.last_irreversible_block_num) < 2)
+                {
+                    var getBlockResult = await Api.GetBlock(new GetBlockRequest()
+                    {
+                        block_num_or_id = taposBlockNum.ToString()
+                    });
+                    trx.expiration = getBlockResult.timestamp.AddSeconds(EosConfig.ExpireSeconds);
+                    trx.ref_block_num = (UInt16)(getBlockResult.block_num & 0xFFFF);
+                    trx.ref_block_prefix = getBlockResult.ref_block_prefix;
+                }
+                else
+                {
+                    var getBlockHeaderState = await Api.GetBlockHeaderState(new GetBlockHeaderStateRequest()
+                    {
+                        block_num_or_id = taposBlockNum.ToString()
+                    });
+                    trx.expiration = getBlockHeaderState.header.timestamp.AddSeconds(EosConfig.ExpireSeconds);
+                    trx.ref_block_num = (UInt16)(getBlockHeaderState.block_num & 0xFFFF);
+                    trx.ref_block_prefix = Convert.ToUInt32(SerializationHelper.ReverseHex(getBlockHeaderState.id.Substring(16, 8)), 16);
+                }
             }
 
             var packedTrx = await AbiSerializer.SerializePackedTransaction(trx);

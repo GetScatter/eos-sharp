@@ -183,7 +183,7 @@ namespace EosSharp.UnitTests
             var getInfoResult = await DefaultApi.GetInfo();
             var result = await DefaultApi.GetBlockHeaderState(new GetBlockHeaderStateRequest()
             {
-                block_num_or_id = getInfoResult.last_irreversible_block_num.ToString()
+                block_num_or_id = getInfoResult.head_block_num.ToString()
             });
         }
 
@@ -312,12 +312,12 @@ namespace EosSharp.UnitTests
                         account = "eosio.token",
                         authorization = new List<PermissionLevel>()
                         {
-                            new PermissionLevel() {actor = "tester112345", permission = "active" }
+                            new PermissionLevel() {actor = "player1", permission = "active" }
                         },
                         name = "transfer",
                         data = new Dictionary<string, object>() {
-                            { "from", "tester112345" },
-                            { "to", "tester212345" },
+                            { "from", "player1" },
+                            { "to", "player2" },
                             { "quantity", "1.0000 EOS" },
                             { "memo", "hello crypto world!" }
                         }
@@ -327,7 +327,7 @@ namespace EosSharp.UnitTests
 
             var abiSerializer = new AbiSerializationProvider(DefaultApi);
             var packedTrx = await abiSerializer.SerializePackedTransaction(trx);
-            var requiredKeys = new List<string>() { "EOS8Q8CJqwnSsV4A6HDBEqmQCqpQcBnhGME1RUvydDRnswNngpqfr" };
+            var requiredKeys = new List<string>() { "EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHuGYqET5GDW5CV" };
             var signatures = await EosConfig.SignProvider.Sign(DefaultApi.Config.ChainId, requiredKeys, packedTrx);
 
             return await DefaultApi.PushTransaction(new PushTransactionRequest()

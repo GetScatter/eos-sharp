@@ -460,6 +460,60 @@ namespace EosSharp.Core.Api.v1
 		
 		public UInt32? count;
     }
+	[Serializable]
+	public class BlockHeader
+    {
+		
+		public DateTime timestamp;
+		
+		public string producer;
+		
+		public UInt32 confirmed;
+		
+		public string previous;
+		
+		public string transaction_mroot;
+		
+		public string action_mroot;
+		
+		public UInt32 schedule_version;
+		
+		public object new_producers;
+		
+		public object header_extensions;
+    }
+	[Serializable]
+	public class SignedBlockHeader
+    {
+		
+		public DateTime timestamp;
+		
+		public string producer;
+		
+		public UInt32 confirmed;
+		
+		public string previous;
+		
+		public string transaction_mroot;
+		
+		public string action_mroot;
+		
+		public UInt32 schedule_version;
+		
+		public object new_producers;
+		
+		public object header_extensions;
+		
+		public string producer_signature;
+    }
+	[Serializable]
+	public class Merkle
+    {
+		
+		public List<string> _active_nodes;
+		
+		public UInt32 _node_count;
+    }
 	#endregion
 
 	#region generate api method types
@@ -685,6 +739,36 @@ namespace EosSharp.Core.Api.v1
 	[Serializable]
     public class GetBlockHeaderStateResponse
     {
+ 
+		public Schedule active_schedule;
+ 
+		public UInt32 bft_irreversible_blocknum;
+ 
+		public UInt32 block_num;
+ 
+		public string block_signing_key;
+ 
+		public Merkle blockroot_merkle;
+ 
+		public List<UInt32> confirm_count;
+ 
+		public object confirmations;
+ 
+		public UInt32 dpos_irreversible_blocknum;
+ 
+		public UInt32 dpos_proposed_irreversible_blocknum;
+ 
+		public SignedBlockHeader header;
+ 
+		public string id;
+ 
+		public Schedule pending_schedule;
+ 
+		public object activated_protocol_features;
+ 
+		public List<List<string>> producer_to_last_produced;
+ 
+		public List<List<string>> producer_to_last_implied_irb;
     }
 	[Serializable]
     public class GetTableRowsRequest

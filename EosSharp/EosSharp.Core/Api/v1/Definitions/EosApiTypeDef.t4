@@ -451,5 +451,59 @@
 				new Field() { Name = "count", Type = "UInt32?"}
             }
 		},
+
+		new ApiType()
+		{
+			Name = "BlockHeader",
+			Fields = new Field[]
+            {
+				new Field() { Name = "timestamp", Type = "DateTime" },
+				new Field() { Name = "producer", Type = "string" },
+				new Field() { Name = "confirmed", Type = "UInt32" },
+				new Field() { Name = "previous", Type = "string" },
+				new Field() { Name = "transaction_mroot", Type = "string" },
+				new Field() { Name = "action_mroot", Type = "string" },
+				new Field() { Name = "schedule_version", Type = "UInt32"},
+				new Field() { Name = "new_producers", Type = "object"},
+				new Field() { Name = "header_extensions", Type = "object"}
+            }
+		},
+
+		new ApiType()
+		{
+			Name = "SignedBlockHeader",
+			Fields = new Field[]
+            {
+				new Field() { Name = "timestamp", Type = "DateTime" },
+				new Field() { Name = "producer", Type = "string" },
+				new Field() { Name = "confirmed", Type = "UInt32" },
+				new Field() { Name = "previous", Type = "string" },
+				new Field() { Name = "transaction_mroot", Type = "string" },
+				new Field() { Name = "action_mroot", Type = "string" },
+				new Field() { Name = "schedule_version", Type = "UInt32"},
+				new Field() { Name = "new_producers", Type = "object"},
+				new Field() { Name = "header_extensions", Type = "object"},
+				new Field() { Name = "producer_signature", Type = "string"}
+            }
+		},
+
+		new ApiType()
+		{
+			Name = "Merkle",
+			Fields = new Field[]
+            {
+				new Field() { Name = "_active_nodes", Type = "List<string>" },
+				new Field() { Name = "_node_count", Type = "UInt32" },
+            }
+		},
+
+		new ApiType()
+		{
+			Name = "ActivedProtocolFeatures",
+			Fields = new Field[]
+            {
+				new Field() { Name = "protocol_features", Type = "List<string>" }
+            }
+		}
     };
 #>

@@ -209,7 +209,23 @@
 			{
 				new Field() { Name = "block_num_or_id", Type = "string" }
 			},
-			Response = new Field[] {}
+			Response = new Field[] {
+			    new Field() { Name = "active_schedule", Type = "Schedule" },
+				new Field() { Name = "bft_irreversible_blocknum", Type = "UInt32" },
+				new Field() { Name = "block_num", Type = "UInt32" },
+			    new Field() { Name = "block_signing_key", Type = "string" },
+			    new Field() { Name = "blockroot_merkle", Type = "Merkle" },
+			    new Field() { Name = "confirm_count", Type = "List<UInt32>" },
+				new Field() { Name = "confirmations", Type = "object" },
+			    new Field() { Name = "dpos_irreversible_blocknum", Type = "UInt32" },
+			    new Field() { Name = "dpos_proposed_irreversible_blocknum", Type = "UInt32" },
+                new Field() { Name = "header", Type = "SignedBlockHeader" },
+				new Field() { Name = "id", Type = "string" },
+		        new Field() { Name = "pending_schedule", Type = "Schedule" },
+		        new Field() { Name = "activated_protocol_features", Type = "ActivedProtocolFeatures" },
+		        new Field() { Name = "producer_to_last_produced", Type = "List<List<string>>" },
+		        new Field() { Name = "producer_to_last_implied_irb", Type = "List<List<string>>" }
+			}
 		},
 
 		new ApiMethod() 

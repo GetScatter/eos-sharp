@@ -1,4 +1,5 @@
 ﻿using EosSharp.Core.Interfaces;
+using System;
 
 namespace EosSharp.Core
 {
@@ -20,6 +21,11 @@ namespace EosSharp.Core
         /// An unexpired transaction that may have had an error is a liability until the expiration is reached, this time should be brief.
         /// </summary>
         public double ExpireSeconds { get; set; } = 60;
+
+        /// <summary>
+        /// How many blocks behind to use for TAPoS reference block
+        /// </summary>
+        public UInt32 blocksBehind { get; set; } = 3;
         /// <summary>
         /// signature implementation to handle available keys and signing transactions. Use the DefaultSignProvider with a privateKey to sign transactions inside the lib.
         /// </summary>

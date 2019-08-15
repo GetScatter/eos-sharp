@@ -378,5 +378,11 @@ namespace EosSharp.Core.Helpers
             }
             return a;
         }
+
+
+        public static string ReverseHex(string h)
+        {
+            return h.Substring(6, 2) + h.Substring(4, 2) + h.Substring(2, 2) + h.Substring(0, 2);
+        }
     }
 }
