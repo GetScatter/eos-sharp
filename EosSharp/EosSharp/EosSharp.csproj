@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Mário Silva</Authors>
     <Company>GetScatter</Company>
     <PackageTags>EOS, NetStandard, secp256k1, Blockchain</PackageTags>
-    <Description>C# client library for EOS blockchains. The library is based on https://github.com/EOSIO/eosjs2 and MIT licensed.</Description>
+    <Description>C# client library for EOS blockchains. The library is based on https://github.com/EOSIO/eosjs and MIT licensed.</Description>
     <PackageLicenseUrl>https://github.com/GetScatter/eos-sharp/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/GetScatter/eos-sharp</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GetScatter/eos-sharp</RepositoryUrl>
@@ -13,11 +13,10 @@
     <Copyright>Copyright 2019</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>2.0.8.0</AssemblyVersion>
-    <FileVersion>2.0.8.0</FileVersion>
-    <Version>2.0.8</Version>
-    <PackageReleaseNotes>Fix new_producers field in get_block
-Remove hex_data from action structure deserializing</PackageReleaseNotes>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
+    <Version>2.1.0</Version>
+    <PackageReleaseNotes>Implement TAPoS ref block with blocks behind</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
