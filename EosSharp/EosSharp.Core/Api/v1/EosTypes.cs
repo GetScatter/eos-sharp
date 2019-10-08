@@ -514,6 +514,12 @@ namespace EosSharp.Core.Api.v1
 		
 		public UInt32 _node_count;
     }
+	[Serializable]
+	public class ActivedProtocolFeatures
+    {
+		
+		public List<string> protocol_features;
+    }
 	#endregion
 
 	#region generate api method types
@@ -764,7 +770,7 @@ namespace EosSharp.Core.Api.v1
  
 		public Schedule pending_schedule;
  
-		public object activated_protocol_features;
+		public ActivedProtocolFeatures activated_protocol_features;
  
 		public List<List<string>> producer_to_last_produced;
  

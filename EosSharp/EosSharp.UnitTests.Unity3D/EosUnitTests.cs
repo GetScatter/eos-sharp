@@ -208,6 +208,24 @@ namespace EosSharp.UnitTests.Unity3D
 			else
 				Console.WriteLine("Test CreateNewAccount run failed.");
         }
+        public async Task CreateTransaction2Providers()
+        {
+            bool success = false;
+            try
+            {
+                await EosUnitTestCases.CreateTransaction2Providers();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(JsonConvert.SerializeObject(ex));
+            }
+
+            if(success)
+				Console.WriteLine("Test CreateTransaction2Providers run successfuly.");
+			else
+				Console.WriteLine("Test CreateTransaction2Providers run failed.");
+        }
 
 		public async Task TestAll()
         {
@@ -221,6 +239,7 @@ namespace EosSharp.UnitTests.Unity3D
 			await CreateTransactionAnonymousObjectData();
 			await CreateTransaction();
 			await CreateNewAccount();
+			await CreateTransaction2Providers();
         }
 	}
 }

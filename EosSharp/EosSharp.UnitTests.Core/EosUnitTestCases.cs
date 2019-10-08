@@ -252,5 +252,32 @@ namespace EosSharp.UnitTests
                 }
             });
         }
+
+        public Task CreateTransaction2Providers()
+        {
+            return Eos.CreateTransaction(new Transaction()
+            {
+                actions = new List<Core.Api.v1.Action>()
+                {
+                    new Core.Api.v1.Action()
+                    {
+                        account = "eosio.token",
+                        authorization = new List<PermissionLevel>()
+                        {
+                            new PermissionLevel() {actor = "lotustester2", permission = "active" },
+                            new PermissionLevel() {actor = "lotustester1", permission = "active" }
+                        },
+                        name = "transfer",
+                        data = new Dictionary<string, string>()
+                        {
+                            { "from", "lotustester1" },
+                            { "to", "lotustester2" },
+                            { "quantity", "0.0001 EOS" },
+                            { "memo", "hello crypto world! lt1 to lt2" }
+                        }
+                    }
+                }
+            });
+        }
     }
 }

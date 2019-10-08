@@ -71,6 +71,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MultisigUnitTests.cs" />
     <Compile Include="SignUnitTests.cs" />
     <Compile Include="StressUnitTests.cs" />
   </ItemGroup>

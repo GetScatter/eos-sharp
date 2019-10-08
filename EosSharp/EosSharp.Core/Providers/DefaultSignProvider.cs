@@ -92,6 +92,11 @@ namespace EosSharp.Core.Providers
         /// <returns>List of signatures per required keys</returns>
         public Task<IEnumerable<string>> Sign(string chainId, IEnumerable<string> requiredKeys, byte[] signBytes, IEnumerable<string> abiNames = null)
         {
+            if (requiredKeys == null)
+                return Task.FromResult(new List<string>().AsEnumerable());
+
+            var availableAndReqKeys = requiredKeys.Intersect(Keys.Keys);
+
             var data = new List<byte[]>()
             {
                 Hex.HexToBytes(chainId),
@@ -101,7 +106,7 @@ namespace EosSharp.Core.Providers
 
             var hash = Sha256Manager.GetHash(SerializationHelper.Combine(data));
 
-            return Task.FromResult(requiredKeys.Select(key =>
+            return Task.FromResult(availableAndReqKeys.Select(key =>
             {
                 var sign = Secp256K1Manager.SignCompressedCompact(hash, Keys[key]);
                 var check = new List<byte[]>() { sign, KeyTypeBytes };
