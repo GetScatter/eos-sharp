@@ -13,10 +13,10 @@
     <Copyright>Copyright 2019</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <FileVersion>2.1.0.0</FileVersion>
-    <Version>2.1.0</Version>
-    <PackageReleaseNotes>Implement TAPoS ref block with blocks behind</PackageReleaseNotes>
+    <AssemblyVersion>2.1.1.0</AssemblyVersion>
+    <FileVersion>2.1.1.0</FileVersion>
+    <Version>2.1.1</Version>
+    <PackageReleaseNotes>Implement CombinedSignerProvider to allow for multiple combined signatureProviders to sign the same transaction</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
