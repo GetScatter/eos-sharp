@@ -13,10 +13,11 @@
     <Copyright>Copyright 2019</Copyright>
     <Product>eos-sharp</Product>
     <PackageId>eos-sharp</PackageId>
-    <AssemblyVersion>2.1.1.0</AssemblyVersion>
-    <FileVersion>2.1.1.0</FileVersion>
-    <Version>2.1.1</Version>
-    <PackageReleaseNotes>Implement CombinedSignerProvider to allow for multiple combined signatureProviders to sign the same transaction</PackageReleaseNotes>
+    <AssemblyVersion>2.1.2.0</AssemblyVersion>
+    <FileVersion>2.1.2.0</FileVersion>
+    <Version>2.1.2</Version>
+    <PackageReleaseNotes>Implement SignTransaction, BroadcastTransaction
+Allow requiredKeys override</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

@@ -382,9 +382,25 @@ namespace EosSharp.Core
         /// Creates a signed transaction using the signature provider and broadcasts it to the network
         /// </summary>
         /// <param name="trx">Transaction to send</param>
+        /// <param name="requiredKeys">Override required keys to sign transaction</param>
         /// <returns>transaction id</returns>
-        public async Task<string> CreateTransaction(Transaction trx)
+        public async Task<string> CreateTransaction(Transaction trx, List<string> requiredKeys = null)
         {
+            var signedTrx = await SignTransaction(trx, requiredKeys);
+            return await BroadcastTransaction(signedTrx);
+        }
+
+        /// <summary>
+        /// Creates a signed transaction using the signature provider
+        /// </summary>
+        /// <param name="trx">Transaction to sign</param>
+        /// <param name="requiredKeys">Override required keys to sign transaction</param>
+        /// <returns>transaction id</returns>
+        public async Task<SignedTransaction> SignTransaction(Transaction trx, List<string> requiredKeys = null)
+        {
+            if (trx == null)
+                throw new ArgumentNullException("Transaction");
+
             if (EosConfig.SignProvider == null)
                 throw new ArgumentNullException("SignProvider");
 
@@ -429,9 +445,13 @@ namespace EosSharp.Core
             }
 
             var packedTrx = await AbiSerializer.SerializePackedTransaction(trx);
-            var availableKeys = await EosConfig.SignProvider.GetAvailableKeys();
-            var requiredKeys = await GetRequiredKeys(availableKeys.ToList(), trx);
-
+            
+            if(requiredKeys == null || requiredKeys.Count == 0)
+            {
+                var availableKeys = await EosConfig.SignProvider.GetAvailableKeys();
+                requiredKeys = await GetRequiredKeys(availableKeys.ToList(), trx);
+            }
+            
             IEnumerable<string> abis = null;
 
             if (trx.actions != null)
@@ -439,14 +459,30 @@ namespace EosSharp.Core
 
             var signatures = await EosConfig.SignProvider.Sign(chainId, requiredKeys, packedTrx, abis);
 
+            return new SignedTransaction()
+            {
+                Signatures = signatures,
+                PackedTransaction = packedTrx
+            };
+        }
+
+        /// <summary>
+        /// Broadcast signed transaction to the network
+        /// </summary>
+        /// <param name="strx">Signed transaction to send</param>
+        /// <returns></returns>
+        public async Task<string> BroadcastTransaction(SignedTransaction strx)
+        {
+            if (strx == null)
+                throw new ArgumentNullException("SignedTransaction");
+
             var result = await Api.PushTransaction(new PushTransactionRequest()
             {
-                signatures = signatures.ToArray(),
+                signatures = strx.Signatures.ToArray(),
                 compression = 0,
                 packed_context_free_data = "",
-                packed_trx = SerializationHelper.ByteArrayToHexString(packedTrx)
+                packed_trx = SerializationHelper.ByteArrayToHexString(strx.PackedTransaction)
             });
-
             return result.transaction_id;
         }
 
