@@ -671,7 +671,7 @@ namespace EosSharp.Core.Providers
                 if(value != null)
                 {
                     WriteByte(ms, 1);
-                    uwtype.Substring(0, uwtype.Length - 1);
+                    type = uwtype.Substring(0, uwtype.Length - 1);
                 }
                 else
                 {
@@ -691,6 +691,13 @@ namespace EosSharp.Core.Providers
                     WriteAbiType(ms, item, arrayType, abi);
 
                 return;
+            }
+
+            // extension type
+            if(uwtype.EndsWith("$"))
+            {
+                if (value == null) return;
+                type = uwtype.Substring(0, uwtype.Length - 1);
             }
 
             var writer = GetTypeSerializerAndCache(type, TypeWriters, abi);
@@ -731,8 +738,12 @@ namespace EosSharp.Core.Providers
                     var fieldName = FindObjectFieldName(field.name, valueDict);
 
                     if (string.IsNullOrWhiteSpace(fieldName))
-                        throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
+                    {
+                        if (field.type.EndsWith("$")) continue;
 
+                        throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
+                    }
+                        
                     WriteAbiType(ms, valueDict[fieldName], field.type, abi);
                 }
             }
