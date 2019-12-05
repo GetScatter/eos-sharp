@@ -508,11 +508,12 @@ namespace EosSharp.Core
         /// </summary>
         /// <param name="transactionId">transaction id</param>
         /// <returns>Transaction information</returns>
-        public Task<GetTransactionResponse> GetTransaction(string transactionId)
+        public Task<GetTransactionResponse> GetTransaction(string transactionId, string blockNumberHint = null)
         {
             return Api.GetTransaction(new GetTransactionRequest()
             {
-                id = transactionId
+                id = transactionId,
+                block_num_hint = blockNumberHint
             });
         }
 
