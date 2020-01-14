@@ -660,14 +660,22 @@ namespace EosSharp.Core.Providers
             WriteBytes(ms, SerializeActionData(action, abi));
         }
 
-        private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi)
+        private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi, bool isBinaryExtensionAllowed)
         {
             var uwtype = UnwrapTypeDef(abi, type);
+
+            // binary extension type
+            if(uwtype.EndsWith("$"))
+            {
+                if (!isBinaryExtensionAllowed) throw new Exception("Binary Extension type not allowed.");
+                WriteAbiType(ms, value, uwtype.Substring(0, uwtype.Length - 1), abi, isBinaryExtensionAllowed);
+
+                return;
+            }
 
             //optional type
             if (uwtype.EndsWith("?"))
             {
-                WriteByte(ms, value != null ? 1 : 0);
                 if(value != null)
                 {
                     WriteByte(ms, 1);
@@ -688,16 +696,9 @@ namespace EosSharp.Core.Providers
 
                 WriteVarUint32(ms, items.Count);
                 foreach (var item in items)
-                    WriteAbiType(ms, item, arrayType, abi);
+                    WriteAbiType(ms, item, arrayType, abi, false);
 
                 return;
-            }
-
-            // extension type
-            if(uwtype.EndsWith("$"))
-            {
-                if (value == null) return;
-                type = uwtype.Substring(0, uwtype.Length - 1);
             }
 
             var writer = GetTypeSerializerAndCache(type, TypeWriters, abi);
@@ -727,11 +728,12 @@ namespace EosSharp.Core.Providers
 
             if(!string.IsNullOrWhiteSpace(abiStruct.@base))
             {
-                WriteAbiType(ms, value, abiStruct.@base, abi);
+                WriteAbiType(ms, value, abiStruct.@base, abi, true);
             }
 
             if(value is System.Collections.IDictionary)
             {
+                var skippedBinaryExtension = false;
                 var valueDict = value as System.Collections.IDictionary;
                 foreach (var field in abiStruct.fields)
                 {
@@ -739,12 +741,20 @@ namespace EosSharp.Core.Providers
 
                     if (string.IsNullOrWhiteSpace(fieldName))
                     {
-                        if (field.type.EndsWith("$")) continue;
+                        if (field.type.EndsWith("$"))
+                        {
+                            skippedBinaryExtension = true;
+                            continue;
+                        }
 
                         throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
                     }
-                        
-                    WriteAbiType(ms, valueDict[fieldName], field.type, abi);
+                    else if (skippedBinaryExtension)
+                    {
+                        throw new Exception("Unexpected " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
+                    }
+
+                    WriteAbiType(ms, valueDict[fieldName], field.type, abi, true);
                 }
             }
             else
@@ -755,13 +765,13 @@ namespace EosSharp.Core.Providers
                     var fieldInfo = valueType.GetField(field.name);
 
                     if(fieldInfo != null)
-                        WriteAbiType(ms, fieldInfo.GetValue(value), field.type, abi);
+                        WriteAbiType(ms, fieldInfo.GetValue(value), field.type, abi, true);
                     else
                     {
                         var propInfo = valueType.GetProperty(field.name);
 
                         if(propInfo != null)
-                            WriteAbiType(ms, propInfo.GetValue(value), field.type, abi);
+                            WriteAbiType(ms, propInfo.GetValue(value), field.type, abi, true);
                         else
                             throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
 
