@@ -40,7 +40,7 @@ namespace EosSharp.Core.Api.v1
 	public class AuthorityAccount
     {
 		
-		public string account;
+		public PermissionLevel permission;
 		
 		public Int32 weight;
     }

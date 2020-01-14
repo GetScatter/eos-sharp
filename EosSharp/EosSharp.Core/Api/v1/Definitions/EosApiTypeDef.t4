@@ -38,7 +38,7 @@
 			Name = "AuthorityAccount",
 			Fields = new Field[]
             {
-				new Field() { Name = "account", Type = "string" },
+				new Field() { Name = "permission", Type = "PermissionLevel" },
 				new Field() { Name = "weight", Type = "Int32" }
             }
         },
