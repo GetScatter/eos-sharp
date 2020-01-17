@@ -40,7 +40,7 @@ namespace EosSharp.Core.Api.v1
 	public class AuthorityAccount
     {
 		
-		public string account;
+		public PermissionLevel permission;
 		
 		public Int32 weight;
     }
@@ -932,7 +932,7 @@ namespace EosSharp.Core.Api.v1
     public class GetTransactionRequest
     {
 		public string id;
-		public string block_num_hint;
+		public UInt32? block_num_hint;
     }
 	[Serializable]
     public class GetTransactionResponse
