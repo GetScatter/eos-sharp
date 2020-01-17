@@ -222,7 +222,7 @@ namespace EosSharp.Core.Api.v1
 		
 		public string name;
 		
-		public List<string> type;
+		public List<string> types;
     }
 	[Serializable]
 	public class Action

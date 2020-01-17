@@ -231,7 +231,7 @@
 			Fields = new Field[]
             {
 				new Field() { Name = "name", Type = "string" },
-				new Field() { Name = "type", Type = "List<string>" }
+				new Field() { Name = "types", Type = "List<string>" }
             }
         },
 

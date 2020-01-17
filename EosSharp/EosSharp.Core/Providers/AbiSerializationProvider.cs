@@ -220,7 +220,8 @@ namespace EosSharp.Core.Providers
                 tables = ReadAbiTableList(data, ref readIndex),
                 ricardian_clauses = ReadType<List<AbiRicardianClause>>(data, ref readIndex),
                 error_messages = ReadType<List<string>>(data, ref readIndex),
-                abi_extensions = ReadType<List<Extension>>(data, ref readIndex)
+                abi_extensions = ReadType<List<Extension>>(data, ref readIndex),
+                variants = ReadType<List<Variant>>(data, ref readIndex)
             };
         }
 
@@ -694,22 +695,27 @@ namespace EosSharp.Core.Providers
             }
 
             var writer = GetTypeSerializerAndCache(type, TypeWriters, abi);
-
             if (writer != null)
             {
                 writer(ms, value);
+                return;
+            }
+
+            var abiStruct = abi.structs.FirstOrDefault(s => s.name == uwtype);
+            if (abiStruct != null)
+            {
+                WriteAbiStruct(ms, value, abiStruct, abi);
+                return;
+            }
+
+            var abiVariant = abi.variants.FirstOrDefault(v => v.name == uwtype);
+            if (abiVariant != null)
+            {
+                WriteAbiVariant(ms, value, abiVariant, abi);
             }
             else
             {
-                var abiStruct = abi.structs.FirstOrDefault(s => s.name == uwtype);
-                if (abiStruct != null)
-                {
-                    WriteAbiStruct(ms, value, abiStruct, abi);
-                }
-                else
-                {
-                    throw new Exception("Type supported writer not found.");
-                }
+                throw new Exception("Type supported writer not found.");
             }
         }
 
@@ -757,6 +763,18 @@ namespace EosSharp.Core.Providers
                     }
                 }
             }
+        }
+
+        private void WriteAbiVariant(MemoryStream ms, object value, Variant abiVariant, Abi abi)
+        {
+            var variantValue = (KeyValuePair<string, object>)value;
+            var i = abiVariant.types.IndexOf(variantValue.Key);
+            if (i < 0)
+            {
+                throw new Exception("type " + variantValue.Key + " is not valid for variant");
+            }
+            WriteVarUint32(ms, i);
+            WriteAbiType(ms, variantValue.Value, variantValue.Key, abi);
         }
 
         private string UnwrapTypeDef(Abi abi, string type)
@@ -1198,7 +1216,6 @@ namespace EosSharp.Core.Providers
 
         private object ReadAbiType(byte[] data, string type, Abi abi, ref int readIndex)
         {
-            object value = null;
             var uwtype = UnwrapTypeDef(abi, type);
 
             //optional type
@@ -1208,7 +1225,7 @@ namespace EosSharp.Core.Providers
 
                 if (opt == 0)
                 {
-                    return value;
+                    return null;
                 }
             }
 
@@ -1228,25 +1245,26 @@ namespace EosSharp.Core.Providers
             }
 
             var reader = GetTypeSerializerAndCache(type, TypeReaders, abi);
-
             if (reader != null)
             {
-                value = reader(data, ref readIndex);
+                return reader(data, ref readIndex);
+            }
+
+            var abiStruct = abi.structs.FirstOrDefault(s => s.name == uwtype);
+            if (abiStruct != null)
+            {
+                return ReadAbiStruct(data, abiStruct, abi, ref readIndex);
+            }
+
+            var abiVariant = abi.variants.FirstOrDefault(v => v.name == uwtype);
+            if(abiVariant != null)
+            {
+                return ReadAbiVariant(data, abiVariant, abi, ref readIndex);
             }
             else
             {
-                var abiStruct = abi.structs.FirstOrDefault(s => s.name == uwtype);
-                if (abiStruct != null)
-                {
-                    value = ReadAbiStruct(data, abiStruct, abi, ref readIndex);
-                }
-                else
-                {
-                    throw new Exception("Type supported writer not found.");
-                }
+                throw new Exception("Type supported writer not found.");
             }
-            
-            return value;
         }
 
         private object ReadAbiStruct(byte[] data, AbiStruct abiStruct, Abi abi, ref int readIndex)
@@ -1288,6 +1306,17 @@ namespace EosSharp.Core.Providers
             }
 
             return (T)value;
+        }
+
+        private object ReadAbiVariant(byte[] data, Variant abiVariant, Abi abi, ref int readIndex)
+        {
+            var i = (Int32)ReadVarUint32(data, ref readIndex);
+            if (i >= abiVariant.types.Count)
+            {
+                throw new Exception("type index " + i + " is not valid for variant");
+            }
+            var type = abiVariant.types[i];
+            return new KeyValuePair<string, object>(abiVariant.name, ReadAbiType(data, type, abi, ref readIndex));
         }
 
         private T ReadType<T>(byte[] data, ref int readIndex)
