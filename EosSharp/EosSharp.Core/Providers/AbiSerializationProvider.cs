@@ -416,7 +416,7 @@ namespace EosSharp.Core.Providers
 
         private static void WriteFloat128(MemoryStream ms, object value)
         {
-            Int32[] bits = decimal.GetBits((decimal)value);
+            Int32[] bits = decimal.GetBits(Convert.ToDecimal(value));
             List<byte> bytes = new List<byte>();
             foreach (Int32 i in bits)
             {
