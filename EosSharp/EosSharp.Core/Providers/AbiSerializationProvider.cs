@@ -406,7 +406,7 @@ namespace EosSharp.Core.Providers
 
         private static void WriteFloat32(MemoryStream ms, object value)
         {
-            ms.Write(BitConverter.GetBytes((float)value), 0, 4);
+            ms.Write(BitConverter.GetBytes(Convert.ToSingle(value)), 0, 4);
         }
 
         private static void WriteFloat64(MemoryStream ms, object value)
