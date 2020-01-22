@@ -719,7 +719,7 @@ namespace EosSharp.Core.Providers
             var abiVariant = abi.variants.FirstOrDefault(v => v.name == uwtype);
             if (abiVariant != null)
             {
-                WriteAbiVariant(ms, value, abiVariant, abi);
+                WriteAbiVariant(ms, value, abiVariant, abi, isBinaryExtensionAllowed);
             }
             else
             {
@@ -786,7 +786,7 @@ namespace EosSharp.Core.Providers
             }
         }
 
-        private void WriteAbiVariant(MemoryStream ms, object value, Variant abiVariant, Abi abi)
+        private void WriteAbiVariant(MemoryStream ms, object value, Variant abiVariant, Abi abi, bool isBinaryExtensionAllowed)
         {
             var variantValue = (KeyValuePair<string, object>)value;
             var i = abiVariant.types.IndexOf(variantValue.Key);
@@ -795,7 +795,7 @@ namespace EosSharp.Core.Providers
                 throw new Exception("type " + variantValue.Key + " is not valid for variant");
             }
             WriteVarUint32(ms, i);
-            WriteAbiType(ms, variantValue.Value, variantValue.Key, abi);
+            WriteAbiType(ms, variantValue.Value, variantValue.Key, abi, isBinaryExtensionAllowed);
         }
 
         private string UnwrapTypeDef(Abi abi, string type)
@@ -1287,7 +1287,7 @@ namespace EosSharp.Core.Providers
             var abiVariant = abi.variants.FirstOrDefault(v => v.name == uwtype);
             if(abiVariant != null)
             {
-                return ReadAbiVariant(data, abiVariant, abi, ref readIndex);
+                return ReadAbiVariant(data, abiVariant, abi, ref readIndex, isBinaryExtensionAllowed);
             }
             else
             {
@@ -1338,7 +1338,7 @@ namespace EosSharp.Core.Providers
             return (T)value;
         }
 
-        private object ReadAbiVariant(byte[] data, Variant abiVariant, Abi abi, ref int readIndex)
+        private object ReadAbiVariant(byte[] data, Variant abiVariant, Abi abi, ref int readIndex, bool isBinaryExtensionAllowed)
         {
             var i = (Int32)ReadVarUint32(data, ref readIndex);
             if (i >= abiVariant.types.Count)
@@ -1346,7 +1346,7 @@ namespace EosSharp.Core.Providers
                 throw new Exception("type index " + i + " is not valid for variant");
             }
             var type = abiVariant.types[i];
-            return new KeyValuePair<string, object>(abiVariant.name, ReadAbiType(data, type, abi, ref readIndex));
+            return new KeyValuePair<string, object>(abiVariant.name, ReadAbiType(data, type, abi, ref readIndex, isBinaryExtensionAllowed));
         }
 
         private T ReadType<T>(byte[] data, ref int readIndex)
