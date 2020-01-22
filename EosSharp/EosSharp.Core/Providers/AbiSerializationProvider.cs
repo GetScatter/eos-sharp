@@ -661,18 +661,26 @@ namespace EosSharp.Core.Providers
             WriteBytes(ms, SerializeActionData(action, abi));
         }
 
-        private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi)
+        private void WriteAbiType(MemoryStream ms, object value, string type, Abi abi, bool isBinaryExtensionAllowed)
         {
             var uwtype = UnwrapTypeDef(abi, type);
+
+            // binary extension type
+            if(uwtype.EndsWith("$"))
+            {
+                if (!isBinaryExtensionAllowed) throw new Exception("Binary Extension type not allowed.");
+                WriteAbiType(ms, value, uwtype.Substring(0, uwtype.Length - 1), abi, isBinaryExtensionAllowed);
+
+                return;
+            }
 
             //optional type
             if (uwtype.EndsWith("?"))
             {
-                WriteByte(ms, value != null ? 1 : 0);
                 if(value != null)
                 {
                     WriteByte(ms, 1);
-                    uwtype.Substring(0, uwtype.Length - 1);
+                    type = uwtype.Substring(0, uwtype.Length - 1);
                 }
                 else
                 {
@@ -689,7 +697,7 @@ namespace EosSharp.Core.Providers
 
                 WriteVarUint32(ms, items.Count);
                 foreach (var item in items)
-                    WriteAbiType(ms, item, arrayType, abi);
+                    WriteAbiType(ms, item, arrayType, abi, false);
 
                 return;
             }
@@ -726,20 +734,33 @@ namespace EosSharp.Core.Providers
 
             if(!string.IsNullOrWhiteSpace(abiStruct.@base))
             {
-                WriteAbiType(ms, value, abiStruct.@base, abi);
+                WriteAbiType(ms, value, abiStruct.@base, abi, true);
             }
 
             if(value is System.Collections.IDictionary)
             {
+                var skippedBinaryExtension = false;
                 var valueDict = value as System.Collections.IDictionary;
                 foreach (var field in abiStruct.fields)
                 {
                     var fieldName = FindObjectFieldName(field.name, valueDict);
 
                     if (string.IsNullOrWhiteSpace(fieldName))
-                        throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
+                    {
+                        if (field.type.EndsWith("$"))
+                        {
+                            skippedBinaryExtension = true;
+                            continue;
+                        }
 
-                    WriteAbiType(ms, valueDict[fieldName], field.type, abi);
+                        throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
+                    }
+                    else if (skippedBinaryExtension)
+                    {
+                        throw new Exception("Unexpected " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
+                    }
+
+                    WriteAbiType(ms, valueDict[fieldName], field.type, abi, true);
                 }
             }
             else
@@ -750,13 +771,13 @@ namespace EosSharp.Core.Providers
                     var fieldInfo = valueType.GetField(field.name);
 
                     if(fieldInfo != null)
-                        WriteAbiType(ms, fieldInfo.GetValue(value), field.type, abi);
+                        WriteAbiType(ms, fieldInfo.GetValue(value), field.type, abi, true);
                     else
                     {
                         var propInfo = valueType.GetProperty(field.name);
 
                         if(propInfo != null)
-                            WriteAbiType(ms, propInfo.GetValue(value), field.type, abi);
+                            WriteAbiType(ms, propInfo.GetValue(value), field.type, abi, true);
                         else
                             throw new Exception("Missing " + abiStruct.name + "." + field.name + " (type=" + field.type + ")");
 
@@ -1214,9 +1235,16 @@ namespace EosSharp.Core.Providers
             return items;
         }
 
-        private object ReadAbiType(byte[] data, string type, Abi abi, ref int readIndex)
+        private object ReadAbiType(byte[] data, string type, Abi abi, ref int readIndex, bool isBinaryExtensionAllowed)
         {
             var uwtype = UnwrapTypeDef(abi, type);
+
+            // binary extension type
+            if(uwtype.EndsWith("$"))
+            {
+                if (!isBinaryExtensionAllowed) throw new Exception("Binary Extension type not allowed.");
+                return ReadAbiType(data, uwtype.Substring(0, uwtype.Length - 1), abi, ref readIndex, isBinaryExtensionAllowed);
+            }
 
             //optional type
             if (uwtype.EndsWith("?"))
@@ -1238,7 +1266,7 @@ namespace EosSharp.Core.Providers
 
                 for (int i = 0; i < size; i++)
                 {
-                    items.Add(ReadAbiType(data, arrayType, abi, ref readIndex));
+                    items.Add(ReadAbiType(data, arrayType, abi, ref readIndex, false));
                 }
 
                 return items;
@@ -1278,7 +1306,7 @@ namespace EosSharp.Core.Providers
 
             if (!string.IsNullOrWhiteSpace(abiStruct.@base))
             {
-                value = (T)ReadAbiType(data, abiStruct.@base, abi, ref readIndex);
+                value = (T)ReadAbiType(data, abiStruct.@base, abi, ref readIndex, true);
             }
             else
             {
@@ -1290,7 +1318,8 @@ namespace EosSharp.Core.Providers
                 var valueDict = value as IDictionary<string, object>;
                 foreach (var field in abiStruct.fields)
                 {
-                    var abiValue = ReadAbiType(data, field.type, abi, ref readIndex);
+                    var abiValue = ReadAbiType(data, field.type, abi, ref readIndex, true);
+                    if (field.type.EndsWith("$") && abiValue == null) break;
                     valueDict.Add(field.name, abiValue);
                 }
             }
@@ -1299,7 +1328,8 @@ namespace EosSharp.Core.Providers
                 var valueType = value.GetType();
                 foreach (var field in abiStruct.fields)
                 {
-                    var abiValue = ReadAbiType(data, field.type, abi, ref readIndex);
+                    var abiValue = ReadAbiType(data, field.type, abi, ref readIndex, true);
+                    if (field.type.EndsWith("$") && abiValue == null) break;
                     var fieldName = FindObjectFieldName(field.name, value.GetType());
                     valueType.GetField(fieldName).SetValue(value, abiValue);
                 }
