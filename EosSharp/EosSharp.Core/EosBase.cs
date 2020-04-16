@@ -17,6 +17,7 @@ namespace EosSharp.Core
     {
         private EosConfigurator EosConfig { get; set; }
         private EosApi Api { get; set; }
+        private TraceApi TraceApi { get; set; }
         private AbiSerializationProvider AbiSerializer { get; set; }
 
         /// <summary>
@@ -32,6 +33,7 @@ namespace EosSharp.Core
                 throw new ArgumentNullException("config");
             }
             Api = new EosApi(EosConfig, httpHandler);
+            TraceApi = new TraceApi(EosConfig, httpHandler);
             AbiSerializer = new AbiSerializationProvider(Api);
         }
 
@@ -544,5 +546,20 @@ namespace EosSharp.Core
         }
 
         #endregion
+
+        #region Trace Api Methods
+        /// <summary>
+        /// Query for blockchain block information with Trace Api
+        /// </summary>
+        /// <param name="blockNum">block number to query information</param>
+        /// <returns>block information</returns>
+        public Task<Api.v1.Trace.GetBlockTraceResponse> GetBlockTrace(UInt32 blockNum)
+        {
+            return TraceApi.GetBlockTrace(new Api.v1.Trace.GetBlockTraceRequest()
+            {
+                block_num = blockNum.ToString()
+            });
+        }
+        #endregion    
     }
 }
