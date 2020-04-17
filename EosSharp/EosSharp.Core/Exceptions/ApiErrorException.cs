@@ -47,7 +47,7 @@ namespace EosSharp.Core.Exceptions
     [Serializable]
     public class ApiError
     {
-        public int code;
+        public ulong code;
         public string name;
         public string what;
         public List<ApiErrorDetail> details;
