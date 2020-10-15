@@ -206,12 +206,28 @@ namespace EosSharp
         /// <returns>Stream with response</returns>
         public async Task<Stream> BuildSendResponse(HttpResponseMessage response)
         {
-            var stream = await response.Content.ReadAsStreamAsync();
+            if(response == null)
+            {
+                throw new ArgumentNullException(nameof(response));    
+            }
 
-            if (response.IsSuccessStatusCode)
-                return stream;
+            if(response.Content == null)
+            {
+                throw new ApiException
+                {
+                    StatusCode = (int)response.StatusCode,
+                    Content = "Content is null"
+                };
+            }
+
+            var stream = await response.Content.ReadAsStreamAsync();
+            if (response.IsSuccessStatusCode) return stream;
 
             var content = await StreamToStringAsync(stream);
+            if(content == null) 
+            {
+                throw new ApplicationException($"Couldn't parse stream data.");
+            }
 
             ApiErrorException apiError = null;
             try
