@@ -245,7 +245,7 @@ namespace EosSharp
 
             if(apiError == null) 
             {
-                throw new ApplicationException("Api error is null!");
+                throw new NullReferenceException($"Api error is null! Response was: {content}");
             }
             throw apiError;
         }
