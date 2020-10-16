@@ -224,9 +224,10 @@ namespace EosSharp
             if (response.IsSuccessStatusCode) return stream;
 
             var content = await StreamToStringAsync(stream);
-            if(content == null) 
+            if(string.IsNullOrEmpty(content)) 
             {
-                throw new ApplicationException($"Couldn't parse stream data.");
+                var contentString = await response.Content.ReadAsStringAsync();
+                throw new ApplicationException($"Couldn't parse stream data. Content: {contentString}");
             }
 
             ApiErrorException apiError = null;
@@ -245,7 +246,8 @@ namespace EosSharp
 
             if(apiError == null) 
             {
-                throw new NullReferenceException($"Api error is null! Response was: {content}");
+                var contentString = await response.Content.ReadAsStringAsync();
+                throw new NullReferenceException($"Api error is null! Response was: {contentString}");
             }
             throw apiError;
         }
