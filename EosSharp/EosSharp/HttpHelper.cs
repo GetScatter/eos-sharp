@@ -208,7 +208,7 @@ namespace EosSharp
         {
             if(response == null)
             {
-                throw new ArgumentNullException(nameof(response));    
+                throw new ApplicationException("Respionse is null!");    
             }
 
             if(response.Content == null)
@@ -243,6 +243,10 @@ namespace EosSharp
                 };
             }
 
+            if(apiError == null) 
+            {
+                throw new ApplicationException("Api error is null!");
+            }
             throw apiError;
         }
 
