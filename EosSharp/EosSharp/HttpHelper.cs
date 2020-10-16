@@ -226,7 +226,7 @@ namespace EosSharp
             var content = await StreamToStringAsync(stream);
             if(string.IsNullOrEmpty(content)) 
             {
-                throw new NullReferenceException($"Couldn't parse stream data. Content: {content}, Status code: {response.IsSuccessStatusCode}");
+                throw new NullReferenceException($"Couldn't parse stream data. Content: {content}, Status code: {response.StatusCode}");
             }
 
             ApiErrorException apiError = null;
