@@ -223,31 +223,52 @@ namespace EosSharp
             var stream = await response.Content.ReadAsStreamAsync();
             if (response.IsSuccessStatusCode) return stream;
 
-            var content = await StreamToStringAsync(stream);
-            if(string.IsNullOrEmpty(content)) 
-            {
-                throw new NullReferenceException($"Couldn't parse stream data. Content: {content}, Status code: {response.StatusCode}");
-            }
-
-            ApiErrorException apiError = null;
+            string content = null;
             try
             {
-                apiError = JsonConvert.DeserializeObject<ApiErrorException>(content);
+                content = await StreamToStringAsync(stream);
             }
-            catch(Exception)
+            catch (System.Exception ex)
             {
                 throw new ApiException
                 {
                     StatusCode = (int)response.StatusCode,
-                    Content = content
+                    Content = $"Couldn't parse stream data. exception: {ex.ToString()}"
                 };
             }
 
-            if(apiError == null) 
+            if(string.IsNullOrEmpty(content)) 
             {
-                throw new NullReferenceException($"Api error is null! Response was: {content}");
+                throw new ApiException
+                {
+                    StatusCode = (int)response.StatusCode,
+                    Content = $"Couldn't parse stream data."
+                };
             }
-            throw apiError;
+
+            try
+            {
+                ApiErrorException apiError = JsonConvert.DeserializeObject<ApiErrorException>(content);
+
+                if(apiError == null) 
+                {
+                    throw new ApiException
+                    {
+                        StatusCode = (int)response.StatusCode,
+                        Content = $"Api error is null! Status code: {response.StatusCode}, content: {content}"
+                    };
+                }
+
+                throw apiError;
+            }
+            catch(Exception ex)
+            {
+                throw new ApiException
+                {
+                    StatusCode = (int)response.StatusCode,
+                    Content = $"Couldn't deserialized api error, exception: {ex.ToString()}, content: {content}"
+                };
+            }
         }
 
         /// <summary>
