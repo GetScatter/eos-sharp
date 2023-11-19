@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EosSharp.Core.Helpers
 {
@@ -214,15 +216,19 @@ namespace EosSharp.Core.Helpers
         {
             if (obj == null)
                 return null;
-
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
-            {
-                bf.Serialize(ms, obj);
-                return ms.ToArray();
-            }
+            return Encoding.UTF8.GetBytes(JsonSerializer.Serialize(obj, GetJsonSerializerOptions()));
         }
 
+        private static JsonSerializerOptions GetJsonSerializerOptions()
+        {
+            return new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = null,
+                WriteIndented = true,
+                AllowTrailingCommas = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            };
+        }
         /// <summary>
         /// Encode byte array to hexadecimal string
         /// </summary>

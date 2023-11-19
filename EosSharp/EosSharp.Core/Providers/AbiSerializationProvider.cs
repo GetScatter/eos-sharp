@@ -122,6 +122,7 @@ namespace EosSharp.Core.Providers
             int actionIndex = 0;
             var abiResponses = await GetTransactionAbis(trx);
 
+
             using (MemoryStream ms = new MemoryStream())
             {
                 //trx headers
@@ -310,7 +311,7 @@ namespace EosSharp.Core.Providers
             var result = await Api.GetRawAbi(new GetRawAbiRequest()
             {
                 account_name = accountName
-            });
+            },true);
 
             return DeserializePackedAbi(result.abi);
         }
